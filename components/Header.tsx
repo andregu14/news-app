@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   separator: {
-    marginVertical: 10,
+    marginTop: 10,
     height: 1,
     width: "100%",
   },
