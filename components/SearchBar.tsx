@@ -41,6 +41,8 @@ export default function SearchBar(props: ViewProps) {
           {
             borderColor:
               colorScheme === "dark" ? "rgba(255, 255, 255, 0.2)" : "#eee",
+
+            color: colorScheme === "dark" ? "#fff" : "#000",
           },
         ]}
         inputMode="search"
