@@ -1,4 +1,5 @@
-import { ScrollView, StyleSheet } from "react-native";
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, NativeSyntheticEvent, TextInputSubmitEditingEventData } from "react-native";
 import { Text, View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
@@ -34,13 +35,24 @@ const data: DataType[] = [
 ];
 
 export default function TabOneScreen() {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchSubmit = (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+    console.log("Pesquisa submetida:", searchQuery);
+  };
+
   return (
     <View style={styles.container}>
       {/* Header Menu */}
       <Header style={styles.header} />
       <ScrollView>
-        {/* Search Bar */}
-        <SearchBar style={styles.searchBar} />
+        {/* Search Bar com estado controlado */}
+        <SearchBar
+          style={styles.searchBar}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSubmitEditing={handleSearchSubmit}
+        />
         {/* Carrousel */}
         <View style={styles.carrousel}>
           <Text style={styles.carrouselText}>🔥 Em alta</Text>
@@ -102,6 +114,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   body: {
-    marginTop: 40,
+    marginTop: 100,
   },
 });
