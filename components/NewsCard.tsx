@@ -1,42 +1,46 @@
 import { View, Text, ViewProps } from "./Themed";
-import { Image, StyleSheet, useColorScheme } from "react-native";
+import { Image, StyleSheet, useColorScheme, Pressable } from "react-native";
 import Colors from "@/constants/Colors";
 
 type NewsCardProps = ViewProps & {
   title?: string;
   bodyText?: string;
   image?: string;
-  footerText?: string;
+  department: string
+  time: string
+  onPress?: () => void;
 };
 
-const randomImage = "https://picsum.photos/400/180";
-
 export default function NewsCard({
-  title = "Title", 
+  title, 
   bodyText,
   image,
-  footerText = "Há 4 minutos - Em tecnologia",
+  department,
+  time,
   style,
+  onPress,
   ...otherProps
 }: NewsCardProps) {
   const colorScheme = useColorScheme() ?? 'light';
   const themeColors = Colors[colorScheme];
 
   return (
-    <View style={[styles.container, style]} {...otherProps}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.bodyText} ellipsizeMode={"tail"} numberOfLines={5}>
-        {bodyText ? bodyText : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."}
-      </Text>
-      <Image
-        style={styles.image}
-        source={{ uri: image ?? randomImage }}
-        resizeMode="cover"
-      />
-      <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
-        {footerText}
-      </Text>
-    </View>
+    <Pressable onPress={onPress}>
+      <View style={[styles.container, style]} {...otherProps}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.bodyText} ellipsizeMode={"tail"} numberOfLines={5} >
+          {bodyText}
+        </Text>
+        <Image
+          style={styles.image}
+          source={{ uri: image}}
+          resizeMode="cover"
+        />
+        <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
+          {`Há ${time} - Em ${department}`}
+        </Text>
+      </View>
+    </Pressable>
   );
 }
 
@@ -47,6 +51,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginLeft: 15,
+    marginBottom: 10,
     fontSize: 18,
     fontWeight: "bold",
   },
@@ -54,8 +59,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingHorizontal: 15,
     fontSize: 14,
-    lineHeight: 20,
-  },
+    lineHeight: 22
+  }
+  ,
   image: {
     width: "100%",
     height: 180,
