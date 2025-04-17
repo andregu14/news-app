@@ -1,44 +1,34 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, NativeSyntheticEvent, TextInputSubmitEditingEventData } from "react-native";
+import React, { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  NativeSyntheticEvent,
+  TextInputSubmitEditingEventData,
+} from "react-native";
 import { Text, View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
 import SearchBar from "@/components/SearchBar";
 import HighlightCard from "@/components/HighlightCard";
 import NewsCard from "@/components/NewsCard";
-
-type DataType = {
-  title: string;
-  description: string;
-  image: string;
-};
-
-const data: DataType[] = [
-  {
-    title: "Title 1",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    image: `https://picsum.photos/400/180?random=${Math.random()}`, // Uses Math.random() to generate a random image for each card
-  },
-  {
-    title: "Title 2",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    image: `https://picsum.photos/400/180?random=${Math.random()}`,
-  },
-  {
-    title: "Title 3",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    image: `https://picsum.photos/400/180?random=${Math.random()}`,
-  },
-];
+import { useRouter } from "expo-router";
+import { newsData, DataParams } from "@/constants/NewsData"; // Importar dados e tipo
 
 export default function TabOneScreen() {
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
 
-  const handleSearchSubmit = (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+  const handleSearchSubmit = (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>
+  ) => {
     console.log("Pesquisa submetida:", searchQuery);
+  };
+
+  // Função para navegar para os detalhes da notícia
+  const handleCardPress = (item: DataParams) => {
+    // Navegar para a tela de detalhes. Eventualmente passaremos o ID ou dados.
+    console.log("Navegando para detalhes do item:", item.id);
+    router.push({ pathname: '/newsDetails', params: { newsId: item.id } });
   };
 
   return (
@@ -61,12 +51,13 @@ export default function TabOneScreen() {
             showsHorizontalScrollIndicator={false}
             scrollToOverflowEnabled={true}
           >
-            {data.map((item, index) => {
+            {newsData.slice(0, 4).map((item) => { 
               return (
                 <HighlightCard
-                  key={index}
+                  key={item.id}
                   description={item.description}
                   image={item.image}
+                  onPress={() => handleCardPress(item)}
                 />
               );
             })}
@@ -74,13 +65,16 @@ export default function TabOneScreen() {
         </View>
         {/* Body */}
         <View style={styles.body}>
-          {data.map((item, index) => {
+          {newsData.map((item) => {
             return (
               <NewsCard
-                key={index}
+                key={item.id}
                 title={item.title}
                 bodyText={item.description}
                 image={item.image}
+                department={item.department}
+                time={item.time}
+                onPress={() => handleCardPress(item)}
               />
             );
           })}
@@ -114,6 +108,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   body: {
+    gap: 80,
     marginTop: 100,
   },
 });
