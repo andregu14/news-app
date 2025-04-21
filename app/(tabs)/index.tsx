@@ -13,6 +13,7 @@ import HighlightCard from "@/components/HighlightCard";
 import NewsCard from "@/components/NewsCard";
 import { useRouter } from "expo-router";
 import { newsData, DataParams } from "@/constants/NewsData"; // Importar dados e tipo
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabOneScreen() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,7 +29,7 @@ export default function TabOneScreen() {
   const handleCardPress = (item: DataParams) => {
     // Navegar para a tela de detalhes. Eventualmente passaremos o ID ou dados.
     console.log("Navegando para detalhes do item:", item.id);
-    router.push({ pathname: '/newsDetails', params: { newsId: item.id } });
+    router.push({ pathname: "/newsDetails", params: { newsId: item.id } });
   };
 
   return (
@@ -45,13 +46,19 @@ export default function TabOneScreen() {
         />
         {/* Carrousel */}
         <View style={styles.carrousel}>
-          <Text style={styles.carrouselText}>🔥 Em alta</Text>
+          <View style={styles.carrouselTextWrapper}>
+            <Text style={styles.carrouselText}>🔥 Em alta</Text>
+            <MaterialCommunityIcons
+              name="arrow-right"
+              style={styles.carrouselText}
+            />
+          </View>
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}
             scrollToOverflowEnabled={true}
           >
-            {newsData.slice(0, 4).map((item) => { 
+            {newsData.slice(0, 4).map((item) => {
               return (
                 <HighlightCard
                   key={item.id}
@@ -101,10 +108,15 @@ const styles = StyleSheet.create({
   carrousel: {
     marginTop: 60,
   },
+  carrouselTextWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   carrouselText: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    marginLeft: 15,
+    marginHorizontal: 20,
     marginBottom: 20,
   },
   body: {
