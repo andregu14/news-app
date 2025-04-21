@@ -1,18 +1,19 @@
 import { View, Text, ViewProps } from "./Themed";
-import { Image, StyleSheet, useColorScheme, Pressable } from "react-native";
+import { StyleSheet, useColorScheme, Pressable } from "react-native";
 import Colors from "@/constants/Colors";
+import { Image } from "expo-image";
 
 type NewsCardProps = ViewProps & {
   title?: string;
   bodyText?: string;
   image?: string;
-  department: string
-  time: string
+  department: string;
+  time: string;
   onPress?: () => void;
 };
 
 export default function NewsCard({
-  title, 
+  title,
   bodyText,
   image,
   department,
@@ -21,20 +22,20 @@ export default function NewsCard({
   onPress,
   ...otherProps
 }: NewsCardProps) {
-  const colorScheme = useColorScheme() ?? 'light';
+  const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
 
   return (
     <Pressable onPress={onPress}>
       <View style={[styles.container, style]} {...otherProps}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.bodyText} ellipsizeMode={"tail"} numberOfLines={5} >
+        <Text style={styles.bodyText} ellipsizeMode={"tail"} numberOfLines={5}>
           {bodyText}
         </Text>
         <Image
           style={styles.image}
-          source={{ uri: image}}
-          resizeMode="cover"
+          source={{ uri: image }}
+          contentFit="cover"
         />
         <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
           {`Há ${time} - Em ${department}`}
@@ -46,7 +47,7 @@ export default function NewsCard({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 20, 
+    marginVertical: 20,
     paddingBottom: 20,
   },
   title: {
@@ -59,9 +60,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     paddingHorizontal: 15,
     fontSize: 14,
-    lineHeight: 22
-  }
-  ,
+    lineHeight: 22,
+  },
   image: {
     width: "100%",
     height: 180,
