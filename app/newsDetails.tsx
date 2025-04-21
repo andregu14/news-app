@@ -56,7 +56,7 @@ export default function NewsDetailsScreen() {
         
         <View style={styles.footer}>
           <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
-            Publicado há {newsItem.time}
+            Publicado há {newsItem.time}, por {newsItem.author ?? "Redação"}
           </Text>
           <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
             Em {newsItem.department}
