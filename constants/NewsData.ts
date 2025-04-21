@@ -5,6 +5,7 @@ export type DataParams = {
   image: string;
   department: string;
   time: string;
+  author?: string
 };
 
 export const newsData: DataParams[] = [
