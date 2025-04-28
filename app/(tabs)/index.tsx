@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -12,12 +12,30 @@ import SearchBar from "@/components/SearchBar";
 import HighlightCard from "@/components/HighlightCard";
 import NewsCard from "@/components/NewsCard";
 import { useRouter } from "expo-router";
-import { newsData, DataParams } from "@/constants/NewsData"; // Importar dados e tipo
+import { newsData, DataParams } from "@/constants/NewsData";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function TabOneScreen() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [news, setNews] = useState<DataParams[]>([]); 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch("http://192.168.15.5:3000/news/");
+        if (!response.ok) throw new Error("Falha ao buscar notícias");
+        else console.log("Dados de todas as noticias extraidos com sucesso!");
+        const data = await response.json();
+        setNews(data.news);
+      } catch (error) {
+        console.error("Erro ao buscar notícias, usando dados locais:", error);
+        setNews(newsData); // Fallback para dados locais
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   const handleSearchSubmit = (
     e: NativeSyntheticEvent<TextInputSubmitEditingEventData>
@@ -58,33 +76,37 @@ export default function TabOneScreen() {
             showsHorizontalScrollIndicator={false}
             scrollToOverflowEnabled={true}
           >
-            {newsData.slice(0, 4).map((item) => {
-              return (
-                <HighlightCard
-                  key={item.id}
-                  description={item.description}
-                  image={item.image}
-                  onPress={() => handleCardPress(item)}
-                />
-              );
-            })}
+            {news &&
+              news.length > 0 &&
+              news.slice(0, 4).map((item) => { // renderiza as quatro primeiras noticias
+                return (
+                  <HighlightCard
+                    key={item.id}
+                    description={item.description}
+                    image={item.image}
+                    onPress={() => handleCardPress(item)}
+                  />
+                );
+              })}
           </ScrollView>
         </View>
         {/* Body */}
         <View style={styles.body}>
-          {newsData.map((item) => {
-            return (
-              <NewsCard
-                key={item.id}
-                title={item.title}
-                bodyText={item.description}
-                image={item.image}
-                department={item.department}
-                time={item.time}
-                onPress={() => handleCardPress(item)}
-              />
-            );
-          })}
+          {news &&
+            news.length > 0 &&
+            news.map((item) => {
+              return (
+                <NewsCard
+                  key={item.id}
+                  title={item.title}
+                  bodyText={item.description}
+                  image={item.image}
+                  department={item.department}
+                  time={item.created_at || item.time}
+                  onPress={() => handleCardPress(item)}
+                />
+              );
+            })}
         </View>
       </ScrollView>
 
