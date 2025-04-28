@@ -1,19 +1,36 @@
 import { Text, View } from "@/components/Themed";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { StyleSheet, Image, ScrollView } from "react-native";
-import { newsData } from "@/constants/NewsData";
+import { newsData, DataParams } from "@/constants/NewsData";
 import { StatusBar } from "expo-status-bar";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
+import { useState, useEffect } from "react";
 
 export default function NewsDetailsScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const themeColors = Colors[colorScheme];
   const { newsId } = useLocalSearchParams<{ newsId: string }>();
+  const [newsItem, setNewsItem] = useState<DataParams | undefined>();
 
-  // Encontrar a notícia correspondente
-  // Certifique-se de que newsId é um número antes de comparar
-  const newsItem = newsData.find((item) => item.id.toString() === newsId);
+  useEffect(() => {
+    const fetchNewsDetails = async () => {
+      try {
+        const response = await fetch(`http://192.168.15.5:3000/news/${newsId}`);
+        if (!response.ok) throw new Error('Falha ao buscar detalhes da notícia');
+        const data = await response.json();
+        if (response.ok) console.log("Noticia encontrada com sucesso!", data.title);
+        setNewsItem(data);
+      } catch (error) {
+        console.error('Erro ao buscar detalhes da notícia, usando dados locais:', error);
+        // Fallback para dados locais
+        const localNewsItem = newsData.find((item) => item.id.toString() === newsId);
+        setNewsItem(localNewsItem);
+      }
+    };
+
+    fetchNewsDetails();
+  }, [newsId]);
 
   // Se a notícia não for encontrada, mostrar uma mensagem
   if (!newsItem) {
@@ -27,7 +44,6 @@ export default function NewsDetailsScreen() {
   // Renderizar os detalhes da notícia encontrada
   return (
     <View style={styles.container}>
-      {/* Configurar o título via Stack.Screen options */}
       <Stack.Screen
         options={{
           title: newsItem.department,
@@ -56,7 +72,7 @@ export default function NewsDetailsScreen() {
         
         <View style={styles.footer}>
           <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
-            Publicado há {newsItem.time}, por {newsItem.author ?? "Redação"}
+            Publicado {newsItem.created_at}, por {newsItem.author ?? "Redação"}
           </Text>
           <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
             Em {newsItem.department}
