@@ -9,7 +9,8 @@ export default {
     tabIconSelected: tintColorLight,
     headerIcon: "#3F3F3F",
     borderColor: '#eee', 
-    secondaryText: '#888', 
+    secondaryText: '#888',
+    bodyText: "#555"
   },
   dark: {
     text: '#fff',
@@ -18,6 +19,7 @@ export default {
     tabIconSelected: tintColorDark,
     headerIcon: "#fff",
     borderColor: 'rgba(255, 255, 255, 0.2)', 
-    secondaryText: 'rgba(255, 255, 255, 0.7)', 
+    secondaryText: 'rgba(255, 255, 255, 0.7)',
+    bodyText: "#ddd"
   },
 };
