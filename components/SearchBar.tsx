@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
-import { TextInput, StyleSheet, useColorScheme, TouchableOpacity, NativeSyntheticEvent, TextInputSubmitEditingEventData } from "react-native";
-import { View, Text, ViewProps } from "./Themed";
+import { TextInput, StyleSheet, useColorScheme, TouchableOpacity } from "react-native";
+import { View, ViewProps } from "./Themed";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from '../constants/Colors';
 
 type SearchBarProps = ViewProps & {
-  value: string;
-  onChangeText: (text: string) => void;
-  onSubmitEditing?: (e: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => void;
+  onSubmitEditing?: (query: string) => void;
   placeholder?: string;
 }
 
 export default function SearchBar({
-  value,
-  onChangeText,
   onSubmitEditing,
   placeholder = "Pesquisar",
   style,
   ...otherProps
 }: SearchBarProps) {
-  const colorScheme = useColorScheme() ?? 'light'; // Garantir que colorScheme não seja null/undefined
+  const colorScheme = useColorScheme() ?? 'light';
   const themeColors = Colors[colorScheme];
+  const [inputValue, setInputValue] = useState("");
 
   const handleClear = () => {
-    onChangeText("");
+    setInputValue("");
+  };
+
+  const handleSubmit = () => {
+    onSubmitEditing?.(inputValue); // Chamar onSubmitEditing com o valor interno
+    setInputValue("")
   };
 
   return (
@@ -37,6 +39,7 @@ export default function SearchBar({
       lightColor="#fff"
       {...otherProps}
     >
+      {/* ... ícone ... */}
       <View
         style={[
           styles.iconContainer,
@@ -50,9 +53,9 @@ export default function SearchBar({
         />
       </View>
       <TextInput
-        value={value}
-        onChangeText={onChangeText} 
-        onSubmitEditing={onSubmitEditing} 
+        value={inputValue}
+        onChangeText={setInputValue}
+        onSubmitEditing={handleSubmit}
         placeholder={placeholder}
         placeholderTextColor={
           themeColors.tint === Colors.dark.tint
@@ -62,17 +65,17 @@ export default function SearchBar({
         style={[
           styles.input,
           {
-            borderColor: themeColors.tint === Colors.dark.tint ? "rgba(255, 255, 255, 0.2)" : "#eee", 
-            color: themeColors.text, 
+            borderColor: themeColors.tint === Colors.dark.tint ? "rgba(255, 255, 255, 0.2)" : "#eee",
+            color: themeColors.text,
           },
         ]}
         inputMode="search"
         returnKeyType="search"
-        accessibilityLabel="Campo de pesquisa" // Acessibilidade
-        accessibilityHint="Digite aqui para pesquisar notícias" // Acessibilidade
+        accessibilityLabel="Campo de pesquisa"
+        accessibilityHint="Digite aqui para pesquisar notícias"
       />
       {/* Botão de limpar aparece se houver texto */}
-      {value.length > 0 && (
+      {inputValue.length > 0 && ( 
         <TouchableOpacity onPress={handleClear} style={styles.clearButton} accessibilityLabel="Limpar pesquisa">
           <MaterialCommunityIcons
             name="close-circle"
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderTopLeftRadius: 13,
     borderBottomLeftRadius: 13,
-  },  
+  },
   input: {
     height: "100%",
     flex: 1,
