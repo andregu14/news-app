@@ -29,7 +29,7 @@ export default function NewsCard({
     <Pressable onPress={onPress}>
       <View style={[styles.container, style]} {...otherProps}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.bodyText} ellipsizeMode={"tail"} numberOfLines={5}>
+        <Text style={[styles.bodyText, { color: themeColors.bodyText}]} ellipsizeMode={"tail"} numberOfLines={4}>
           {bodyText}
         </Text>
         <Image
