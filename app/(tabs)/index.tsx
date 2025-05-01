@@ -1,9 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import {
-  StyleSheet,
-  FlatList,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, FlatList, ScrollView, useColorScheme } from "react-native";
 import { Text, View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
@@ -13,8 +9,11 @@ import NewsCard from "@/components/NewsCard";
 import { useRouter } from "expo-router";
 import { newsData, DataParams } from "@/constants/NewsData";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Colors from "@/constants/Colors";
 
 export default function TabOneScreen() {
+  const colorScheme = useColorScheme() ?? "light";
+    const themeColors = Colors[colorScheme];
   const [news, setNews] = useState<DataParams[]>([]);
   const router = useRouter();
 
@@ -91,7 +90,7 @@ export default function TabOneScreen() {
           <Text style={styles.carrouselText}>🔥 Em alta</Text>
           <MaterialCommunityIcons
             name="arrow-right"
-            style={styles.carrouselText}
+            style={[styles.carrouselText, {color: themeColors.text}]}
           />
         </View>
         <ScrollView
