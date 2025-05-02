@@ -1,5 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { StyleSheet, FlatList, ScrollView, useColorScheme } from "react-native";
+import {
+  StyleSheet,
+  FlatList,
+  ScrollView,
+  useColorScheme,
+  RefreshControl,
+} from "react-native";
 import { Text, View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
@@ -9,16 +15,30 @@ import NewsCard from "@/components/NewsCard";
 import { useRouter } from "expo-router";
 import { newsData, DataParams } from "@/constants/NewsData";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import HighlightCardSkeleton from "@/components/HighlightCardSkeleton";
 import Colors from "@/constants/Colors";
+import NewsCardSkeleton from "@/components/NewsCardSkeleton";
 
 export default function TabOneScreen() {
   const colorScheme = useColorScheme() ?? "light";
-    const themeColors = Colors[colorScheme];
+  const themeColors = Colors[colorScheme];
   const [news, setNews] = useState<DataParams[]>([]);
   const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchNews = async () => {
+  // Função para buscar notícias
+  const fetchNews = useCallback(async (refresh = false) => {
+    if (!refresh) {
+      setLoading(true);
+    } else {
+      setIsRefreshing(true);
+    }
+    // Delay para refresh e loading
+    const delay = refresh
+      ? 500
+      : Math.floor(Math.random() * (4000 - 2000 + 1) + 2000);
+    setTimeout(async () => {
       try {
         const response = await fetch("http://192.168.15.5:3000/news/");
         if (!response.ok) throw new Error("Falha ao buscar notícias");
@@ -28,11 +48,18 @@ export default function TabOneScreen() {
       } catch (error) {
         console.error("Erro ao buscar notícias, usando dados locais:", error);
         setNews(newsData); // Fallback para dados locais
+      } finally {
+        if (!refresh) {
+          setLoading(false);
+        }
+        setIsRefreshing(false);
       }
-    };
-
-    fetchNews();
+    }, delay);
   }, []);
+
+  useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
 
   const handleSearchSubmit = useCallback(
     (query: string) => {
@@ -75,10 +102,13 @@ export default function TabOneScreen() {
     []
   );
 
+  // Função chamada pelo RefreshControl
+  const onRefresh = useCallback(() => {
+    fetchNews(true);
+  }, [fetchNews]);
+
   const ListHeader = () => (
     <>
-      {/* Header Menu */}
-      <Header style={styles.header} />
       {/* Search Bar */}
       <SearchBar
         style={styles.searchBar}
@@ -90,7 +120,7 @@ export default function TabOneScreen() {
           <Text style={styles.carrouselText}>🔥 Em alta</Text>
           <MaterialCommunityIcons
             name="arrow-right"
-            style={[styles.carrouselText, {color: themeColors.text}]}
+            style={[styles.carrouselText, { color: themeColors.text }]}
           />
         </View>
         <ScrollView
@@ -98,7 +128,17 @@ export default function TabOneScreen() {
           showsHorizontalScrollIndicator={false}
           scrollToOverflowEnabled={true}
         >
-          {news &&
+          {loading ? (
+            // Mostrar Skeletons durante o carregamento
+            <>
+              <HighlightCardSkeleton />
+              <HighlightCardSkeleton />
+              <HighlightCardSkeleton />
+              <HighlightCardSkeleton />
+            </>
+          ) : (
+            // Mostrar Cards reais após carregar
+            news &&
             news.length > 0 &&
             news.slice(0, 4).map((item) => {
               return (
@@ -109,7 +149,8 @@ export default function TabOneScreen() {
                   onPress={() => handleCardPress(item)}
                 />
               );
-            })}
+            })
+          )}
         </ScrollView>
       </View>
       <Text style={styles.listTitle}>🗞️ Últimas Notícias</Text>
@@ -118,14 +159,36 @@ export default function TabOneScreen() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={news}
-        renderItem={renderNewsItem}
-        keyExtractor={keyExtractor}
-        ListHeaderComponent={ListHeader}
-        contentContainerStyle={styles.listContentContainer}
-        keyboardShouldPersistTaps="handled"
-      />
+      {/* Header */}
+      <Header style={styles.header} />
+
+      {loading && !isRefreshing ? (
+        <FlatList
+          data={[1, 2, 3]}
+          renderItem={() => <NewsCardSkeleton style={styles.newsCard} />}
+          keyExtractor={(item) => item.toString()}
+          ListHeaderComponent={ListHeader}
+          contentContainerStyle={styles.listContentContainer}
+          keyboardShouldPersistTaps="handled"
+        />
+      ) : (
+        <FlatList
+          data={news}
+          renderItem={renderNewsItem}
+          keyExtractor={keyExtractor}
+          ListHeaderComponent={ListHeader}
+          contentContainerStyle={styles.listContentContainer}
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={onRefresh}
+              colors={["rgb(29, 108, 122)"]} // Cor do indicador no Android
+            />
+          }
+        />
+      )}
+
       <StatusBar style="auto" />
     </View>
   );
@@ -170,5 +233,5 @@ const styles = StyleSheet.create({
   },
   listContentContainer: {
     paddingBottom: 20,
-  }
+  },
 });
