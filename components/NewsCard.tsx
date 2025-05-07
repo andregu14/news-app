@@ -27,7 +27,7 @@ export default function NewsCard({
 
   return (
     <Pressable onPress={onPress}>
-      <View style={[styles.container, style]} {...otherProps}>
+      <View style={[styles.container, style]} {...otherProps} >
         <Text style={styles.title}>{title}</Text>
         <Text style={[styles.bodyText, { color: themeColors.bodyText}]} ellipsizeMode={"tail"} numberOfLines={4}>
           {bodyText}
@@ -38,7 +38,7 @@ export default function NewsCard({
           contentFit="cover"
         />
         <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
-          {`Há ${time} - Em ${department}`}
+          {`${time[0].toUpperCase() + time.slice(1)} • Em ${department}`}
         </Text>
       </View>
     </Pressable>

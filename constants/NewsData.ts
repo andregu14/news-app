@@ -17,7 +17,7 @@ export const newsData: DataParams[] = [
       "O Google anunciou um novo modelo de inteligência artificial capaz de realizar traduções com precisão quase humana em mais de 100 idiomas, superando modelos anteriores. \n\nSegundo a empresa, o novo sistema utiliza tecnologia de aprendizado profundo e foi treinado com bilhões de exemplos de traduções reais, permitindo que ele compreenda melhor o contexto e as nuances culturais de cada idioma.",
     image: `https://picsum.photos/400/200?random=10`,
     department: "Tecnologia",
-    time: "35 minutos",
+    time: "Há 35 minutos",
   },
   {
     id: 2,
@@ -26,7 +26,7 @@ export const newsData: DataParams[] = [
       "Investidores reagem positivamente a dados econômicos internacionais, impulsionando os principais índices da bolsa em um dia de negociações voláteis. \n\nAnalistas apontam que a recuperação econômica em mercados-chave e as perspectivas de redução nas taxas de juros são os principais fatores por trás do otimismo dos investidores, que já acumulam ganhos significativos no ano.",
     image: `https://picsum.photos/400/200?random=11`,
     department: "Economia",
-    time: "2 horas",
+    time: "Há 2 horas",
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ export const newsData: DataParams[] = [
       "Um novo exoplaneta com tamanho e temperatura potencialmente semelhantes aos da Terra foi identificado por telescópio espacial, aumentando as esperanças na busca por vida fora do sistema solar. \n\nO planeta, localizado a cerca de 40 anos-luz da Terra, orbita uma estrela anã vermelha e está situado na chamada 'zona habitável', região onde as condições podem permitir a existência de água líquida na superfície.",
     image: `https://picsum.photos/400/200?random=12`,
     department: "Ciência",
-    time: "8 horas",
+    time: "Há 8 horas",
   },
   {
     id: 4,
@@ -44,6 +44,6 @@ export const newsData: DataParams[] = [
       "Com gol nos últimos minutos, a equipe da casa conquistou o título nacional em uma partida emocionante que levantou a torcida presente no estádio. \n\nA vitória histórica veio após uma virada impressionante no segundo tempo, com destaque para a atuação do jovem atacante que marcou dois gols decisivos, consolidando sua posição como artilheiro da competição.",
     image: `https://picsum.photos/400/200?random=14`,
     department: "Esportes",
-    time: "1 dia",
+    time: "Há 1 dia",
   },
 ];
