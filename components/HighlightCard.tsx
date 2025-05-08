@@ -12,6 +12,8 @@ type HighlightCardProps = ViewProps & {
   description?: string;
   image?: string;
   onPress?: () => void;
+  testID?: string;
+  imageTestID?: string;
 };
 
 const randomImage = "https://picsum.photos/170/200";
@@ -21,6 +23,8 @@ export default function HighlightCard({
   image,
   style,
   onPress,
+  testID,
+  imageTestID,
   ...otherProps
 }: HighlightCardProps) {
   const colorScheme = useColorScheme() ?? "light";
@@ -45,6 +49,7 @@ export default function HighlightCard({
             : "transparent",
         },
       ]}
+      testID={testID}
     >
       <View
         style={[
@@ -60,6 +65,7 @@ export default function HighlightCard({
           style={styles.imageContainer}
           source={{ uri: image ?? randomImage }}
           contentFit="cover"
+          testID={imageTestID}
         />
         <Text
           ellipsizeMode={"tail"}

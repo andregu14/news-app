@@ -4,12 +4,14 @@ import Colors from "@/constants/Colors";
 import { Image } from "expo-image";
 
 type NewsCardProps = ViewProps & {
-  title?: string;
-  bodyText?: string;
-  image?: string;
+  title: string;
+  bodyText: string;
+  image: string;
   department: string;
   time: string;
-  onPress?: () => void;
+  onPress: () => void;
+  testID?: string;
+  imageTestID?: string;
 };
 
 export default function NewsCard({
@@ -20,22 +22,29 @@ export default function NewsCard({
   time,
   style,
   onPress,
+  testID,
+  imageTestID,
   ...otherProps
 }: NewsCardProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
 
   return (
-    <Pressable onPress={onPress}>
-      <View style={[styles.container, style]} {...otherProps} >
+    <Pressable onPress={onPress} testID={testID}>
+      <View style={[styles.container, style]} {...otherProps}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={[styles.bodyText, { color: themeColors.bodyText}]} ellipsizeMode={"tail"} numberOfLines={4}>
+        <Text
+          style={[styles.bodyText, { color: themeColors.bodyText }]}
+          ellipsizeMode={"tail"}
+          numberOfLines={4}
+        >
           {bodyText}
         </Text>
         <Image
           style={styles.image}
           source={{ uri: image }}
           contentFit="cover"
+          testID={imageTestID}
         />
         <Text style={[styles.footerText, { color: themeColors.secondaryText }]}>
           {`${time[0].toUpperCase() + time.slice(1)} • Em ${department}`}
