@@ -1,0 +1,402 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AuthorDetails /> renders correctly with name, date, department props and matches snapshot 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#fff",
+      },
+      [
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "marginBottom": 10,
+        },
+        undefined,
+      ],
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 20,
+            "borderWidth": 2,
+            "height": 40,
+            "marginRight": 10,
+            "overflow": "hidden",
+            "width": 40,
+          },
+          {
+            "borderColor": "#eee",
+          },
+        ],
+      ]
+    }
+  >
+    <ViewManagerAdapter_ExpoImage
+      backgroundColor={4290559425}
+      containerViewRef={"[React.ref]"}
+      contentFit="cover"
+      contentPosition={
+        {
+          "left": "50%",
+          "top": "50%",
+        }
+      }
+      height="100%"
+      nativeViewRef={"[React.ref]"}
+      onError={[Function]}
+      onLoad={[Function]}
+      onLoadStart={[Function]}
+      onProgress={[Function]}
+      placeholder={
+        [
+          {
+            "testUri": "../../../assets/images/photo-placeholder.png",
+          },
+        ]
+      }
+      source={
+        [
+          {
+            "uri": undefined,
+          },
+        ]
+      }
+      style={
+        {
+          "backgroundColor": "#bcbdc1",
+          "height": "100%",
+          "width": "100%",
+        }
+      }
+      transition={null}
+      width="100%"
+    />
+  </View>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        undefined,
+      ]
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 15,
+            },
+            {
+              "fontWeight": "bold",
+            },
+          ],
+        ]
+      }
+    >
+      Test Name
+    </Text>
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 13,
+            },
+            {
+              "color": "#888",
+            },
+          ],
+        ]
+      }
+    >
+      Há 7 dias • Em Test Department
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`<AuthorDetails /> renders correctly with photo prop and matches snapshot 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#fff",
+      },
+      [
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "marginBottom": 10,
+        },
+        undefined,
+      ],
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 20,
+            "borderWidth": 2,
+            "height": 40,
+            "marginRight": 10,
+            "overflow": "hidden",
+            "width": 40,
+          },
+          {
+            "borderColor": "#eee",
+          },
+        ],
+      ]
+    }
+  >
+    <ViewManagerAdapter_ExpoImage
+      backgroundColor={4290559425}
+      containerViewRef={"[React.ref]"}
+      contentFit="cover"
+      contentPosition={
+        {
+          "left": "50%",
+          "top": "50%",
+        }
+      }
+      height="100%"
+      nativeViewRef={"[React.ref]"}
+      onError={[Function]}
+      onLoad={[Function]}
+      onLoadStart={[Function]}
+      onProgress={[Function]}
+      placeholder={
+        [
+          {
+            "testUri": "../../../assets/images/photo-placeholder.png",
+          },
+        ]
+      }
+      source={
+        [
+          {
+            "uri": "https://example.com/test-image.png",
+          },
+        ]
+      }
+      style={
+        {
+          "backgroundColor": "#bcbdc1",
+          "height": "100%",
+          "width": "100%",
+        }
+      }
+      testID="author-image"
+      transition={null}
+      width="100%"
+    />
+  </View>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        undefined,
+      ]
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 15,
+            },
+            {
+              "fontWeight": "bold",
+            },
+          ],
+        ]
+      }
+    >
+      test
+    </Text>
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 13,
+            },
+            {
+              "color": "#888",
+            },
+          ],
+        ]
+      }
+    >
+      Test • Em test
+    </Text>
+  </View>
+</View>
+`;
+
+exports[`<AuthorDetails /> renders correctly with placeholder photo and matches snapshot 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#fff",
+      },
+      [
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "marginBottom": 10,
+        },
+        undefined,
+      ],
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 20,
+            "borderWidth": 2,
+            "height": 40,
+            "marginRight": 10,
+            "overflow": "hidden",
+            "width": 40,
+          },
+          {
+            "borderColor": "#eee",
+          },
+        ],
+      ]
+    }
+  >
+    <ViewManagerAdapter_ExpoImage
+      backgroundColor={4290559425}
+      containerViewRef={"[React.ref]"}
+      contentFit="cover"
+      contentPosition={
+        {
+          "left": "50%",
+          "top": "50%",
+        }
+      }
+      height="100%"
+      nativeViewRef={"[React.ref]"}
+      onError={[Function]}
+      onLoad={[Function]}
+      onLoadStart={[Function]}
+      onProgress={[Function]}
+      placeholder={
+        [
+          {
+            "testUri": "../../../assets/images/photo-placeholder.png",
+          },
+        ]
+      }
+      source={
+        [
+          {
+            "uri": undefined,
+          },
+        ]
+      }
+      style={
+        {
+          "backgroundColor": "#bcbdc1",
+          "height": "100%",
+          "width": "100%",
+        }
+      }
+      testID="default-author-image"
+      transition={null}
+      width="100%"
+    />
+  </View>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        undefined,
+      ]
+    }
+  >
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 15,
+            },
+            {
+              "fontWeight": "bold",
+            },
+          ],
+        ]
+      }
+    >
+      name
+    </Text>
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 13,
+            },
+            {
+              "color": "#888",
+            },
+          ],
+        ]
+      }
+    >
+      Test • Em test
+    </Text>
+  </View>
+</View>
+`;

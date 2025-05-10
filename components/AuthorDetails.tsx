@@ -8,6 +8,7 @@ type AuthorDetailsProps = ViewProps & {
   photo?: string;
   date: string;
   department: string;
+  imageTestId?: string
 };
 
 export default function AuthorDetails({
@@ -15,6 +16,7 @@ export default function AuthorDetails({
   photo,
   date,
   department,
+  imageTestId,
   ...otherProps
 }: AuthorDetailsProps) {
   const colorScheme = useColorScheme() ?? "light";
@@ -36,6 +38,7 @@ export default function AuthorDetails({
           placeholder={require("@/assets/images/photo-placeholder.png")}
           style={styles.photo}
           contentFit="cover"
+          testID={imageTestId}
         />
       </View>
       <View>
