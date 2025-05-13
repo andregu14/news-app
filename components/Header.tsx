@@ -11,14 +11,25 @@ export default function Header(props: ViewProps) {
 
   return (
     <View style={[props.style, { width: "100%" }]}>
-      <View style={styles.container}>
-        <MaterialCommunityIcons name="account" size={iconSize} color={color} />
+      <View style={styles.container} testID="header">
+        <MaterialCommunityIcons
+          name="account"
+          size={iconSize}
+          color={color}
+          testID="icon-account"
+        />
         <MaterialCommunityIcons
           name="diamond-stone"
           size={iconSize}
           color={color}
+          testID="icon-diamond-stone"
         />
-        <MaterialCommunityIcons name="menu" size={iconSize} color={color} />
+        <MaterialCommunityIcons
+          name="menu"
+          size={iconSize}
+          color={color}
+          testID="icon-menu"
+        />
       </View>
       <View
         style={styles.separator}
