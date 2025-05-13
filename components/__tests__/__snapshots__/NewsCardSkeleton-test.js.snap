@@ -1,0 +1,209 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NewsCardSkeleton /> renders correctly 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#fff",
+      },
+      [
+        {
+          "marginHorizontal": 20,
+          "marginVertical": 20,
+          "overflow": "hidden",
+          "paddingBottom": 20,
+          "position": "relative",
+        },
+        undefined,
+        {
+          "backgroundColor": "transparent",
+        },
+      ],
+    ]
+  }
+>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 4,
+            "height": 18,
+            "marginBottom": 15,
+            "marginLeft": 15,
+            "width": "70%",
+          },
+          {
+            "backgroundColor": "#E0E0E0",
+          },
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 4,
+            "height": 14,
+            "marginBottom": 8,
+            "marginHorizontal": 15,
+          },
+          {
+            "backgroundColor": "#E0E0E0",
+            "width": "90%",
+          },
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 4,
+            "height": 14,
+            "marginBottom": 8,
+            "marginHorizontal": 15,
+          },
+          {
+            "backgroundColor": "#E0E0E0",
+            "width": "80%",
+          },
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 4,
+            "height": 14,
+            "marginBottom": 8,
+            "marginHorizontal": 15,
+          },
+          {
+            "backgroundColor": "#E0E0E0",
+            "width": "95%",
+          },
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 4,
+            "height": 14,
+            "marginBottom": 8,
+            "marginHorizontal": 15,
+          },
+          {
+            "backgroundColor": "#E0E0E0",
+            "width": "70%",
+          },
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 4,
+            "height": 180,
+            "marginTop": 15,
+            "width": "100%",
+          },
+          {
+            "backgroundColor": "#E0E0E0",
+          },
+        ],
+      ]
+    }
+  />
+  <View
+    style={
+      [
+        {
+          "backgroundColor": "#fff",
+        },
+        [
+          {
+            "borderRadius": 4,
+            "height": 12,
+            "marginLeft": 15,
+            "marginTop": 15,
+            "width": "50%",
+          },
+          {
+            "backgroundColor": "#E0E0E0",
+          },
+        ],
+      ]
+    }
+  />
+  <ViewManagerAdapter_ExpoLinearGradient
+    collapsable={false}
+    colors={
+      [
+        0,
+        218103808,
+        0,
+      ]
+    }
+    endPoint={
+      [
+        1,
+        0.5,
+      ]
+    }
+    startPoint={
+      [
+        0,
+        0.5,
+      ]
+    }
+    style={
+      {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+        "transform": [
+          {
+            "translateX": -675,
+          },
+        ],
+      }
+    }
+  />
+</View>
+`;
