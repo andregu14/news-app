@@ -18,6 +18,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import HighlightCardSkeleton from "@/components/HighlightCardSkeleton";
 import Colors from "@/constants/Colors";
 import NewsCardSkeleton from "@/components/NewsCardSkeleton";
+import AccountSideMenu from "@/components/AccountSideMenu";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabOneScreen() {
   const colorScheme = useColorScheme() ?? "light";
@@ -26,6 +28,8 @@ export default function TabOneScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+  const [isAccountMenuVisible, setIsAccountMenuVisible] = useState<boolean>(false);
+  const insets = useSafeAreaInsets();
 
   // Função para buscar notícias
   const fetchNews = useCallback(async (refresh = false) => {
@@ -78,6 +82,11 @@ export default function TabOneScreen() {
     },
     [router]
   );
+
+  // Funções para controlar os menus
+  const toggleAccountMenu = useCallback(() => {
+    setIsAccountMenuVisible(!isAccountMenuVisible);
+  }, [isAccountMenuVisible]);
 
   // Função para renderizar cada item da lista
   const renderNewsItem = useCallback(
@@ -158,9 +167,12 @@ export default function TabOneScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {paddingTop: insets.top}]}>
       {/* Header */}
-      <Header style={styles.header} />
+      <Header
+        style={styles.header}
+        onAccountPress={toggleAccountMenu}
+      />
 
       {loading && !isRefreshing ? (
         <FlatList
@@ -189,7 +201,9 @@ export default function TabOneScreen() {
         />
       )}
 
-      <StatusBar style="auto" />
+      <AccountSideMenu isVisible={isAccountMenuVisible} onClose={toggleAccountMenu} />
+
+      <StatusBar style="auto" backgroundColor="#fff"/>
     </View>
   );
 }
@@ -199,7 +213,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    marginTop: 45,
+    marginTop: 10,
   },
   searchBar: {
     marginTop: 30,
