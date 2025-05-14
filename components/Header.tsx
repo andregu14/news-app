@@ -2,9 +2,14 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { View, ViewProps } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
-export default function Header(props: ViewProps) {
+type HeaderProps = ViewProps & {
+  onMenuPress?: () => void
+  onAccountPress?: () => void
+}
+
+export default function Header(props: HeaderProps) {
   const colorScheme = useColorScheme();
   const color = Colors[colorScheme ?? "light"].headerIcon;
   const iconSize = 28;
@@ -12,24 +17,28 @@ export default function Header(props: ViewProps) {
   return (
     <View style={[props.style, { width: "100%" }]}>
       <View style={styles.container} testID="header">
-        <MaterialCommunityIcons
-          name="account"
-          size={iconSize}
-          color={color}
-          testID="icon-account"
-        />
+        <TouchableOpacity onPress={props.onAccountPress} testID="account-button">
+          <MaterialCommunityIcons
+            name="account"
+            size={iconSize}
+            color={color}
+            testID="icon-account"
+          />
+        </TouchableOpacity>
         <MaterialCommunityIcons
           name="diamond-stone"
           size={iconSize}
           color={color}
           testID="icon-diamond-stone"
         />
-        <MaterialCommunityIcons
-          name="menu"
-          size={iconSize}
-          color={color}
-          testID="icon-menu"
-        />
+        <TouchableOpacity onPress={props.onMenuPress} testID="menu-button">
+          <MaterialCommunityIcons
+            name="menu"
+            size={iconSize}
+            color={color}
+            testID="icon-menu"
+          />
+        </TouchableOpacity>
       </View>
       <View
         style={styles.separator}
