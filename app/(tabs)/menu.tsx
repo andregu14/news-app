@@ -6,6 +6,9 @@ import Colors from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import { newsData } from "@/constants/NewsData";
 import { useState } from "react";
+import { StatusBar } from "expo-status-bar";
+
+const appVersion = require("../../app.json").expo.version;
 
 export default function MenuScreen() {
   const colorScheme = useColorScheme() ?? "light";
@@ -169,8 +172,10 @@ export default function MenuScreen() {
 
       {/* Versão do App */}
       <Text style={[styles.versionText, { color: themeColors.secondaryText }]}>
-        Versão 1.0.0
+        {`Versão ${appVersion}`}
       </Text>
+
+      <StatusBar style="auto" backgroundColor="#fff" />
     </ScrollView>
   );
 }
@@ -242,7 +247,7 @@ const styles = StyleSheet.create({
   versionText: {
     textAlign: "center",
     marginTop: "10%",
-    fontSize: 14,
+    fontSize: 12,
   },
   separator: {
     marginVertical: 20,
