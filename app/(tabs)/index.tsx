@@ -18,6 +18,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import HighlightCardSkeleton from "@/components/HighlightCardSkeleton";
 import Colors from "@/constants/Colors";
 import NewsCardSkeleton from "@/components/NewsCardSkeleton";
+import SideMenu from "@/components/SideMenu";
 import AccountSideMenu from "@/components/AccountSideMenu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -28,7 +29,9 @@ export default function TabOneScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-  const [isAccountMenuVisible, setIsAccountMenuVisible] = useState<boolean>(false);
+  const [isMainMenuVisible, setIsMainMenuVisible] = useState<boolean>(false);
+  const [isAccountMenuVisible, setIsAccountMenuVisible] =
+    useState<boolean>(false);
   const insets = useSafeAreaInsets();
 
   // Função para buscar notícias
@@ -84,6 +87,10 @@ export default function TabOneScreen() {
   );
 
   // Funções para controlar os menus
+  const toggleMainMenu = useCallback(() => {
+    setIsMainMenuVisible(!isMainMenuVisible);
+  }, [isMainMenuVisible]);
+
   const toggleAccountMenu = useCallback(() => {
     setIsAccountMenuVisible(!isAccountMenuVisible);
   }, [isAccountMenuVisible]);
@@ -167,10 +174,11 @@ export default function TabOneScreen() {
   );
 
   return (
-    <View style={[styles.container, {paddingTop: insets.top}]}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       {/* Header */}
       <Header
         style={styles.header}
+        onMenuPress={toggleMainMenu}
         onAccountPress={toggleAccountMenu}
       />
 
@@ -191,6 +199,7 @@ export default function TabOneScreen() {
           ListHeaderComponent={ListHeader}
           contentContainerStyle={styles.listContentContainer}
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           refreshControl={
             <RefreshControl
               refreshing={isRefreshing}
@@ -201,7 +210,11 @@ export default function TabOneScreen() {
         />
       )}
 
-      <AccountSideMenu isVisible={isAccountMenuVisible} onClose={toggleAccountMenu} />
+      <SideMenu isVisible={isMainMenuVisible} onClose={toggleMainMenu} />
+      <AccountSideMenu
+        isVisible={isAccountMenuVisible}
+        onClose={toggleAccountMenu}
+      />
 
       <StatusBar style="auto" backgroundColor={themeColors.background} />
     </View>
