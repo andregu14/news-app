@@ -33,7 +33,7 @@ export default function Header(props: HeaderProps) {
         />
         <TouchableOpacity onPress={props.onMenuPress} testID="menu-button">
           <MaterialCommunityIcons
-            name="menu"
+            name="widgets"
             size={iconSize}
             color={color}
             testID="icon-menu"
