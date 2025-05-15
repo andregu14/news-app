@@ -203,7 +203,7 @@ export default function TabOneScreen() {
 
       <AccountSideMenu isVisible={isAccountMenuVisible} onClose={toggleAccountMenu} />
 
-      <StatusBar style="auto" backgroundColor="#fff"/>
+      <StatusBar style="auto" backgroundColor={themeColors.background} />
     </View>
   );
 }

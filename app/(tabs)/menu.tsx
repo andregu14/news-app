@@ -175,7 +175,7 @@ export default function MenuScreen() {
         {`Versão ${appVersion}`}
       </Text>
 
-      <StatusBar style="auto" backgroundColor="#fff" />
+      <StatusBar style="auto" backgroundColor={themeColors.background} />
     </ScrollView>
   );
 }
