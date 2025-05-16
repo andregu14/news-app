@@ -236,7 +236,10 @@ export default function AccountSideMenu({
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject, // Ocupa toda a tela
+    position: "absolute",
+    bottom: 0,
+    width: screenWidth,
+    height: "100%",
     backgroundColor: "rgba(0,0,0,0.6)",
     zIndex: 100,
   },
@@ -246,11 +249,6 @@ const styles = StyleSheet.create({
     width: menuWidth,
     height: "100%",
     zIndex: 200,
-    elevation: Platform.OS === "android" ? 4 : 0, // Sombra para Android
-    shadowColor: "#000", // Sombra para iOS
-    shadowOffset: { width: 2, height: 0 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
   menuHeader: {
     paddingHorizontal: 20,

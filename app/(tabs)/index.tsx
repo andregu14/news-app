@@ -216,7 +216,7 @@ export default function TabOneScreen() {
         onClose={toggleAccountMenu}
       />
 
-      <StatusBar style="auto" backgroundColor={themeColors.background} />
+      <StatusBar style="auto" />
     </View>
   );
 }

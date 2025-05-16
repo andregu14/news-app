@@ -232,7 +232,10 @@ export default function SideMenu({ isVisible, onClose }: SideMenuProps) {
 
 const styles = StyleSheet.create({
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: "absolute",
+    bottom: 0,
+    width: screenWidth,
+    height: "100%",
     backgroundColor: "rgba(0,0,0,0.6)",
     zIndex: 100,
   },
@@ -242,10 +245,6 @@ const styles = StyleSheet.create({
     width: menuWidth,
     height: "100%",
     zIndex: 200,
-    elevation: Platform.OS === "android" ? 4 : 0,
-    shadowColor: "#000",
-    shadowOffset: { width: -2, height: 0 },
-    shadowRadius: 3.84,
   },
   menuHeader: {
     paddingHorizontal: 20,
