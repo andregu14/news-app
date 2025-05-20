@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   StyleSheet,
   FlatList,
   ScrollView,
   useColorScheme,
   RefreshControl,
+  Dimensions,
 } from "react-native";
 import { Text, View } from "@/components/Themed";
 import Header from "@/components/Header";
@@ -21,6 +22,14 @@ import NewsCardSkeleton from "@/components/NewsCardSkeleton";
 import SideMenu from "@/components/SideMenu";
 import AccountSideMenu from "@/components/AccountSideMenu";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ReanimatedDrawerLayout, {
+  DrawerType,
+  DrawerPosition,
+  DrawerLayoutMethods,
+} from "react-native-gesture-handler/ReanimatedDrawerLayout";
+
+const { width: screenWidth } = Dimensions.get("window");
+const drawerWidth = screenWidth * 0.8;
 
 export default function TabOneScreen() {
   const colorScheme = useColorScheme() ?? "light";
@@ -29,10 +38,9 @@ export default function TabOneScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
-  const [isMainMenuVisible, setIsMainMenuVisible] = useState<boolean>(false);
-  const [isAccountMenuVisible, setIsAccountMenuVisible] =
-    useState<boolean>(false);
   const insets = useSafeAreaInsets();
+  const leftDrawerRef = useRef<DrawerLayoutMethods>(null);
+  const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
 
   // Função para buscar notícias
   const fetchNews = useCallback(async (refresh = false) => {
@@ -87,13 +95,13 @@ export default function TabOneScreen() {
   );
 
   // Funções para controlar os menus
-  const toggleMainMenu = useCallback(() => {
-    setIsMainMenuVisible(!isMainMenuVisible);
-  }, [isMainMenuVisible]);
+  const handleAccountPress = () => {
+    leftDrawerRef.current?.openDrawer();
+  };
 
-  const toggleAccountMenu = useCallback(() => {
-    setIsAccountMenuVisible(!isAccountMenuVisible);
-  }, [isAccountMenuVisible]);
+  const handleMenuPress = () => {
+    rightDrawerRef.current?.openDrawer();
+  };
 
   // Função para renderizar cada item da lista
   const renderNewsItem = useCallback(
@@ -174,49 +182,70 @@ export default function TabOneScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <Header
-        style={styles.header}
-        onMenuPress={toggleMainMenu}
-        onAccountPress={toggleAccountMenu}
+    <View style={{ flex: 1 }}>
+      <View
+        style={[
+          styles.statusbarView,
+          {
+            height: insets.top,
+            backgroundColor: themeColors.background,
+          },
+        ]}
       />
-
-      {loading && !isRefreshing ? (
-        <FlatList
-          data={[1, 2, 3]}
-          renderItem={() => <NewsCardSkeleton style={styles.newsCard} />}
-          keyExtractor={(item) => item.toString()}
-          ListHeaderComponent={ListHeader}
-          contentContainerStyle={styles.listContentContainer}
-          keyboardShouldPersistTaps="handled"
-        />
-      ) : (
-        <FlatList
-          data={news}
-          renderItem={renderNewsItem}
-          keyExtractor={keyExtractor}
-          ListHeaderComponent={ListHeader}
-          contentContainerStyle={styles.listContentContainer}
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          refreshControl={
-            <RefreshControl
-              refreshing={isRefreshing}
-              onRefresh={onRefresh}
-              colors={["rgb(29, 108, 122)"]} // Cor do indicador no Android
-            />
-          }
-        />
-      )}
-
-      <SideMenu isVisible={isMainMenuVisible} onClose={toggleMainMenu} />
-      <AccountSideMenu
-        isVisible={isAccountMenuVisible}
-        onClose={toggleAccountMenu}
-      />
-
       <StatusBar style="auto" />
+      <ReanimatedDrawerLayout
+        drawerWidth={drawerWidth}
+        ref={leftDrawerRef}
+        drawerPosition={DrawerPosition.LEFT}
+        drawerType={DrawerType.FRONT}
+        renderNavigationView={() => <AccountSideMenu />}
+        drawerContainerStyle={{ marginTop: insets.top }}
+      >
+        <ReanimatedDrawerLayout
+          drawerWidth={drawerWidth}
+          ref={rightDrawerRef}
+          drawerPosition={DrawerPosition.RIGHT}
+          drawerType={DrawerType.FRONT}
+          renderNavigationView={() => <SideMenu />}
+          drawerContainerStyle={{ marginTop: insets.top }}
+        >
+          <View style={[styles.container, { paddingTop: insets.top }]}>
+            {/* Header */}
+            <Header
+              style={styles.header}
+              onMenuPress={handleMenuPress}
+              onAccountPress={handleAccountPress}
+            />
+            {loading && !isRefreshing ? (
+              <FlatList
+                data={[1, 2, 3]}
+                renderItem={() => <NewsCardSkeleton style={styles.newsCard} />}
+                keyExtractor={(item) => item.toString()}
+                ListHeaderComponent={ListHeader}
+                contentContainerStyle={styles.listContentContainer}
+                keyboardShouldPersistTaps="handled"
+              />
+            ) : (
+              <FlatList
+                data={news}
+                renderItem={renderNewsItem}
+                keyExtractor={keyExtractor}
+                ListHeaderComponent={ListHeader}
+                contentContainerStyle={styles.listContentContainer}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={onRefresh}
+                    colors={["rgb(29, 108, 122)"]} // Cor do indicador no Android
+                  />
+                }
+              />
+            )}
+          </View>
+        </ReanimatedDrawerLayout>
+      </ReanimatedDrawerLayout>
     </View>
   );
 }
@@ -224,6 +253,13 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  statusbarView: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
   header: {
     marginTop: 10,

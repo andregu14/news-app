@@ -1,11 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import {
   Animated,
   StyleSheet,
-  TouchableOpacity,
   Dimensions,
-  Easing,
-  Platform,
   Pressable,
 } from "react-native";
 import { View, Text } from "./Themed";
@@ -16,11 +13,6 @@ import { BlurView } from "expo-blur";
 
 const { width: screenWidth } = Dimensions.get("window");
 const menuWidth = screenWidth * 0.8;
-
-type SideMenuProps = {
-  isVisible: boolean;
-  onClose: () => void;
-};
 
 type MenuItemProps = {
   image: string;
@@ -87,54 +79,9 @@ const MenuItem: React.FC<
   );
 };
 
-export default function SideMenu({ isVisible, onClose }: SideMenuProps) {
+export default function SideMenu() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
-  const slideAnim = useRef(new Animated.Value(screenWidth)).current;
-  const overlayOpacityAnim = useRef(new Animated.Value(0)).current;
-  const [isMenuRendered, setIsMenuRendered] = useState(isVisible);
-
-  useEffect(() => {
-    if (isVisible) {
-      setIsMenuRendered(true);
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: screenWidth - menuWidth,
-          duration: 300,
-          easing: Easing.out(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(overlayOpacityAnim, {
-          toValue: 1,
-          duration: 300,
-          easing: Easing.out(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: screenWidth,
-          duration: 300,
-          easing: Easing.in(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(overlayOpacityAnim, {
-          toValue: 0,
-          duration: 300,
-          easing: Easing.in(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ]).start(() => {
-        setIsMenuRendered(false);
-      });
-    }
-  }, [isVisible, slideAnim, overlayOpacityAnim]);
-
-  if (!isMenuRendered) {
-    return null;
-  }
-
   const menuItems: MenuItemProps[] = [
     {
       image: require("@/assets/images/tecnologia.jpg"),
@@ -179,66 +126,44 @@ export default function SideMenu({ isVisible, onClose }: SideMenuProps) {
   ];
 
   return (
-    <>
-      <Animated.View
-        style={[styles.overlay, { opacity: overlayOpacityAnim }]}
-        pointerEvents={isVisible ? "auto" : "none"}
-      >
-        <TouchableOpacity
-          style={StyleSheet.absoluteFill}
-          activeOpacity={1}
-          onPress={onClose}
-        />
-      </Animated.View>
-
-      <Animated.View
+    <View
+      style={[
+        styles.menuContainer,
+        {
+          backgroundColor: themeColors.background,
+          borderLeftWidth: 1,
+          borderLeftColor: themeColors.borderColor,
+        },
+      ]}
+    >
+      <View
         style={[
-          styles.menuContainer,
-          {
-            backgroundColor: themeColors.background,
-            transform: [{ translateX: slideAnim }],
-            borderLeftWidth: 1,
-            borderLeftColor: themeColors.borderColor,
-          },
+          styles.menuHeader,
+          { borderBottomColor: themeColors.borderColor },
         ]}
       >
-        <View
-          style={[
-            styles.menuHeader,
-            { borderBottomColor: themeColors.borderColor },
-          ]}
-        >
-          <Text style={[styles.menuTitleText, { color: themeColors.text }]}>
-            Categorias
-          </Text>
-        </View>
+        <Text style={[styles.menuTitleText, { color: themeColors.text }]}>
+          Categorias
+        </Text>
+      </View>
 
-        <View style={styles.menuItemsContainer}>
-          {menuItems.map((item, index) => (
-            <MenuItem
-              key={index}
-              image={item.image}
-              label={item.label}
-              onPress={item.onPress}
-              textColor={themeColors.text}
-              borderColor={themeColors.borderColor}
-            />
-          ))}
-        </View>
-      </Animated.View>
-    </>
+      <View style={styles.menuItemsContainer}>
+        {menuItems.map((item, index) => (
+          <MenuItem
+            key={index}
+            image={item.image}
+            label={item.label}
+            onPress={item.onPress}
+            textColor={themeColors.text}
+            borderColor={themeColors.borderColor}
+          />
+        ))}
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: "absolute",
-    bottom: 0,
-    width: screenWidth,
-    height: "100%",
-    backgroundColor: "rgba(0,0,0,0.6)",
-    zIndex: 100,
-  },
   menuContainer: {
     position: "absolute",
     bottom: 0,

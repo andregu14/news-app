@@ -1,11 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
 import {
-  Animated,
   StyleSheet,
-  TouchableOpacity,
   Dimensions,
-  Easing,
-  Platform,
   Pressable,
 } from "react-native";
 import { View, Text } from "./Themed";
@@ -16,11 +11,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 const { width: screenWidth } = Dimensions.get("window");
 const menuWidth = screenWidth * 0.8;
 const appVersion = require("../app.json").expo.version;
-
-type AccountSideMenuProps = {
-  isVisible: boolean;
-  onClose: () => void;
-};
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>["name"];
 
@@ -60,57 +50,9 @@ const MenuItem: React.FC<
   </Pressable>
 );
 
-export default function AccountSideMenu({
-  isVisible,
-  onClose,
-}: AccountSideMenuProps) {
+export default function AccountSideMenu() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
-  const slideAnim = useRef(new Animated.Value(-menuWidth)).current;
-  const overlayOpacityAnim = useRef(new Animated.Value(0)).current;
-  const [isMenuRendered, setIsMenuRendered] = useState(isVisible); // Controla a renderização do menu
-
-  useEffect(() => {
-    if (isVisible) {
-      setIsMenuRendered(true); // Garante que o menu seja renderizado antes da animação de entrada
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 300,
-          easing: Easing.out(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(overlayOpacityAnim, {
-          toValue: 1,
-          duration: 300,
-          easing: Easing.out(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: -menuWidth,
-          duration: 300,
-          easing: Easing.in(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(overlayOpacityAnim, {
-          toValue: 0,
-          duration: 300,
-          easing: Easing.in(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ]).start(() => {
-        // Após a animação de saída, define isMenuRendered como false para desmontar o componente
-        setIsMenuRendered(false);
-      });
-    }
-  }, [isVisible, slideAnim, overlayOpacityAnim]);
-
-  if (!isMenuRendered) {
-    return null;
-  }
 
   const menuItems: MenuItemProps[] = [
     {
@@ -151,35 +93,17 @@ export default function AccountSideMenu({
     {
       icon: "logout",
       label: "Sair",
-      onPress: () => {
-        console.log("Sair");
-        onClose();
-      },
+      onPress: () => console.log("Sair"),
       isLast: true,
     },
   ];
 
   return (
-    <>
-      {/* Overlay */}
-      <Animated.View
-        style={[styles.overlay, { opacity: overlayOpacityAnim }]}
-        pointerEvents={isVisible ? "auto" : "none"}
-      >
-        <TouchableOpacity
-          style={StyleSheet.absoluteFill}
-          activeOpacity={1}
-          onPress={onClose}
-        />
-      </Animated.View>
-
-      {/* Menu Lateral */}
-      <Animated.View
+      <View
         style={[
           styles.menuContainer,
-          {
+          { 
             backgroundColor: themeColors.background,
-            transform: [{ translateX: slideAnim }],
             borderRightWidth: 1,
             borderRightColor: themeColors.borderColor,
           },
@@ -229,26 +153,17 @@ export default function AccountSideMenu({
         >
           {`Versão ${appVersion}`}
         </Text>
-      </Animated.View>
-    </>
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: "absolute",
-    bottom: 0,
-    width: screenWidth,
-    height: "100%",
-    backgroundColor: "rgba(0,0,0,0.6)",
-    zIndex: 100,
-  },
   menuContainer: {
     position: "absolute",
     bottom: 0,
     width: menuWidth,
     height: "100%",
-    zIndex: 200,
+    zIndex: 100,
   },
   menuHeader: {
     paddingHorizontal: 20,
