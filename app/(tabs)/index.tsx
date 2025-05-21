@@ -79,8 +79,7 @@ export default function TabOneScreen() {
   const handleSearchSubmit = useCallback(
     (query: string) => {
       console.log("Pesquisa submetida:", query);
-      // Adicionar aqui a lógica para navegar ou filtrar com a 'query'
-      // Exemplo: router.push({ pathname: "/searchResults", params: { query } });
+      router.push({ pathname: "/searchResults", params: { query } });
     },
     [router]
   );
