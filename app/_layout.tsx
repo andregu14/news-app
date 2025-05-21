@@ -57,8 +57,10 @@ function RootLayoutNav() {
   return (
     <GestureHandlerRootView>
       <SafeAreaProvider>
-        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-          <Stack>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack screenOptions={{ animation: "slide_from_right" }}>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="newsDetails"
@@ -66,6 +68,10 @@ function RootLayoutNav() {
                 headerTitleStyle: { fontSize: 18 },
                 headerShown: true,
               }}
+            />
+            <Stack.Screen
+              name="searchResults"
+              options={{ headerShown: false }}
             />
           </Stack>
         </ThemeProvider>
