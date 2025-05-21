@@ -7,12 +7,14 @@ import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useState, useEffect } from "react";
 import AuthorDetails from "@/components/AuthorDetails";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function NewsDetailsScreen() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const { newsId } = useLocalSearchParams<{ newsId: string }>();
   const [newsItem, setNewsItem] = useState<DataParams>();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const fetchNewsDetails = async () => {
@@ -79,11 +81,20 @@ export default function NewsDetailsScreen() {
         <Text style={styles.description}>{newsItem.description}</Text>
 
         <View
-          style={styles.separator}
+          style={[styles.separator, { marginBottom: insets.bottom }]}
           lightColor="#eee"
           darkColor="rgba(255,255,255,0.1)"
         />
       </ScrollView>
+      <View
+        style={[
+          styles.bottomView,
+          {
+            height: insets.bottom,
+            backgroundColor: themeColors.background,
+          },
+        ]}
+      />
       <StatusBar style="auto" />
     </View>
   );
@@ -118,5 +129,12 @@ const styles = StyleSheet.create({
     height: 1,
     width: "90%",
     alignSelf: "center",
+  },
+  bottomView: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
   },
 });
