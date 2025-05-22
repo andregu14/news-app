@@ -99,6 +99,14 @@ export default function MenuScreen() {
                     ? "flask"
                     : department === "Esportes"
                     ? "soccer"
+                    : department === "Política"
+                    ? "domain"
+                    : department === "Entretenimento"
+                    ? "movie"
+                    : department === "Saúde"
+                    ? "heart-pulse"
+                    : department === "Mundo"
+                    ? "earth"
                     : "newspaper"
                 }
                 size={24}
@@ -228,7 +236,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   menuItem: {
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
   },
   menuItemContent: {
@@ -248,6 +256,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: "10%",
     fontSize: 12,
+    marginBottom: 10
   },
   separator: {
     marginVertical: 20,
