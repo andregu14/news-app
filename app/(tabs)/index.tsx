@@ -166,16 +166,18 @@ export default function TabOneScreen() {
               <HighlightCardSkeleton />
               <HighlightCardSkeleton />
               <HighlightCardSkeleton />
+              <HighlightCardSkeleton />
             </>
           ) : (
             // Mostrar Cards reais após carregar
             news &&
             news.length > 0 &&
-            news.slice(0, 4).map((item) => {
+            news.slice(0, 5).map((item) => {
               return (
                 <HighlightCard
                   key={item.id}
                   description={item.description}
+                  department={item.department}
                   image={item.image}
                   onPress={() => handleCardPress(item)}
                 />
