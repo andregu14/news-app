@@ -5,12 +5,13 @@ import {
   useWindowDimensions,
   Pressable,
 } from "react-native";
-import Colors from "@/constants/Colors";
+import Colors, { Department, departmentColors } from "@/constants/Colors";
 import { Image } from "expo-image";
 
 type HighlightCardProps = ViewProps & {
   description?: string;
   image?: string;
+  department: string;
   onPress?: () => void;
   testID?: string;
   imageTestID?: string;
@@ -21,6 +22,7 @@ const randomImage = "https://picsum.photos/170/200";
 export default function HighlightCard({
   description,
   image,
+  department,
   style,
   onPress,
   testID,
@@ -30,8 +32,24 @@ export default function HighlightCard({
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const { width } = useWindowDimensions();
+  const colorsConfig = departmentColors[department as Department];
 
   const cardWidth = Math.min(width * 0.4, 340);
+
+  const Badge = () => {
+    return (
+      <View
+        style={[
+          styles.badge,
+          { backgroundColor: colorsConfig.backgroundColor ?? "#E3F2FD" },
+        ]}
+      >
+        <Text style={[styles.badgeText, { color: colorsConfig.textColor }]}>
+          {department ?? "Notícias"}
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <Pressable
@@ -46,7 +64,9 @@ export default function HighlightCard({
             ? colorScheme === "dark"
               ? "#333"
               : "#f5f5f5"
-            : "transparent",
+            : colorScheme === "dark"
+            ? "#181A20"
+            : "#fff",
         },
       ]}
       testID={testID}
@@ -67,6 +87,7 @@ export default function HighlightCard({
           contentFit="cover"
           testID={imageTestID}
         />
+        <Badge />
         <Text
           ellipsizeMode={"tail"}
           numberOfLines={4}
@@ -76,6 +97,12 @@ export default function HighlightCard({
             ? description
             : "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet"}
         </Text>
+        <View
+          style={[
+            styles.bottomColor,
+            { backgroundColor: colorsConfig.textColor },
+          ]}
+        ></View>
       </View>
     </Pressable>
   );
@@ -96,5 +123,25 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     padding: 10,
+  },
+  badge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    position: "absolute",
+    top: 5,
+    right: 5,
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: 500,
+  },
+  bottomColor: {
+    position: "absolute",
+    bottom: -15,
+    width: "90%",
+    alignSelf: "center",
+    height: 10,
+    borderRadius: 20,
   },
 });
