@@ -27,9 +27,12 @@ import ReanimatedDrawerLayout, {
   DrawerPosition,
   DrawerLayoutMethods,
 } from "react-native-gesture-handler/ReanimatedDrawerLayout";
+import AboutUsModal from "@/components/AboutUsModal";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
+const appVersion = require("../../app.json").expo.version;
 
 export default function TabOneScreen() {
   const colorScheme = useColorScheme() ?? "light";
@@ -41,6 +44,7 @@ export default function TabOneScreen() {
   const insets = useSafeAreaInsets();
   const leftDrawerRef = useRef<DrawerLayoutMethods>(null);
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
+  const aboutUsRef = useRef<BottomSheetModal>(null)
 
   // Função para buscar notícias
   const fetchNews = useCallback(async (refresh = false) => {
@@ -130,6 +134,10 @@ export default function TabOneScreen() {
     fetchNews(true);
   }, [fetchNews]);
 
+  const handlePresentAboutUsModal = useCallback(() => {
+    aboutUsRef.current?.present()
+  }, [])
+
   const ListHeader = () => (
     <>
       {/* Search Bar */}
@@ -197,7 +205,7 @@ export default function TabOneScreen() {
         ref={leftDrawerRef}
         drawerPosition={DrawerPosition.LEFT}
         drawerType={DrawerType.FRONT}
-        renderNavigationView={() => <AccountSideMenu />}
+        renderNavigationView={() => <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />}
         drawerContainerStyle={{ marginTop: insets.top }}
       >
         <ReanimatedDrawerLayout
@@ -243,6 +251,7 @@ export default function TabOneScreen() {
               />
             )}
           </View>
+          <AboutUsModal ref={aboutUsRef} appVersion={appVersion} />
         </ReanimatedDrawerLayout>
       </ReanimatedDrawerLayout>
     </View>

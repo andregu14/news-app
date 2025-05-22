@@ -1,8 +1,4 @@
-import {
-  StyleSheet,
-  Dimensions,
-  Pressable,
-} from "react-native";
+import { StyleSheet, Dimensions, Pressable } from "react-native";
 import { View, Text } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
@@ -13,6 +9,10 @@ const menuWidth = screenWidth * 0.8;
 const appVersion = require("../app.json").expo.version;
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>["name"];
+
+type AccountSideMenuProps = {
+  onPressAbout: () => void;
+};
 
 type MenuItemProps = {
   icon: IconName;
@@ -50,7 +50,9 @@ const MenuItem: React.FC<
   </Pressable>
 );
 
-export default function AccountSideMenu() {
+export default function AccountSideMenu({
+  onPressAbout,
+}: AccountSideMenuProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
 
@@ -88,7 +90,7 @@ export default function AccountSideMenu() {
     {
       icon: "information-outline",
       label: "Sobre",
-      onPress: () => console.log("Sobre"),
+      onPress: onPressAbout,
     },
     {
       icon: "logout",
@@ -99,61 +101,57 @@ export default function AccountSideMenu() {
   ];
 
   return (
+    <View
+      style={[
+        styles.menuContainer,
+        {
+          backgroundColor: themeColors.background,
+          borderRightWidth: 1,
+          borderRightColor: themeColors.borderColor,
+        },
+      ]}
+    >
+      {/* Account Details */}
       <View
         style={[
-          styles.menuContainer,
-          { 
-            backgroundColor: themeColors.background,
-            borderRightWidth: 1,
-            borderRightColor: themeColors.borderColor,
-          },
+          styles.menuHeader,
+          { borderBottomColor: themeColors.borderColor },
         ]}
       >
-        {/* Account Details */}
-        <View
-          style={[
-            styles.menuHeader,
-            { borderBottomColor: themeColors.borderColor },
-          ]}
-        >
-          <MaterialCommunityIcons
-            name="account-circle"
-            size={60}
-            color={themeColors.tint}
-          />
-          <Text style={[styles.userName, { color: themeColors.text }]}>
-            Visitante
-          </Text>
-          <Text
-            style={[styles.userEmail, { color: themeColors.secondaryText }]}
-          >
-            Faça login para personalizar
-          </Text>
-        </View>
-
-        {/* Items do Menu */}
-        <View style={styles.menuItemsContainer}>
-          {menuItems.map((item, index) => (
-            <MenuItem
-              key={index}
-              icon={item.icon}
-              label={item.label}
-              onPress={item.onPress}
-              textColor={themeColors.text}
-              borderColor={themeColors.borderColor}
-              isLast={item.isLast}
-              colorScheme={colorScheme}
-            />
-          ))}
-        </View>
-
-        {/* Versão do App */}
-        <Text
-          style={[styles.versionText, { color: themeColors.secondaryText }]}
-        >
-          {`Versão ${appVersion}`}
+        <MaterialCommunityIcons
+          name="account-circle"
+          size={60}
+          color={themeColors.tint}
+        />
+        <Text style={[styles.userName, { color: themeColors.text }]}>
+          Visitante
+        </Text>
+        <Text style={[styles.userEmail, { color: themeColors.secondaryText }]}>
+          Faça login para personalizar
         </Text>
       </View>
+
+      {/* Items do Menu */}
+      <View style={styles.menuItemsContainer}>
+        {menuItems.map((item, index) => (
+          <MenuItem
+            key={index}
+            icon={item.icon}
+            label={item.label}
+            onPress={item.onPress}
+            textColor={themeColors.text}
+            borderColor={themeColors.borderColor}
+            isLast={item.isLast}
+            colorScheme={colorScheme}
+          />
+        ))}
+      </View>
+
+      {/* Versão do App */}
+      <Text style={[styles.versionText, { color: themeColors.secondaryText }]}>
+        {`Versão ${appVersion}`}
+      </Text>
+    </View>
   );
 }
 

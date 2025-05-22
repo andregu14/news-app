@@ -10,6 +10,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -56,26 +57,28 @@ function RootLayoutNav() {
 
   return (
     <GestureHandlerRootView>
-      <SafeAreaProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack screenOptions={{ animation: "slide_from_right" }}>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="newsDetails"
-              options={{
-                headerTitleStyle: { fontSize: 18 },
-                headerShown: true,
-              }}
-            />
-            <Stack.Screen
-              name="searchResults"
-              options={{ headerShown: false }}
-            />
-          </Stack>
-        </ThemeProvider>
-      </SafeAreaProvider>
+      <BottomSheetModalProvider>
+        <SafeAreaProvider>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <Stack screenOptions={{ animation: "slide_from_right" }}>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="newsDetails"
+                options={{
+                  headerTitleStyle: { fontSize: 18 },
+                  headerShown: true,
+                }}
+              />
+              <Stack.Screen
+                name="searchResults"
+                options={{ headerShown: false }}
+              />
+            </Stack>
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );
 }
