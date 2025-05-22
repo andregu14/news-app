@@ -3,7 +3,7 @@ import { useLocalSearchParams, Stack } from "expo-router";
 import { StyleSheet, Image, ScrollView } from "react-native";
 import { newsData, DataParams } from "@/constants/NewsData";
 import { StatusBar } from "expo-status-bar";
-import Colors from "@/constants/Colors";
+import Colors, { Department, departmentColors } from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { useState, useEffect } from "react";
 import AuthorDetails from "@/components/AuthorDetails";
@@ -15,6 +15,7 @@ export default function NewsDetailsScreen() {
   const { newsId } = useLocalSearchParams<{ newsId: string }>();
   const [newsItem, setNewsItem] = useState<DataParams>();
   const insets = useSafeAreaInsets();
+  const colorsConfig = departmentColors[newsItem?.department as Department];
 
   useEffect(() => {
     const fetchNewsDetails = async () => {
@@ -57,7 +58,14 @@ export default function NewsDetailsScreen() {
       <Stack.Screen
         options={{
           title: newsItem.department,
-          headerTitleStyle: { fontSize: 18 },
+          headerTitleStyle: {
+            fontSize: 18,
+            color: colorsConfig.backgroundColor ?? themeColors.text,
+          },
+          headerStyle: {
+            backgroundColor: colorsConfig?.textColor ?? themeColors.background,
+          },
+          headerTintColor: colorsConfig?.backgroundColor ?? themeColors.text,
         }}
       />
       <ScrollView>
@@ -95,7 +103,7 @@ export default function NewsDetailsScreen() {
           },
         ]}
       />
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
     </View>
   );
 }
