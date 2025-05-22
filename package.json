@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@gorhom/bottom-sheet": "^5.1.4",
     "@react-navigation/native": "^7.0.14",
     "expo": "^53.0.9",
+    "expo-blur": "~14.1.4",
     "expo-font": "~13.3.1",
     "expo-image": "~2.1.7",
     "expo-linear-gradient": "~14.1.4",
@@ -28,12 +30,11 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
+    "react-native-gesture-handler": "~2.24.0",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
-    "react-native-web": "^0.20.0",
-    "expo-blur": "~14.1.4",
-    "react-native-gesture-handler": "~2.24.0"
+    "react-native-web": "^0.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
