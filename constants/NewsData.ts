@@ -46,4 +46,45 @@ export const newsData: DataParams[] = [
     department: "Esportes",
     time: "Há 1 dia",
   },
+  {
+    id: 5,
+    title: "Nova Medida Econômica Gera Debate no Congresso Nacional",
+    description:
+      "O governo anunciou uma nova política fiscal para conter a inflação e estimular o crescimento econômico. A proposta dividiu opiniões entre parlamentares e especialistas, que discutem os impactos da medida sobre o mercado e o bolso da população.",
+    image: `https://picsum.photos/400/200?random=1`,
+    department: "Política",
+    time: "Há 3 horas",
+  },
+
+  {
+    id: 6,
+    title: "Filme Surpresa Conquista Público e Se Torna Líder de Bilheteria",
+    description:
+      "Uma produção independente ganhou destaque ao superar grandes lançamentos e se tornar o filme mais assistido da semana. Com um roteiro envolvente e atuações memoráveis, a obra vem recebendo elogios da crítica e dos espectadores.",
+    image: `https://picsum.photos/400/200?random=2`,
+    department: "Entretenimento",
+    time: "Há 1 dia",
+  },
+
+  {
+    id: 7,
+    title:
+      "Novo Tratamento Revolucionário para Doença Crônica Apresentado por Especialistas",
+    description:
+      "Pesquisadores revelaram avanços significativos no combate a uma doença crônica que afeta milhões de pessoas. O novo tratamento promete aumentar a qualidade de vida dos pacientes e diminuir os custos médicos, segundo os primeiros estudos.",
+    image: `https://picsum.photos/400/200?random=3`,
+    department: "Saúde",
+    time: "Há 5 horas",
+  },
+
+  {
+    id: 8,
+    title:
+      "Exploração Espacial Faz Descoberta Surpreendente em Planeta Distante",
+    description:
+      "Uma nova missão científica revelou a existência de elementos inesperados em um planeta recém-explorado, levantando questões sobre sua potencial habitabilidade e a evolução do sistema solar.",
+    image: `https://picsum.photos/400/200?random=4`,
+    department: "Mundo",
+    time: "Há 2 dias",
+  },
 ];
