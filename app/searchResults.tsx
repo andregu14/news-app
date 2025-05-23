@@ -24,6 +24,8 @@ import SearchBar from "@/components/SearchBar";
 import { DataParams } from "@/constants/NewsData";
 import NewsCard from "@/components/NewsCard";
 import { Image } from "expo-image";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import AboutUsModal from "@/components/AboutUsModal";
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
@@ -37,14 +39,17 @@ export default function SearchResults() {
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
   const [news, setNews] = useState<DataParams[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [searchQuery, setSearchQuery] = useState(query || '')
+  const [searchQuery, setSearchQuery] = useState(query || "");
+  const aboutUsRef = useRef<BottomSheetModal>(null);
+
+  const appVersion = require("../app.json").expo.version;
 
   const handleSearchSubmit = useCallback(
     (query: string) => {
       console.log("Pesquisa submetida:", query);
-      setSearchQuery(query)
-      setLoading(true)
-      fetchNews(query)
+      setSearchQuery(query);
+      setLoading(true);
+      fetchNews(query);
     },
     [router]
   );
@@ -96,6 +101,10 @@ export default function SearchResults() {
     },
     [router]
   );
+
+  const handlePresentAboutUsModal = useCallback(() => {
+    aboutUsRef.current?.present();
+  }, []);
 
   // Função para renderizar cada item da lista
   const renderNewsItem = useCallback(
@@ -181,7 +190,9 @@ export default function SearchResults() {
         ref={leftDrawerRef}
         drawerPosition={DrawerPosition.LEFT}
         drawerType={DrawerType.FRONT}
-        renderNavigationView={() => <AccountSideMenu />}
+        renderNavigationView={() => (
+          <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />
+        )}
         drawerContainerStyle={{ marginTop: insets.top }}
       >
         <ReanimatedDrawerLayout
@@ -206,6 +217,7 @@ export default function SearchResults() {
             />
             <ShowResults />
           </View>
+          <AboutUsModal ref={aboutUsRef} appVersion={appVersion} />
         </ReanimatedDrawerLayout>
       </ReanimatedDrawerLayout>
       <StatusBar style="auto" />
@@ -228,7 +240,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   searchBar: {
-    marginTop: 30,
+    marginVertical: 30,
     alignSelf: "center",
     width: "90%",
   },
@@ -242,7 +254,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   listContentContainer: {
-    paddingBottom: 20,
+    gap: 30
   },
   notFoundContainer: {
     flex: 1,

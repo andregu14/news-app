@@ -117,7 +117,6 @@ export default function TabOneScreen() {
         department={item.department}
         time={item.created_at || item.time}
         onPress={() => handleCardPress(item)}
-        style={styles.newsCard}
       />
     ),
     [handleCardPress]
@@ -228,7 +227,7 @@ export default function TabOneScreen() {
             {loading && !isRefreshing ? (
               <FlatList
                 data={[1, 2, 3]}
-                renderItem={() => <NewsCardSkeleton style={styles.newsCard} />}
+                renderItem={() => <NewsCardSkeleton style={{marginVertical: 60}} />}
                 keyExtractor={(item) => item.toString()}
                 ListHeaderComponent={ListHeader}
                 contentContainerStyle={styles.listContentContainer}
@@ -298,13 +297,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginHorizontal: 20,
-    marginBottom: -10,
-  },
-  newsCard: {
-    marginHorizontal: 20,
-    marginTop: 60,
   },
   listContentContainer: {
-    paddingBottom: 20,
+    gap: 30
   },
 });

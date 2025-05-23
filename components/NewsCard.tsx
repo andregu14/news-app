@@ -30,8 +30,8 @@ export default function NewsCard({
   const themeColors = Colors[colorScheme];
 
   return (
-    <Pressable onPress={onPress} testID={testID}>
-      <View style={[styles.container, style]} {...otherProps}>
+    <Pressable onPress={onPress} testID={testID} style={[styles.container]}>
+      <View  {...otherProps}>
         <Text style={styles.title}>{title}</Text>
         <Text
           style={[styles.bodyText, { color: themeColors.bodyText }]}
