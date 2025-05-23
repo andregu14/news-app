@@ -1,7 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<HighlightCard /> renders correctly with default props and matches snapshot 1`] = `
+exports[`HighlightCard renders correctly with description and image props and matches snapshot 1`] = `
 <View
+  accessibilityHint="Toque para abrir o artigo completo"
+  accessibilityLabel="tecnologia: Test Description"
+  accessibilityRole="button"
   accessibilityState={
     {
       "busy": undefined,
@@ -22,6 +25,14 @@ exports[`<HighlightCard /> renders correctly with default props and matches snap
   accessible={true}
   collapsable={false}
   focusable={true}
+  hitSlop={
+    {
+      "bottom": 8,
+      "left": 8,
+      "right": 8,
+      "top": 8,
+    }
+  }
   onBlur={[Function]}
   onClick={[Function]}
   onFocus={[Function]}
@@ -42,13 +53,14 @@ exports[`<HighlightCard /> renders correctly with default props and matches snap
         "overflow": "hidden",
       },
       {
-        "backgroundColor": "transparent",
+        "backgroundColor": "#fff",
         "borderColor": "#eee",
         "opacity": 1,
         "width": 128,
       },
     ]
   }
+  testID="highlight-card"
 >
   <View
     style={
@@ -67,124 +79,8 @@ exports[`<HighlightCard /> renders correctly with default props and matches snap
     }
   >
     <ViewManagerAdapter_ExpoImage
-      containerViewRef={"[React.ref]"}
-      contentFit="cover"
-      contentPosition={
-        {
-          "left": "50%",
-          "top": "50%",
-        }
-      }
-      height="50%"
-      nativeViewRef={"[React.ref]"}
-      onError={[Function]}
-      onLoad={[Function]}
-      onLoadStart={[Function]}
-      onProgress={[Function]}
-      placeholder={[]}
-      source={
-        [
-          {
-            "uri": "https://picsum.photos/170/200",
-          },
-        ]
-      }
-      style={
-        {
-          "height": "50%",
-          "width": "100%",
-        }
-      }
-      transition={null}
-      width="100%"
-    />
-    <Text
-      ellipsizeMode="tail"
-      numberOfLines={4}
-      style={
-        [
-          {
-            "color": "#000",
-          },
-          {
-            "padding": 10,
-          },
-        ]
-      }
-    >
-      Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet
-    </Text>
-  </View>
-</View>
-`;
-
-exports[`<HighlightCard /> renders correctly with description and image props and matches snapshot 1`] = `
-<View
-  accessibilityState={
-    {
-      "busy": undefined,
-      "checked": undefined,
-      "disabled": undefined,
-      "expanded": undefined,
-      "selected": undefined,
-    }
-  }
-  accessibilityValue={
-    {
-      "max": undefined,
-      "min": undefined,
-      "now": undefined,
-      "text": undefined,
-    }
-  }
-  accessible={true}
-  collapsable={false}
-  focusable={true}
-  onBlur={[Function]}
-  onClick={[Function]}
-  onFocus={[Function]}
-  onResponderGrant={[Function]}
-  onResponderMove={[Function]}
-  onResponderRelease={[Function]}
-  onResponderTerminate={[Function]}
-  onResponderTerminationRequest={[Function]}
-  onStartShouldSetResponder={[Function]}
-  style={
-    [
-      {
-        "alignItems": "center",
-        "borderRadius": 14,
-        "borderWidth": 1,
-        "height": 200,
-        "marginHorizontal": 7.5,
-        "overflow": "hidden",
-      },
-      {
-        "backgroundColor": "transparent",
-        "borderColor": "#eee",
-        "opacity": 1,
-        "width": 128,
-      },
-    ]
-  }
->
-  <View
-    style={
-      [
-        {
-          "backgroundColor": "#fff",
-        },
-        [
-          {
-            "backgroundColor": "transparent",
-            "width": 128,
-          },
-          undefined,
-        ],
-      ]
-    }
-  >
-    <ViewManagerAdapter_ExpoImage
+      accessibilityElementsHidden={true}
+      accessible={false}
       containerViewRef={"[React.ref]"}
       contentFit="cover"
       contentPosition={
@@ -217,6 +113,52 @@ exports[`<HighlightCard /> renders correctly with description and image props an
       transition={null}
       width="100%"
     />
+    <View
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
+      style={
+        [
+          {
+            "backgroundColor": "#fff",
+          },
+          [
+            {
+              "borderRadius": 20,
+              "paddingHorizontal": 12,
+              "paddingVertical": 6,
+              "position": "absolute",
+              "right": 5,
+              "top": 5,
+            },
+            {
+              "backgroundColor": "#000",
+            },
+          ],
+        ]
+      }
+    >
+      <Text
+        accessible={false}
+        style={
+          [
+            {
+              "color": "#000",
+            },
+            [
+              {
+                "fontSize": 12,
+                "fontWeight": 500,
+              },
+              {
+                "color": "#fff",
+              },
+            ],
+          ]
+        }
+      >
+        tecnologia
+      </Text>
+    </View>
     <Text
       ellipsizeMode="tail"
       numberOfLines={4}
@@ -233,6 +175,28 @@ exports[`<HighlightCard /> renders correctly with description and image props an
     >
       Test Description
     </Text>
+    <View
+      style={
+        [
+          {
+            "backgroundColor": "#fff",
+          },
+          [
+            {
+              "alignSelf": "center",
+              "borderRadius": 20,
+              "bottom": -15,
+              "height": 10,
+              "position": "absolute",
+              "width": "90%",
+            },
+            {
+              "backgroundColor": "#fff",
+            },
+          ],
+        ]
+      }
+    />
   </View>
 </View>
 `;
