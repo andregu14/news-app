@@ -32,25 +32,40 @@ export default function HighlightCard({
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const { width } = useWindowDimensions();
-  const colorsConfig = departmentColors[department as Department];
+  const colorsConfig = departmentColors[department as Department] || {
+    color: "#000",
+    textColor: "#fff",
+  };
 
   const cardWidth = Math.min(width * 0.4, 340);
+  const accessibilityLabel = `${department || "Notícia"}: ${description}`;
 
   const Badge = () => {
     return (
       <View
         style={[
           styles.badge,
-          { backgroundColor: colorsConfig.backgroundColor ?? "#E3F2FD" },
+          {
+            backgroundColor: colorsConfig?.backgroundColor || "#000",
+          },
         ]}
+        accessible={false}
+        importantForAccessibility="no-hide-descendants"
       >
-        <Text style={[styles.badgeText, { color: colorsConfig.textColor }]}>
-          {department ?? "Notícias"}
+        <Text
+          style={[
+            styles.badgeText,
+            {
+              color: colorsConfig?.textColor || "#fff",
+            },
+          ]}
+          accessible={false}
+        >
+          {department}
         </Text>
       </View>
     );
   };
-
   return (
     <Pressable
       onPress={onPress}
@@ -70,6 +85,12 @@ export default function HighlightCard({
         },
       ]}
       testID={testID}
+      // Acessibilidade
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint="Toque para abrir o artigo completo"
+      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
     >
       <View
         style={[
@@ -83,9 +104,11 @@ export default function HighlightCard({
       >
         <Image
           style={styles.imageContainer}
-          source={{ uri: image ?? randomImage }}
+          source={{ uri: image || randomImage }}
           contentFit="cover"
-          testID={imageTestID}
+          testID={imageTestID || "highlight-card-image"}
+          accessible={false}
+          accessibilityElementsHidden={true}
         />
         <Badge />
         <Text
@@ -100,7 +123,7 @@ export default function HighlightCard({
         <View
           style={[
             styles.bottomColor,
-            { backgroundColor: colorsConfig.textColor },
+            { backgroundColor: colorsConfig.textColor || "#fff" },
           ]}
         ></View>
       </View>
