@@ -44,7 +44,7 @@ export default function TabOneScreen() {
   const insets = useSafeAreaInsets();
   const leftDrawerRef = useRef<DrawerLayoutMethods>(null);
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
-  const aboutUsRef = useRef<BottomSheetModal>(null)
+  const aboutUsRef = useRef<BottomSheetModal>(null);
 
   // Função para buscar notícias
   const fetchNews = useCallback(async (refresh = false) => {
@@ -134,8 +134,19 @@ export default function TabOneScreen() {
   }, [fetchNews]);
 
   const handlePresentAboutUsModal = useCallback(() => {
-    aboutUsRef.current?.present()
-  }, [])
+    aboutUsRef.current?.present();
+  }, []);
+
+  const ItemSeparator = () => (
+    <View
+      style={{
+        height: 1,
+        backgroundColor: themeColors.borderColor,
+        marginHorizontal: 15,
+        marginVertical: 5,
+      }}
+    />
+  );
 
   const ListHeader = () => (
     <>
@@ -191,22 +202,15 @@ export default function TabOneScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View
-        style={[
-          styles.statusbarView,
-          {
-            height: insets.top,
-            backgroundColor: themeColors.background,
-          },
-        ]}
-      />
       <StatusBar style="auto" />
       <ReanimatedDrawerLayout
         drawerWidth={drawerWidth}
         ref={leftDrawerRef}
         drawerPosition={DrawerPosition.LEFT}
         drawerType={DrawerType.FRONT}
-        renderNavigationView={() => <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />}
+        renderNavigationView={() => (
+          <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />
+        )}
         drawerContainerStyle={{ marginTop: insets.top }}
       >
         <ReanimatedDrawerLayout
@@ -227,10 +231,12 @@ export default function TabOneScreen() {
             {loading && !isRefreshing ? (
               <FlatList
                 data={[1, 2, 3]}
-                renderItem={() => <NewsCardSkeleton style={{marginVertical: 60}} />}
+                renderItem={() => (
+                  <NewsCardSkeleton style={{ marginVertical: 60 }} />
+                )}
                 keyExtractor={(item) => item.toString()}
                 ListHeaderComponent={ListHeader}
-                contentContainerStyle={styles.listContentContainer}
+                contentContainerStyle={{gap: 20}}
                 keyboardShouldPersistTaps="handled"
               />
             ) : (
@@ -239,9 +245,9 @@ export default function TabOneScreen() {
                 renderItem={renderNewsItem}
                 keyExtractor={keyExtractor}
                 ListHeaderComponent={ListHeader}
-                contentContainerStyle={styles.listContentContainer}
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="on-drag"
+                ItemSeparatorComponent={ItemSeparator}
                 refreshControl={
                   <RefreshControl
                     refreshing={isRefreshing}
@@ -263,18 +269,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  statusbarView: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-  },
   header: {
     marginTop: 10,
   },
   searchBar: {
-    marginTop: 30,
+    marginTop: 40,
     alignSelf: "center",
     width: "90%",
   },
@@ -297,8 +296,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginHorizontal: 20,
-  },
-  listContentContainer: {
-    gap: 30
   },
 });
