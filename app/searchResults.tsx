@@ -175,15 +175,6 @@ export default function SearchResults() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View
-        style={[
-          styles.statusbarView,
-          {
-            height: insets.top,
-            backgroundColor: themeColors.background,
-          },
-        ]}
-      />
       {/* Conteudo */}
       <ReanimatedDrawerLayout
         drawerWidth={drawerWidth}
@@ -203,15 +194,10 @@ export default function SearchResults() {
           renderNavigationView={() => <SideMenu />}
           drawerContainerStyle={{ marginTop: insets.top }}
         >
-          <View
-            style={[
-              styles.content,
-              { marginTop: insets.top, marginBottom: insets.bottom },
-            ]}
-          >
+          <View style={[styles.content]}>
             {/* Header */}
             <Header
-              style={styles.header}
+              style={{marginTop: insets.top + 10}}
               onMenuPress={handleMenuPress}
               onAccountPress={handleAccountPress}
             />
@@ -226,21 +212,11 @@ export default function SearchResults() {
 }
 
 const styles = StyleSheet.create({
-  statusbarView: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-  },
   content: {
     flex: 1,
   },
-  header: {
-    marginTop: 10,
-  },
   searchBar: {
-    marginVertical: 30,
+    marginTop: 40,
     alignSelf: "center",
     width: "90%",
   },
@@ -254,7 +230,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   listContentContainer: {
-    gap: 30
+    gap: 30,
   },
   notFoundContainer: {
     flex: 1,
