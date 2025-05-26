@@ -292,3 +292,226 @@ exports[`<NewsCard /> renders title, bodyText, department and time correctly 1`]
   </View>
 </View>
 `;
+
+exports[`NewsCard renders correctly with all props and matches snapshot 1`] = `
+<View
+  accessibilityHint="Toque para ver mais detalhes"
+  accessibilityLabel="Notícia: Test Title. This is a test body text.. Publicado Há 7 dias • Em Sports"
+  accessibilityRole="button"
+  accessibilityState={
+    {
+      "busy": undefined,
+      "checked": undefined,
+      "disabled": undefined,
+      "expanded": undefined,
+      "selected": undefined,
+    }
+  }
+  accessibilityValue={
+    {
+      "max": undefined,
+      "min": undefined,
+      "now": undefined,
+      "text": undefined,
+    }
+  }
+  accessible={true}
+  collapsable={false}
+  focusable={true}
+  hitSlop={
+    {
+      "bottom": 12,
+      "left": 8,
+      "right": 8,
+      "top": 12,
+    }
+  }
+  onBlur={[Function]}
+  onClick={[Function]}
+  onFocus={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    [
+      {
+        "marginVertical": 20,
+        "minHeight": 44,
+        "paddingVertical": 20,
+      },
+      undefined,
+      {
+        "borderColor": "#ccc",
+      },
+    ]
+  }
+  testID="news-card"
+>
+  <Text
+    accessibilityRole="header"
+    accessible={false}
+    style={
+      [
+        {
+          "color": "#000",
+        },
+        {
+          "fontSize": 18,
+          "fontWeight": "bold",
+          "lineHeight": 24,
+          "marginBottom": 10,
+          "marginLeft": 15,
+        },
+      ]
+    }
+  >
+    Test Title
+  </Text>
+  <ViewManagerAdapter_ExpoImage
+    accessibilityElementsHidden={true}
+    accessible={false}
+    containerViewRef={"[React.ref]"}
+    contentFit="cover"
+    contentPosition={
+      {
+        "left": "50%",
+        "top": "50%",
+      }
+    }
+    height={180}
+    marginTop={10}
+    nativeViewRef={"[React.ref]"}
+    onError={[Function]}
+    onLoad={[Function]}
+    onLoadStart={[Function]}
+    onProgress={[Function]}
+    placeholder={[]}
+    source={
+      [
+        {
+          "uri": "https://example.com/test-image.png",
+        },
+      ]
+    }
+    style={
+      {
+        "height": 180,
+        "marginTop": 10,
+        "width": "100%",
+      }
+    }
+    testID="news-card-image"
+    transition={null}
+    width="100%"
+  />
+  <Text
+    accessible={false}
+    ellipsizeMode="tail"
+    numberOfLines={4}
+    style={
+      [
+        {
+          "color": "#000",
+        },
+        [
+          {
+            "fontSize": 14,
+            "lineHeight": 22,
+            "marginVertical": 10,
+            "paddingHorizontal": 15,
+          },
+          {
+            "color": undefined,
+          },
+        ],
+      ]
+    }
+  >
+    This is a test body text.
+  </Text>
+  <View
+    style={
+      [
+        {
+          "backgroundColor": undefined,
+        },
+        {
+          "alignItems": "center",
+          "flexDirection": "row",
+          "marginLeft": 15,
+          "marginTop": 10,
+        },
+      ]
+    }
+  >
+    <Text />
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 12,
+              "lineHeight": 16,
+            },
+            {
+              "color": undefined,
+              "marginLeft": 5,
+            },
+          ],
+        ]
+      }
+    >
+      Há 7 dias
+    </Text>
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 12,
+              "lineHeight": 16,
+            },
+            {
+              "color": undefined,
+            },
+          ],
+        ]
+      }
+    >
+       • 
+    </Text>
+    <Text />
+    <Text
+      style={
+        [
+          {
+            "color": "#000",
+          },
+          [
+            {
+              "fontSize": 12,
+              "lineHeight": 16,
+            },
+            {
+              "color": undefined,
+              "marginLeft": 5,
+            },
+          ],
+        ]
+      }
+    >
+      Em 
+      Sports
+    </Text>
+  </View>
+</View>
+`;
