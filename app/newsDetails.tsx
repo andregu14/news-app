@@ -1,4 +1,4 @@
-import { Text, View } from "@/components/Themed";
+import { Text, TitleText, View } from "@/components/Themed";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { StyleSheet, Image, ScrollView } from "react-native";
 import { newsData, DataParams } from "@/constants/NewsData";
@@ -16,6 +16,7 @@ export default function NewsDetailsScreen() {
   const [newsItem, setNewsItem] = useState<DataParams>();
   const insets = useSafeAreaInsets();
   const colorsConfig = departmentColors[newsItem?.department as Department];
+  const [photo, setPhoto] = useState<string>();
 
   useEffect(() => {
     const fetchNewsDetails = async () => {
@@ -26,6 +27,9 @@ export default function NewsDetailsScreen() {
         const data = await response.json();
         if (response.ok)
           console.log("Noticia encontrada com sucesso!", data.title);
+        setPhoto(
+          `https://ui-avatars.com/api/?name=${data.author}`
+        );
         setNewsItem(data);
       } catch (error) {
         console.error(
@@ -74,10 +78,11 @@ export default function NewsDetailsScreen() {
           style={styles.image}
           resizeMode="cover"
         />
-        <Text style={styles.title}>{newsItem.title}</Text>
+        <TitleText style={styles.title}>{newsItem.title}</TitleText>
         <AuthorDetails
           style={styles.authorDetails}
           date={newsItem.created_at ?? ""}
+          photo={photo}
           department={newsItem.department}
           name={newsItem.author ?? ""}
         />
@@ -120,7 +125,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingHorizontal: 20,
     fontSize: 22,
-    fontWeight: "bold",
+    fontFamily: "Inter_700Bold",
+    lineHeight: 28,
     marginBottom: 10,
   },
   authorDetails: {
@@ -130,7 +136,7 @@ const styles = StyleSheet.create({
   description: {
     padding: 20,
     fontSize: 16,
-    lineHeight: 24,
+    lineHeight: 26,
   },
   separator: {
     marginVertical: 10,

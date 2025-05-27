@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
     paddingRight: 35,
     borderLeftWidth: 1,
     fontSize: 16,
+    fontFamily: "Inter_400Regular",
   },
   clearButton: {
     position: "absolute",

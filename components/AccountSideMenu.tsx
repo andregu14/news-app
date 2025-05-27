@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 16,
-    fontWeight: "500",
+    fontFamily: "Inter_500Medium"
   },
   versionText: {
     textAlign: "center",

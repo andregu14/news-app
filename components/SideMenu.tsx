@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
   },
   menuItemLabelText: {
     color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
+    fontFamily: "Inter_600SemiBold"
   },
 });

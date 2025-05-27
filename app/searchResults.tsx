@@ -117,10 +117,20 @@ export default function SearchResults() {
         department={item.department}
         time={item.created_at || item.time}
         onPress={() => handleCardPress(item)}
-        style={styles.newsCard}
       />
     ),
     [handleCardPress]
+  );
+
+  const ItemSeparator = () => (
+    <View
+      style={{
+        height: 1,
+        backgroundColor: themeColors.borderColor,
+        marginHorizontal: 15,
+        marginVertical: 5,
+      }}
+    />
   );
 
   const ListHeader = () => (
@@ -149,7 +159,7 @@ export default function SearchResults() {
           renderItem={renderNewsItem}
           keyExtractor={(item: DataParams) => item.id.toString()}
           ListHeaderComponent={ListHeader}
-          contentContainerStyle={styles.listContentContainer}
+          ItemSeparatorComponent={ItemSeparator}
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         />
@@ -197,7 +207,7 @@ export default function SearchResults() {
           <View style={[styles.content]}>
             {/* Header */}
             <Header
-              style={{marginTop: insets.top + 10}}
+              style={{ marginTop: insets.top + 10 }}
               onMenuPress={handleMenuPress}
               onAccountPress={handleAccountPress}
             />
@@ -216,13 +226,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchBar: {
-    marginTop: 40,
+    marginVertical: 40,
     alignSelf: "center",
     width: "90%",
-  },
-  newsCard: {
-    marginHorizontal: 20,
-    marginTop: 80,
   },
   loadingContainer: {
     flex: 1,

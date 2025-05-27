@@ -1,6 +1,6 @@
-import { View, Text, ViewProps } from "./Themed";
+import { View, Text, ViewProps, BodyText, TitleText } from "./Themed";
 import { StyleSheet, useColorScheme, Pressable } from "react-native";
-import Colors from "@/constants/Colors";
+import Colors, { Department, departmentColors } from "@/constants/Colors";
 import { Image } from "expo-image";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -47,9 +47,9 @@ export default function NewsCard({
       hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
       {...otherProps}
     >
-      <Text style={styles.title} accessible={false} accessibilityRole="header">
+      <TitleText style={styles.title} accessible={false} accessibilityRole="header">
         {title}
-      </Text>
+      </TitleText>
       <Image
         style={styles.image}
         source={image}
@@ -58,14 +58,14 @@ export default function NewsCard({
         accessible={false}
         accessibilityElementsHidden={true}
       />
-      <Text
+      <BodyText
         style={[styles.bodyText, { color: themeColors.bodyText }]}
         ellipsizeMode={"tail"}
         numberOfLines={4}
         accessible={false}
       >
         {bodyText}
-      </Text>
+      </BodyText>
 
       <View style={styles.footerContainer}>
   <MaterialCommunityIcons name="clock-outline" size={14} color={themeColors.secondaryText} />
@@ -91,14 +91,11 @@ const styles = StyleSheet.create({
   title: {
     marginLeft: 15,
     marginBottom: 10,
-    fontSize: 18,
-    fontWeight: "bold",
     lineHeight: 24,
   },
   bodyText: {
     marginVertical: 10,
     paddingHorizontal: 15,
-    fontSize: 14,
     lineHeight: 22,
   },
   image: {

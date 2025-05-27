@@ -7,7 +7,7 @@ import {
   RefreshControl,
   Dimensions,
 } from "react-native";
-import { Text, View } from "@/components/Themed";
+import { Text, TitleText, View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
 import SearchBar from "@/components/SearchBar";
@@ -158,10 +158,10 @@ export default function TabOneScreen() {
       {/* Carrousel */}
       <View style={styles.carrousel}>
         <View style={styles.carrouselTextWrapper}>
-          <Text style={styles.carrouselText}>🔥 Em alta</Text>
+          <TitleText style={[styles.carrouselText, {fontSize: 18}]}>🔥 Em alta</TitleText>
           <MaterialCommunityIcons
             name="arrow-right"
-            style={[styles.carrouselText, { color: themeColors.text }]}
+            style={[styles.carrouselText, { color: themeColors.text, fontSize: 22 }]}
           />
         </View>
         <ScrollView
@@ -196,7 +196,7 @@ export default function TabOneScreen() {
           )}
         </ScrollView>
       </View>
-      <Text style={styles.listTitle}>🗞️ Últimas Notícias</Text>
+      <TitleText style={styles.listTitle}>🗞️ Últimas Notícias</TitleText>
     </>
   );
 
@@ -288,13 +288,10 @@ const styles = StyleSheet.create({
   },
   carrouselText: {
     fontSize: 20,
-    fontWeight: "bold",
     marginHorizontal: 20,
     marginBottom: 20,
   },
   listTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
     marginHorizontal: 20,
   },
 });

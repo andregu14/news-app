@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Pressable, Switch } from "react-native";
-import { Text, View } from "@/components/Themed";
+import { Text, TitleText, View } from "@/components/Themed";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
@@ -35,7 +35,7 @@ export default function MenuScreen() {
     >
       {/* Cabeçalho do Menu */}
       <View style={styles.headerSection}>
-        <Text style={styles.headerTitle}>Menu</Text>
+        <TitleText style={styles.headerTitle}>Menu</TitleText>
       </View>
 
       {/* Seção de Perfil */}
@@ -71,7 +71,7 @@ export default function MenuScreen() {
 
       {/* Seção de Departamentos */}
       <View>
-        <Text style={styles.sectionTitle}>Departamentos</Text>
+        <TitleText style={styles.sectionTitle}>Departamentos</TitleText>
         {departments.map((department) => (
           <Pressable
             key={department}
@@ -132,7 +132,7 @@ export default function MenuScreen() {
 
       {/* Seção de Configurações */}
       <View>
-        <Text style={styles.sectionTitle}>Configurações</Text>
+        <TitleText style={styles.sectionTitle}>Configurações</TitleText>
         <View style={styles.menuItem}>
           <View style={styles.menuItemContent}>
             <MaterialCommunityIcons
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 34,
-    fontWeight: "bold",
+    fontFamily: "Inter_700Bold",
   },
   profileSection: {
     paddingVertical: 16,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 18,
-    fontWeight: "600",
+    fontFamily: "Inter_600SemiBold"
   },
   profileSubtext: {
     fontSize: 14,

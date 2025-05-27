@@ -56,7 +56,7 @@ export default function HighlightCard({
           style={[
             styles.badgeText,
             {
-              color: colorsConfig?.textColor || "#fff",
+              color: colorsConfig?.textColor,
             },
           ]}
           accessible={false}
@@ -123,7 +123,7 @@ export default function HighlightCard({
         <View
           style={[
             styles.bottomColor,
-            { backgroundColor: colorsConfig.textColor || "#fff" },
+            { backgroundColor: colorsConfig.textColor },
           ]}
         ></View>
       </View>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     height: "50%",
   },
   descriptionText: {
-    padding: 10,
+    padding: 10
   },
   badge: {
     paddingHorizontal: 12,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    fontWeight: 500,
+    fontFamily: "Inter_500Medium"
   },
   bottomColor: {
     position: "absolute",
