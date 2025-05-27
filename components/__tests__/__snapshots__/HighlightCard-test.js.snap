@@ -143,11 +143,12 @@ exports[`HighlightCard renders correctly with description and image props and ma
           [
             {
               "color": "#000",
+              "fontFamily": "Inter_400Regular",
             },
             [
               {
+                "fontFamily": "Inter_500Medium",
                 "fontSize": 12,
-                "fontWeight": 500,
               },
               {
                 "color": "#fff",
@@ -166,6 +167,7 @@ exports[`HighlightCard renders correctly with description and image props and ma
         [
           {
             "color": "#000",
+            "fontFamily": "Inter_400Regular",
           },
           {
             "padding": 10,

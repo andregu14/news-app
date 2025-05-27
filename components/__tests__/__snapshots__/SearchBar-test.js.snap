@@ -61,6 +61,7 @@ exports[`<SearchBar /> renders correctly and handles input 1`] = `
         {
           "borderLeftWidth": 1,
           "flex": 1,
+          "fontFamily": "Inter_400Regular",
           "fontSize": 16,
           "height": "100%",
           "paddingLeft": 15,

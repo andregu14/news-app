@@ -96,6 +96,7 @@ exports[`<AuthorDetails /> renders correctly with name, date, department props a
         [
           {
             "color": "#000",
+            "fontFamily": "Inter_400Regular",
           },
           [
             {
@@ -115,6 +116,7 @@ exports[`<AuthorDetails /> renders correctly with name, date, department props a
         [
           {
             "color": "#000",
+            "fontFamily": "Inter_400Regular",
           },
           [
             {
@@ -230,6 +232,7 @@ exports[`<AuthorDetails /> renders correctly with photo prop and matches snapsho
         [
           {
             "color": "#000",
+            "fontFamily": "Inter_400Regular",
           },
           [
             {
@@ -249,6 +252,7 @@ exports[`<AuthorDetails /> renders correctly with photo prop and matches snapsho
         [
           {
             "color": "#000",
+            "fontFamily": "Inter_400Regular",
           },
           [
             {
@@ -364,6 +368,7 @@ exports[`<AuthorDetails /> renders correctly with placeholder photo and matches 
         [
           {
             "color": "#000",
+            "fontFamily": "Inter_400Regular",
           },
           [
             {
@@ -383,6 +388,7 @@ exports[`<AuthorDetails /> renders correctly with placeholder photo and matches 
         [
           {
             "color": "#000",
+            "fontFamily": "Inter_400Regular",
           },
           [
             {
