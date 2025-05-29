@@ -20,6 +20,8 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Provider } from "react-redux";
+import { store } from "@/store";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -66,29 +68,31 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <GestureHandlerRootView>
-      <BottomSheetModalProvider>
-        <SafeAreaProvider>
-          <ThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <Stack screenOptions={{ animation: "slide_from_right" }}>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="newsDetails"
-                options={{
-                  headerTitleStyle: { fontSize: 18 },
-                  headerShown: true,
-                }}
-              />
-              <Stack.Screen
-                name="searchResults"
-                options={{ headerShown: false }}
-              />
-            </Stack>
-          </ThemeProvider>
-        </SafeAreaProvider>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
+    <Provider store={store}>
+      <GestureHandlerRootView>
+        <BottomSheetModalProvider>
+          <SafeAreaProvider>
+            <ThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <Stack screenOptions={{ animation: "slide_from_right" }}>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen
+                  name="newsDetails"
+                  options={{
+                    headerTitleStyle: { fontSize: 18 },
+                    headerShown: true,
+                  }}
+                />
+                <Stack.Screen
+                  name="searchResults"
+                  options={{ headerShown: false }}
+                />
+              </Stack>
+            </ThemeProvider>
+          </SafeAreaProvider>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
+    </Provider>
   );
 }
