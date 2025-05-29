@@ -1,15 +1,13 @@
-import React, { useRef } from "react";
-import {
-  Animated,
-  StyleSheet,
-  Dimensions,
-  Pressable,
-} from "react-native";
+import React, { useCallback, useRef } from "react";
+import { Animated, StyleSheet, Dimensions, Pressable } from "react-native";
 import { View, Text } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 import { Image } from "expo-image";
 import { BlurView } from "expo-blur";
+import { useRouter, usePathname } from "expo-router";
+import { useDispatch } from "react-redux";
+import { setQuery } from "@/store/searchSlice";
 
 const { width: screenWidth } = Dimensions.get("window");
 const menuWidth = screenWidth * 0.8;
@@ -17,7 +15,11 @@ const menuWidth = screenWidth * 0.8;
 type MenuItemProps = {
   image: string;
   label: string;
-  onPress: () => void;
+  onPress?: () => void;
+};
+
+type SideMenuProps = {
+  onCloseDrawer?: () => void;
 };
 
 const MenuItem: React.FC<
@@ -79,51 +81,59 @@ const MenuItem: React.FC<
   );
 };
 
-export default function SideMenu() {
+export default function SideMenu({ onCloseDrawer }: SideMenuProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
+  const router = useRouter();
+  const pathname = usePathname();
+  const dispatch = useDispatch();
   const menuItems: MenuItemProps[] = [
     {
       image: require("@/assets/images/tecnologia.jpg"),
       label: "Tecnologia",
-      onPress: () => console.log("Tecnologia"),
     },
     {
       image: require("@/assets/images/economia.jpg"),
       label: "Economia",
-      onPress: () => console.log("Economia"),
     },
     {
       image: require("@/assets/images/ciencia.jpg"),
       label: "Ciência",
-      onPress: () => console.log("Ciência"),
     },
     {
       image: require("@/assets/images/esporte.jpg"),
       label: "Esportes",
-      onPress: () => console.log("Esportes"),
     },
     {
       image: require("@/assets/images/politica.jpeg"),
       label: "Política",
-      onPress: () => console.log("Política"),
     },
     {
       image: require("@/assets/images/entretenimento.jpg"),
       label: "Entretenimento",
-      onPress: () => console.log("Entretenimento"),
     },
     {
       image: require("@/assets/images/saude.jpg"),
       label: "Saúde",
-      onPress: () => console.log("Saúde"),
     },
     {
       image: require("@/assets/images/mundo.jpg"),
       label: "Mundo",
-      onPress: () => console.log("Mundo"),
     },
   ];
+
+  const handleOnPress = (department: string) => {
+    if (onCloseDrawer) onCloseDrawer();
+    if (pathname === "/searchResults") {
+      dispatch(setQuery(department));
+    } else {
+      router.push({
+        pathname: "/searchResults",
+        params: { query: department },
+      });
+      dispatch(setQuery(department));
+    }
+  };
 
   return (
     <View
@@ -153,7 +163,7 @@ export default function SideMenu() {
             key={index}
             image={item.image}
             label={item.label}
-            onPress={item.onPress}
+            onPress={() => handleOnPress(item.label)}
             textColor={themeColors.text}
             borderColor={themeColors.borderColor}
           />
@@ -214,6 +224,6 @@ const styles = StyleSheet.create({
   },
   menuItemLabelText: {
     color: "#fff",
-    fontFamily: "Inter_600SemiBold"
+    fontFamily: "Inter_600SemiBold",
   },
 });

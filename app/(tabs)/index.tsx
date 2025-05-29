@@ -83,6 +83,8 @@ export default function TabOneScreen() {
   const handleSearchSubmit = useCallback(
     (query: string) => {
       console.log("Pesquisa submetida:", query);
+      leftDrawerRef.current?.openDrawer();
+      rightDrawerRef.current?.openDrawer();
       router.push({ pathname: "/searchResults", params: { query } });
     },
     [router]
@@ -105,6 +107,10 @@ export default function TabOneScreen() {
   const handleMenuPress = () => {
     rightDrawerRef.current?.openDrawer();
   };
+
+  const closeRightDrawer = useCallback(() => {
+    rightDrawerRef.current?.closeDrawer()
+  }, [])
 
   // Função para renderizar cada item da lista
   const renderNewsItem = useCallback(
@@ -218,7 +224,7 @@ export default function TabOneScreen() {
           ref={rightDrawerRef}
           drawerPosition={DrawerPosition.RIGHT}
           drawerType={DrawerType.FRONT}
-          renderNavigationView={() => <SideMenu />}
+          renderNavigationView={() => <SideMenu onCloseDrawer={closeRightDrawer} />}
           drawerContainerStyle={{ marginTop: insets.top }}
         >
           <View style={[styles.container, { paddingTop: insets.top }]}>

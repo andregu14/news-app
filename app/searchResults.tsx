@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   Dimensions,
   FlatList,
-  ScrollView,
   StyleSheet,
   useColorScheme,
 } from "react-native";
@@ -26,6 +25,8 @@ import NewsCard from "@/components/NewsCard";
 import { Image } from "expo-image";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import AboutUsModal from "@/components/AboutUsModal";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
@@ -39,8 +40,9 @@ export default function SearchResults() {
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
   const [news, setNews] = useState<DataParams[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [searchQuery, setSearchQuery] = useState(query || "");
   const aboutUsRef = useRef<BottomSheetModal>(null);
+  const reduxQuery = useSelector((state: RootState) => state.search.query);
+  const [searchQuery, setSearchQuery] = useState(query || reduxQuery || "");
 
   const appVersion = require("../app.json").expo.version;
 
@@ -81,6 +83,14 @@ export default function SearchResults() {
   }, []);
 
   useEffect(() => {
+    if (reduxQuery && reduxQuery !== searchQuery) {
+      setSearchQuery(reduxQuery);
+      rightDrawerRef.current?.closeDrawer();
+      fetchNews(reduxQuery);
+    }
+  }, [reduxQuery]);
+
+  useEffect(() => {
     fetchNews(searchQuery);
   }, [fetchNews, searchQuery]);
 
@@ -93,11 +103,14 @@ export default function SearchResults() {
     rightDrawerRef.current?.openDrawer();
   };
 
-  // Função para navegar para os detalhes da notícia
+  // Função para navegar para notícias
   const handleCardPress = useCallback(
     (item: DataParams) => {
       console.log("Navegando para detalhes do item:", item.id);
-      router.push({ pathname: "/newsDetails", params: { newsId: item.id } });
+      router.navigate({
+        pathname: "/newsDetails",
+        params: { newsId: item.id },
+      });
     },
     [router]
   );
@@ -234,15 +247,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  listContentContainer: {
-    gap: 30,
+    marginBottom: 180,
   },
   notFoundContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
+    marginBottom: 180,
   },
   notFoundText: {
     fontSize: 18,
