@@ -7,10 +7,11 @@ export default {
     background: '#fff',
     tint: tintColorLight,
     tabIconSelected: tintColorLight,
-    headerIcon: "#3F3F3F",
+    headerIcon: "#2F2F2F",
     borderColor: '#eee', 
     secondaryText: '#888',
-    bodyText: "#555"
+    bodyText: "#555",
+    headerBackground: '#f8f8f8',
   },
   dark: {
     text: '#fff',
@@ -20,7 +21,8 @@ export default {
     headerIcon: "#fff",
     borderColor: 'rgba(255, 255, 255, 0.2)', 
     secondaryText: 'rgba(255, 255, 255, 0.7)',
-    bodyText: "#ddd"
+    bodyText: "#ddd",
+    headerBackground: '#181A20',
   },
 };
 

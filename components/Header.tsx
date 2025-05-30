@@ -16,85 +16,64 @@ export default function Header(props: HeaderProps) {
   const color = Colors[colorScheme ?? "light"].headerIcon;
   const iconSize = 28;
 
+  const themeColors = Colors[colorScheme ?? "light"];
+
   return (
     <>
-      {/* Status Bar Color */}
-      <View
-        style={[
-          styles.statusbarView,
-          {
-            height: insets.top + 24,
-            backgroundColor: colorScheme === "dark" ? "#181A20" : "#fff",
-          },
-        ]}
-      />
       {/* Header */}
       <View
         style={[
           props.style,
-          {
-            width: "100%",
-            backgroundColor: colorScheme === "dark" ? "#181A20" : "#fff",
-          },
+          styles.container,
+          { backgroundColor: themeColors.headerBackground },
         ]}
+        testID="header"
       >
-        <View
-          style={[styles.container, { backgroundColor: "transparent" }]}
-          testID="header"
+        <TouchableOpacity
+          onPress={props.onAccountPress}
+          testID="account-button"
         >
-          <TouchableOpacity
-            onPress={props.onAccountPress}
-            testID="account-button"
-          >
-            <MaterialCommunityIcons
-              name="account"
-              size={iconSize}
-              color={color}
-              testID="icon-account"
-            />
-          </TouchableOpacity>
           <MaterialCommunityIcons
-            name="diamond-stone"
+            name="account"
             size={iconSize}
             color={color}
-            testID="icon-diamond-stone"
+            testID="icon-account"
           />
-          <TouchableOpacity onPress={props.onMenuPress} testID="menu-button">
-            <MaterialCommunityIcons
-              name="widgets"
-              size={iconSize}
-              color={color}
-              testID="icon-menu"
-            />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={styles.separator}
-          lightColor="#eee"
-          darkColor="rgba(255,255,255,0.1)"
+        </TouchableOpacity>
+        <MaterialCommunityIcons
+          name="diamond-stone"
+          size={iconSize}
+          color={color}
+          testID="icon-diamond-stone"
         />
+        <TouchableOpacity onPress={props.onMenuPress} testID="menu-button">
+          <MaterialCommunityIcons
+            name="widgets"
+            size={iconSize}
+            color={color}
+            testID="icon-menu"
+          />
+        </TouchableOpacity>
       </View>
+      <View
+        style={styles.separator}
+        lightColor="#eee"
+        darkColor="rgba(255,255,255,0.1)"
+      />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  statusbarView: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
-  },
   container: {
     flexDirection: "row",
     zIndex: 2,
     width: "100%",
     gap: 60,
+    padding: 10,
     justifyContent: "space-around",
   },
   separator: {
-    marginTop: 10,
     height: 1,
     width: "100%",
   },
