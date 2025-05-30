@@ -34,7 +34,7 @@ const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
 const appVersion = require("../../app.json").expo.version;
 
-export default function TabOneScreen() {
+export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const [news, setNews] = useState<DataParams[]>([]);
@@ -83,8 +83,6 @@ export default function TabOneScreen() {
   const handleSearchSubmit = useCallback(
     (query: string) => {
       console.log("Pesquisa submetida:", query);
-      leftDrawerRef.current?.openDrawer();
-      rightDrawerRef.current?.openDrawer();
       router.push({ pathname: "/searchResults", params: { query } });
     },
     [router]
@@ -109,8 +107,8 @@ export default function TabOneScreen() {
   };
 
   const closeRightDrawer = useCallback(() => {
-    rightDrawerRef.current?.closeDrawer()
-  }, [])
+    rightDrawerRef.current?.closeDrawer();
+  }, []);
 
   // Função para renderizar cada item da lista
   const renderNewsItem = useCallback(
@@ -164,10 +162,15 @@ export default function TabOneScreen() {
       {/* Carrousel */}
       <View style={styles.carrousel}>
         <View style={styles.carrouselTextWrapper}>
-          <TitleText style={[styles.carrouselText, {fontSize: 18}]}>🔥 Em alta</TitleText>
+          <TitleText style={[styles.carrouselText, { fontSize: 18 }]}>
+            🔥 Em alta
+          </TitleText>
           <MaterialCommunityIcons
             name="arrow-right"
-            style={[styles.carrouselText, { color: themeColors.text, fontSize: 22 }]}
+            style={[
+              styles.carrouselText,
+              { color: themeColors.text, fontSize: 22 },
+            ]}
           />
         </View>
         <ScrollView
@@ -207,76 +210,89 @@ export default function TabOneScreen() {
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      <StatusBar style="auto" />
-      <ReanimatedDrawerLayout
-        drawerWidth={drawerWidth}
-        ref={leftDrawerRef}
-        drawerPosition={DrawerPosition.LEFT}
-        drawerType={DrawerType.FRONT}
-        renderNavigationView={() => (
-          <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />
-        )}
-        drawerContainerStyle={{ marginTop: insets.top }}
-      >
+    <>
+      {/* Status Bar "absolute" View */}
+      <View
+        style={{
+          position: "absolute",
+          backgroundColor: themeColors.headerBackground,
+          height: insets.top,
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 999,
+        }}
+      />
+      <View style={{ flex: 1 }}>
+        <StatusBar style="auto" />
         <ReanimatedDrawerLayout
           drawerWidth={drawerWidth}
-          ref={rightDrawerRef}
-          drawerPosition={DrawerPosition.RIGHT}
+          ref={leftDrawerRef}
+          drawerPosition={DrawerPosition.LEFT}
           drawerType={DrawerType.FRONT}
-          renderNavigationView={() => <SideMenu onCloseDrawer={closeRightDrawer} />}
+          renderNavigationView={() => (
+            <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />
+          )}
           drawerContainerStyle={{ marginTop: insets.top }}
         >
-          <View style={[styles.container, { paddingTop: insets.top }]}>
-            {/* Header */}
-            <Header
-              style={styles.header}
-              onMenuPress={handleMenuPress}
-              onAccountPress={handleAccountPress}
-            />
-            {loading && !isRefreshing ? (
-              <FlatList
-                data={[1, 2, 3]}
-                renderItem={() => (
-                  <NewsCardSkeleton style={{ marginVertical: 60 }} />
-                )}
-                keyExtractor={(item) => item.toString()}
-                ListHeaderComponent={ListHeader}
-                contentContainerStyle={{gap: 20}}
-                keyboardShouldPersistTaps="handled"
-              />
-            ) : (
-              <FlatList
-                data={news}
-                renderItem={renderNewsItem}
-                keyExtractor={keyExtractor}
-                ListHeaderComponent={ListHeader}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="on-drag"
-                ItemSeparatorComponent={ItemSeparator}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={isRefreshing}
-                    onRefresh={onRefresh}
-                    colors={["rgb(29, 108, 122)"]} // Cor do indicador no Android
-                  />
-                }
-              />
+          <ReanimatedDrawerLayout
+            drawerWidth={drawerWidth}
+            ref={rightDrawerRef}
+            drawerPosition={DrawerPosition.RIGHT}
+            drawerType={DrawerType.FRONT}
+            renderNavigationView={() => (
+              <SideMenu onCloseDrawer={closeRightDrawer} />
             )}
-          </View>
-          <AboutUsModal ref={aboutUsRef} appVersion={appVersion} />
+            drawerContainerStyle={{ marginTop: insets.top }}
+          >
+            <View style={[styles.container, { paddingTop: insets.top }]}>
+              {/* Header */}
+              <Header
+                onMenuPress={handleMenuPress}
+                onAccountPress={handleAccountPress}
+              />
+              {loading && !isRefreshing ? (
+                <FlatList
+                  data={[1, 2, 3]}
+                  renderItem={() => (
+                    <NewsCardSkeleton style={{ marginVertical: 60 }} />
+                  )}
+                  keyExtractor={(item) => item.toString()}
+                  ListHeaderComponent={ListHeader}
+                  contentContainerStyle={{ gap: 20 }}
+                  keyboardShouldPersistTaps="handled"
+                />
+              ) : (
+                <FlatList
+                  data={news}
+                  renderItem={renderNewsItem}
+                  keyExtractor={keyExtractor}
+                  ListHeaderComponent={ListHeader}
+                  keyboardShouldPersistTaps="handled"
+                  keyboardDismissMode="on-drag"
+                  ItemSeparatorComponent={ItemSeparator}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={isRefreshing}
+                      onRefresh={onRefresh}
+                      colors={["rgb(29, 108, 122)"]} // Cor do indicador no Android
+                    />
+                  }
+                />
+              )}
+            </View>
+            <AboutUsModal ref={aboutUsRef} appVersion={appVersion} />
+          </ReanimatedDrawerLayout>
         </ReanimatedDrawerLayout>
-      </ReanimatedDrawerLayout>
-    </View>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    marginTop: 10,
   },
   searchBar: {
     marginTop: 40,

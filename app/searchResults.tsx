@@ -197,40 +197,55 @@ export default function SearchResults() {
   );
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* Conteudo */}
-      <ReanimatedDrawerLayout
-        drawerWidth={drawerWidth}
-        ref={leftDrawerRef}
-        drawerPosition={DrawerPosition.LEFT}
-        drawerType={DrawerType.FRONT}
-        renderNavigationView={() => (
-          <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />
-        )}
-        drawerContainerStyle={{ marginTop: insets.top }}
-      >
+    <>
+      {/* Status Bar "absolute" View */}
+      <View
+        style={{
+          position: "absolute",
+          backgroundColor: themeColors.headerBackground,
+          height: insets.top,
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 999,
+        }}
+      />
+      <View style={{ flex: 1 }}>
+        {/* Conteudo */}
         <ReanimatedDrawerLayout
           drawerWidth={drawerWidth}
-          ref={rightDrawerRef}
-          drawerPosition={DrawerPosition.RIGHT}
+          ref={leftDrawerRef}
+          drawerPosition={DrawerPosition.LEFT}
           drawerType={DrawerType.FRONT}
-          renderNavigationView={() => <SideMenu />}
+          renderNavigationView={() => (
+            <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />
+          )}
           drawerContainerStyle={{ marginTop: insets.top }}
         >
-          <View style={[styles.content]}>
-            {/* Header */}
-            <Header
-              style={{ marginTop: insets.top + 10 }}
-              onMenuPress={handleMenuPress}
-              onAccountPress={handleAccountPress}
-            />
-            <ShowResults />
-          </View>
-          <AboutUsModal ref={aboutUsRef} appVersion={appVersion} />
+          <ReanimatedDrawerLayout
+            drawerWidth={drawerWidth}
+            ref={rightDrawerRef}
+            drawerPosition={DrawerPosition.RIGHT}
+            drawerType={DrawerType.FRONT}
+            renderNavigationView={() => <SideMenu />}
+            drawerContainerStyle={{ marginTop: insets.top }}
+          >
+            <View style={[styles.content]}>
+              {/* Header */}
+              <Header
+                style={{ marginTop: insets.top }}
+                onMenuPress={handleMenuPress}
+                onAccountPress={handleAccountPress}
+              />
+              <ShowResults />
+            </View>
+            <AboutUsModal ref={aboutUsRef} appVersion={appVersion} />
+          </ReanimatedDrawerLayout>
         </ReanimatedDrawerLayout>
-      </ReanimatedDrawerLayout>
-      <StatusBar style="auto" />
-    </View>
+        <StatusBar style="auto" />
+      </View>
+    </>
   );
 }
 
