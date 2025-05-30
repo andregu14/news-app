@@ -5,8 +5,10 @@ import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import { newsData } from "@/constants/NewsData";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { StatusBar } from "expo-status-bar";
+import { useDispatch } from "react-redux";
+import { setQuery } from "@/store/searchSlice";
 
 const appVersion = require("../../app.json").expo.version;
 
@@ -14,6 +16,7 @@ export default function MenuScreen() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const router = useRouter();
+  const dispatch = useDispatch();
 
   // Estado para notificações
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -24,10 +27,14 @@ export default function MenuScreen() {
   );
 
   // Função para navegar para notícias do departamento
-  const handleDepartmentPress = (department: string) => {
-    console.log("Navegando para departamento:", department);
-    // TODO: Implementar navegação filtrada por departamento
-  };
+  const handleDepartmentPress = useCallback(
+    (department: string) => {
+      console.log("Navegando para departamento:", department);
+      router.push({ pathname: "/searchResults", params: { department } });
+      dispatch(setQuery(department))
+    },
+    [router, newsData]
+  );
 
   return (
     <ScrollView
@@ -223,7 +230,7 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 18,
-    fontFamily: "Inter_600SemiBold"
+    fontFamily: "Inter_600SemiBold",
   },
   profileSubtext: {
     fontSize: 14,
@@ -256,7 +263,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: "10%",
     fontSize: 12,
-    marginBottom: 10
+    marginBottom: 10,
   },
   separator: {
     marginVertical: 20,
