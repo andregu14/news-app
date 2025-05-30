@@ -29,6 +29,8 @@ import ReanimatedDrawerLayout, {
 } from "react-native-gesture-handler/ReanimatedDrawerLayout";
 import AboutUsModal from "@/components/AboutUsModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useDispatch } from "react-redux";
+import { setQuery } from "@/store/searchSlice";
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
@@ -37,6 +39,7 @@ const appVersion = require("../../app.json").expo.version;
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
+  const dispatch = useDispatch();
   const [news, setNews] = useState<DataParams[]>([]);
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
@@ -84,6 +87,7 @@ export default function Index() {
     (query: string) => {
       console.log("Pesquisa submetida:", query);
       router.push({ pathname: "/searchResults", params: { query } });
+      dispatch(setQuery(query));
     },
     [router]
   );
