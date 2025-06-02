@@ -9,6 +9,8 @@ import { useCallback, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useDispatch } from "react-redux";
 import { setQuery } from "@/store/searchSlice";
+import Toast from "react-native-toast-message";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const appVersion = require("../../app.json").expo.version;
 
@@ -17,6 +19,7 @@ export default function MenuScreen() {
   const themeColors = Colors[colorScheme];
   const router = useRouter();
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
 
   // Estado para notificações
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -31,10 +34,26 @@ export default function MenuScreen() {
     (department: string) => {
       console.log("Navegando para departamento:", department);
       router.push({ pathname: "/searchResults", params: { department } });
-      dispatch(setQuery(department))
+      dispatch(setQuery(department));
     },
     [router, newsData]
   );
+
+  const handleNotificationsToggle = useCallback(() => {
+    setNotificationsEnabled(!notificationsEnabled);
+    Toast.show({
+      type: notificationsEnabled ? "error" : "success",
+      text1: notificationsEnabled
+        ? "Notificações desativadas"
+        : "Notificações ativadas",
+      text2: notificationsEnabled
+        ? "Você não receberá mais atualizações"
+        : "Você receberá atualizações de notícias",
+      visibilityTime: 4000,
+      topOffset: insets.top + 10,
+      onPress: () => Toast.hide(),
+    });
+  }, [notificationsEnabled]);
 
   return (
     <ScrollView
@@ -150,7 +169,7 @@ export default function MenuScreen() {
             <Text style={styles.menuItemText}>Notificações</Text>
             <Switch
               value={notificationsEnabled}
-              onValueChange={setNotificationsEnabled}
+              onValueChange={handleNotificationsToggle}
               trackColor={{ false: "#767577", true: themeColors.tint }}
             />
           </View>

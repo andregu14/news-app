@@ -22,6 +22,8 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { store } from "@/store";
+import Toast from "react-native-toast-message";
+import { toastConfig } from "@/components/ToastMessage";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -89,6 +91,7 @@ function RootLayoutNav() {
                   options={{ headerShown: false }}
                 />
               </Stack>
+              <Toast config={toastConfig} />
             </ThemeProvider>
           </SafeAreaProvider>
         </BottomSheetModalProvider>
