@@ -1,67 +1,33 @@
 import { Text, TitleText, View } from "@/components/Themed";
 import { useLocalSearchParams, Stack } from "expo-router";
 import { StyleSheet, Image, ScrollView } from "react-native";
-import { newsData, DataParams } from "@/constants/NewsData";
 import { StatusBar } from "expo-status-bar";
-import Colors, { Department, departmentColors } from "@/constants/Colors";
+import Colors, { departmentColors } from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
-import { useState, useEffect } from "react";
 import AuthorDetails from "@/components/AuthorDetails";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function NewsDetailsScreen() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
-  const { newsId } = useLocalSearchParams<{ newsId: string }>();
-  const [newsItem, setNewsItem] = useState<DataParams>();
+  const params = useLocalSearchParams();
+  const newsTitle = decodeURIComponent(params.newsTitle as string);
+  const newsDescription = decodeURIComponent(params.newsDescription as string);
+  const newsContent = params.newsContent
+  const newsUrl = decodeURIComponent(params.newsUrl as string);
+  const newsImage = decodeURIComponent(params.newsImage as string);
+  const newsPublishedAt = decodeURIComponent(params.newsPublishedAt as string);
+  const newsSourceName = decodeURIComponent(params.newsSourceName as string);
+  const newsSourceUrl = decodeURIComponent(params.newsSourceUrl as string);
+
   const insets = useSafeAreaInsets();
-  const colorsConfig = departmentColors[newsItem?.department as Department];
-  const [photo, setPhoto] = useState<string>();
+  const colorsConfig = departmentColors["Tecnologia"];
 
-  useEffect(() => {
-    const fetchNewsDetails = async () => {
-      try {
-        const response = await fetch(`http://192.168.15.5:3000/news/${newsId}`);
-        if (!response.ok)
-          throw new Error("Falha ao buscar detalhes da notícia");
-        const data = await response.json();
-        if (response.ok)
-          console.log("Noticia encontrada com sucesso!", data.title);
-        setPhoto(
-          `https://ui-avatars.com/api/?name=${data.author}`
-        );
-        setNewsItem(data);
-      } catch (error) {
-        console.error(
-          "Erro ao buscar detalhes da notícia, usando dados locais:",
-          error
-        );
-        // Fallback para dados locais
-        const localNewsItem = newsData.find(
-          (item) => item.id.toString() === newsId
-        );
-        setNewsItem(localNewsItem);
-      }
-    };
-
-    fetchNewsDetails();
-  }, [newsId]);
-
-  // Se a notícia não for encontrada, mostrar uma mensagem
-  if (!newsItem) {
-    return (
-      <View style={styles.container}>
-        <Text>Notícia não encontrada.</Text>
-      </View>
-    );
-  }
-
-  // Renderizar os detalhes da notícia encontrada
   return (
     <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: newsItem.department,
+          title: newsSourceName,
           headerTitleStyle: {
             fontSize: 18,
             color: colorsConfig.backgroundColor ?? themeColors.text,
@@ -74,24 +40,29 @@ export default function NewsDetailsScreen() {
       />
       <ScrollView>
         <Image
-          source={{ uri: newsItem.image }}
+          source={{ uri: newsImage }}
           style={styles.image}
           resizeMode="cover"
         />
-        <TitleText style={styles.title}>{newsItem.title}</TitleText>
+        <TitleText style={styles.title}>{newsTitle}</TitleText>
+        <Text style={[styles.description, {color: themeColors.secondaryText}]}>{newsDescription}</Text>
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
         <AuthorDetails
           style={styles.authorDetails}
-          date={newsItem.created_at ?? ""}
-          photo={photo}
-          department={newsItem.department}
-          name={newsItem.author ?? ""}
+          date={newsPublishedAt}
+          department={newsSourceName}
+          name={newsSourceName}
         />
         <View
           style={styles.separator}
           lightColor="#eee"
           darkColor="rgba(255,255,255,0.1)"
         />
-        <Text style={styles.description}>{newsItem.description}</Text>
+        <Text style={styles.content}>{`${newsContent}\n\n${newsContent} `}</Text>
 
         <View
           style={[styles.separator, { marginBottom: insets.bottom }]}
@@ -124,22 +95,26 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 30,
     paddingHorizontal: 20,
-    fontSize: 22,
+    fontSize: 26,
     fontFamily: "Inter_700Bold",
-    lineHeight: 28,
-    marginBottom: 10,
-  },
-  authorDetails: {
-    marginLeft: 20,
-    marginTop: 20,
+    marginBottom: 20,
   },
   description: {
-    padding: 20,
+    paddingHorizontal: 20,
     fontSize: 16,
-    lineHeight: 26,
+    lineHeight: 24,
+  },
+  authorDetails: {
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  content: {
+    paddingHorizontal: 20,
+    fontSize: 16,
+    lineHeight: 24,
   },
   separator: {
-    marginVertical: 10,
+    marginVertical: 15,
     height: 1,
     width: "90%",
     alignSelf: "center",
