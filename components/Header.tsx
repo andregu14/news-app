@@ -3,7 +3,7 @@ import { View, ViewProps } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
 import { StyleSheet, TouchableOpacity } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { usePathname, useRouter } from "expo-router";
 
 type HeaderProps = ViewProps & {
   onMenuPress?: () => void;
@@ -12,11 +12,18 @@ type HeaderProps = ViewProps & {
 
 export default function Header(props: HeaderProps) {
   const colorScheme = useColorScheme();
-  const insets = useSafeAreaInsets();
+  const pathname = usePathname();
+  const router = useRouter();
   const color = Colors[colorScheme ?? "light"].headerIcon;
   const iconSize = 28;
 
   const themeColors = Colors[colorScheme ?? "light"];
+
+  const handleHomeScreen = () => {
+    if (pathname !== "/") {
+      router.push("/");
+    }
+  };
 
   return (
     <>
@@ -40,12 +47,14 @@ export default function Header(props: HeaderProps) {
             testID="icon-account"
           />
         </TouchableOpacity>
-        <MaterialCommunityIcons
-          name="diamond-stone"
-          size={iconSize}
-          color={color}
-          testID="icon-diamond-stone"
-        />
+        <TouchableOpacity onPress={handleHomeScreen} testID="index-button">
+          <MaterialCommunityIcons
+            name="diamond-stone"
+            size={iconSize}
+            color={color}
+            testID="icon-diamond-stone"
+          />
+        </TouchableOpacity>
         <TouchableOpacity onPress={props.onMenuPress} testID="menu-button">
           <MaterialCommunityIcons
             name="widgets"
