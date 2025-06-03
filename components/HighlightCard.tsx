@@ -9,15 +9,13 @@ import Colors, { Department, departmentColors } from "@/constants/Colors";
 import { Image } from "expo-image";
 
 type HighlightCardProps = ViewProps & {
-  description?: string;
-  image?: string;
-  department: string;
-  onPress?: () => void;
+  description: string;
+  image: string;
+  department?: string;
+  onPress: () => void;
   testID?: string;
   imageTestID?: string;
 };
-
-const randomImage = "https://picsum.photos/170/200";
 
 export default function HighlightCard({
   description,
@@ -66,6 +64,7 @@ export default function HighlightCard({
       </View>
     );
   };
+
   return (
     <Pressable
       onPress={onPress}
@@ -104,21 +103,20 @@ export default function HighlightCard({
       >
         <Image
           style={styles.imageContainer}
-          source={{ uri: image || randomImage }}
+          source={{ uri: image }}
           contentFit="cover"
           testID={imageTestID || "highlight-card-image"}
           accessible={false}
           accessibilityElementsHidden={true}
         />
-        <Badge />
+        {/* Mostra a badge se department for fornecido */}
+        {department && <Badge />}
         <Text
           ellipsizeMode={"tail"}
           numberOfLines={4}
           style={styles.descriptionText}
         >
-          {description
-            ? description
-            : "Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet"}
+          {description}
         </Text>
         <View
           style={[
@@ -145,7 +143,7 @@ const styles = StyleSheet.create({
     height: "50%",
   },
   descriptionText: {
-    padding: 10
+    padding: 10,
   },
   badge: {
     paddingHorizontal: 12,
@@ -157,7 +155,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    fontFamily: "Inter_500Medium"
+    fontFamily: "Inter_500Medium",
   },
   bottomColor: {
     position: "absolute",
