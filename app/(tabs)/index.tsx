@@ -7,14 +7,14 @@ import {
   RefreshControl,
   Dimensions,
 } from "react-native";
-import { Text, TitleText, View } from "@/components/Themed";
+import { TitleText, View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
 import SearchBar from "@/components/SearchBar";
 import HighlightCard from "@/components/HighlightCard";
 import NewsCard from "@/components/NewsCard";
 import { useRouter } from "expo-router";
-import { newsData, DataParams } from "@/constants/NewsData";
+import { newsData, ArticleParams } from "@/constants/NewsData";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import HighlightCardSkeleton from "@/components/HighlightCardSkeleton";
 import Colors from "@/constants/Colors";
@@ -31,6 +31,8 @@ import AboutUsModal from "@/components/AboutUsModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useDispatch } from "react-redux";
 import { setQuery } from "@/store/searchSlice";
+import { formatDistanceToNowStrict } from "date-fns";
+const { ptBR } = require("date-fns/locale");
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
@@ -40,7 +42,7 @@ export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const dispatch = useDispatch();
-  const [news, setNews] = useState<DataParams[]>([]);
+  const [news, setNews] = useState<ArticleParams[]>([]);
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
@@ -48,6 +50,8 @@ export default function Index() {
   const leftDrawerRef = useRef<DrawerLayoutMethods>(null);
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
   const aboutUsRef = useRef<BottomSheetModal>(null);
+
+  const apiKey = "aaaa";
 
   // Função para buscar notícias
   const fetchNews = useCallback(async (refresh = false) => {
@@ -62,14 +66,51 @@ export default function Index() {
       : Math.floor(Math.random() * (4000 - 2000 + 1) + 2000);
     setTimeout(async () => {
       try {
-        const response = await fetch("http://192.168.15.5:3000/news/");
+        const response = await fetch(
+          `https://gnews.io/api/v4/top-headlines?country=br&apikey=${apiKey}`
+        );
         if (!response.ok) throw new Error("Falha ao buscar notícias");
         else console.log("Dados de todas as noticias extraidos com sucesso!");
         const data = await response.json();
-        setNews(data.news);
+
+        // Formatar as datas para "ha x tempo"
+        const formattedArticles = data.articles.map(
+          (article: ArticleParams) => {
+            const timeAgo = formatDistanceToNowStrict(
+              new Date(article.publishedAt),
+              {
+                addSuffix: true,
+                locale: ptBR,
+              }
+            );
+            return {
+              ...article,
+              publishedAt: timeAgo.replace("há", "Há"),
+            };
+          }
+        );
+
+        setNews(formattedArticles);
       } catch (error) {
         console.error("Erro ao buscar notícias, usando dados locais:", error);
-        setNews(newsData); // Fallback para dados locais
+        // Formatar as datas para "ha x tempo"
+        const formattedArticles = newsData.articles.map(
+          (article: ArticleParams) => {
+            const timeAgo = formatDistanceToNowStrict(
+              new Date(article.publishedAt),
+              {
+                addSuffix: true,
+                locale: ptBR,
+              }
+            );
+            return {
+              ...article,
+              publishedAt: timeAgo.replace("há", "Há"),
+            };
+          }
+        );
+
+        setNews(formattedArticles); // Fallback para dados locais
       } finally {
         if (!refresh) {
           setLoading(false);
@@ -94,9 +135,21 @@ export default function Index() {
 
   // Função para navegar para os detalhes da notícia
   const handleCardPress = useCallback(
-    (item: DataParams) => {
-      console.log("Navegando para detalhes do item:", item.id);
-      router.push({ pathname: "/newsDetails", params: { newsId: item.id } });
+    (item: ArticleParams) => {
+      console.log("Navegando para detalhes do item:", item.title);
+      router.push({
+        pathname: "/newsDetails",
+        params: {
+          newsTitle: encodeURIComponent(item.title),
+          newsDescription: encodeURIComponent(item.description),
+          newsContent: item.content,
+          newsUrl: encodeURIComponent(item.url),
+          newsImage: encodeURIComponent(item.image),
+          newsPublishedAt: encodeURIComponent(item.publishedAt),
+          newsSourceName: encodeURIComponent(item.source.name),
+          newsSourceUrl: encodeURIComponent(item.source.url),
+        },
+      });
     },
     [router]
   );
@@ -116,24 +169,18 @@ export default function Index() {
 
   // Função para renderizar cada item da lista
   const renderNewsItem = useCallback(
-    ({ item }: { item: DataParams }) => (
+    ({ item }: { item: ArticleParams }) => (
       <NewsCard
-        key={item.id}
+        key={item.url}
         title={item.title}
         bodyText={item.description}
         image={item.image}
-        department={item.department}
-        time={item.created_at || item.time}
+        sourceName={item.source.name}
+        time={item.publishedAt}
         onPress={() => handleCardPress(item)}
       />
     ),
     [handleCardPress]
-  );
-
-  // Função para extrair a chave única de cada item
-  const keyExtractor = useCallback(
-    (item: DataParams) => item.id.toString(),
-    []
   );
 
   // Função chamada pelo RefreshControl
@@ -147,12 +194,12 @@ export default function Index() {
 
   const ItemSeparator = () => (
     <View
-      style={{
-        height: 1,
-        backgroundColor: themeColors.borderColor,
-        marginHorizontal: 15,
-        marginVertical: 5,
-      }}
+      style={[
+        styles.separator,
+        {
+          backgroundColor: themeColors.borderColor,
+        },
+      ]}
     />
   );
 
@@ -198,9 +245,8 @@ export default function Index() {
             news.slice(0, 5).map((item) => {
               return (
                 <HighlightCard
-                  key={item.id}
+                  key={item.url}
                   description={item.description}
-                  department={item.department}
                   image={item.image}
                   onPress={() => handleCardPress(item)}
                 />
@@ -271,7 +317,7 @@ export default function Index() {
                 <FlatList
                   data={news}
                   renderItem={renderNewsItem}
-                  keyExtractor={keyExtractor}
+                  keyExtractor={(item) => item.url}
                   ListHeaderComponent={ListHeader}
                   keyboardShouldPersistTaps="handled"
                   keyboardDismissMode="on-drag"
@@ -319,5 +365,10 @@ const styles = StyleSheet.create({
   },
   listTitle: {
     marginHorizontal: 20,
+  },
+  separator: {
+    height: 1,
+    marginHorizontal: 15,
+    marginVertical: 15,
   },
 });
