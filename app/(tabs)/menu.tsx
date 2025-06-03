@@ -24,10 +24,16 @@ export default function MenuScreen() {
   // Estado para notificações
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
-  // Extrair departamentos únicos
-  const departments = Array.from(
-    new Set(newsData.map((item) => item.department))
-  );
+  const menuItems: string[] = [
+    "Tecnologia",
+    "Economia",
+    "Ciência",
+    "Esportes",
+    "Política",
+    "Entretenimento",
+    "Saúde",
+    "Mundo",
+  ];
 
   // Função para navegar para notícias do departamento
   const handleDepartmentPress = useCallback(
@@ -98,9 +104,9 @@ export default function MenuScreen() {
       {/* Seção de Departamentos */}
       <View>
         <TitleText style={styles.sectionTitle}>Departamentos</TitleText>
-        {departments.map((department) => (
+        {menuItems.map((department, index) => (
           <Pressable
-            key={department}
+            key={index}
             style={({ pressed }) => [
               styles.menuItem,
               {
