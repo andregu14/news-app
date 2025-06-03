@@ -2,13 +2,14 @@ import { View, ViewProps, Text } from "./Themed";
 import { Image } from "expo-image";
 import { StyleSheet, useColorScheme } from "react-native";
 import Colors from "@/constants/Colors";
+import { useEffect, useState } from "react";
 
 type AuthorDetailsProps = ViewProps & {
   name: string;
   photo?: string;
   date: string;
   department: string;
-  imageTestId?: string
+  imageTestId?: string;
 };
 
 export default function AuthorDetails({
@@ -21,6 +22,11 @@ export default function AuthorDetails({
 }: AuthorDetailsProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
+  const [image, setImage] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (!photo) setImage(`https://ui-avatars.com/api/?name=${name}`);
+  }, [name, photo]);
 
   return (
     <View style={[styles.container, otherProps.style]}>
@@ -34,7 +40,7 @@ export default function AuthorDetails({
         ]}
       >
         <Image
-          source={{ uri: photo }}
+          source={{ uri: photo || image }}
           placeholder={require("@/assets/images/photo-placeholder.png")}
           style={styles.photo}
           contentFit="cover"
@@ -43,9 +49,32 @@ export default function AuthorDetails({
       </View>
       <View>
         <Text style={[styles.text, { fontWeight: "bold" }]}>{name}</Text>
-        <Text
-          style={[styles.subText, { color: themeColors.secondaryText }]}
-        >{`${date[0].toUpperCase() + date.slice(1)} • Em ${department}`}</Text>
+        <View style={styles.textContainer}>
+          <Text
+            style={[
+              styles.subText,
+              { color: themeColors.secondaryText, marginRight: 3 },
+            ]}
+          >
+            {`${date}`}
+          </Text>
+          <Text
+            style={[
+              styles.subText,
+              { color: themeColors.secondaryText, fontSize: 9 },
+            ]}
+          >
+            {" • "}
+          </Text>
+          <Text
+            style={[
+              styles.subText,
+              { color: themeColors.secondaryText, marginLeft: 3 },
+            ]}
+          >
+            Em {name || "Fonte Desconhecida"}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -75,5 +104,9 @@ const styles = StyleSheet.create({
   },
   subText: {
     fontSize: 13,
+  },
+  textContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
