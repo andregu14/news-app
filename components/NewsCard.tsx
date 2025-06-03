@@ -1,14 +1,13 @@
 import { View, Text, ViewProps, BodyText, TitleText } from "./Themed";
 import { StyleSheet, useColorScheme, Pressable } from "react-native";
-import Colors, { Department, departmentColors } from "@/constants/Colors";
+import Colors from "@/constants/Colors";
 import { Image } from "expo-image";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type NewsCardProps = ViewProps & {
   title: string;
   bodyText: string;
   image: string;
-  department: string;
+  sourceName?: string;
   time: string;
   onPress: () => void;
   testID?: string;
@@ -19,7 +18,7 @@ export default function NewsCard({
   title,
   bodyText,
   image,
-  department,
+  sourceName,
   time,
   style,
   onPress,
@@ -30,16 +29,19 @@ export default function NewsCard({
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
 
-  const timeText = `${
-    time[0].toUpperCase() + time.slice(1)
-  } • Em ${department}`;
-  const accessibilityLabel = `Notícia: ${title}. ${bodyText}. Publicado ${timeText}`;
+  const accessibilityLabel = `Notícia: ${title}. ${bodyText}. Publicado ${time} • Em ${
+    sourceName || "Fonte Desconhecida"
+  }`;
 
   return (
     <Pressable
       onPress={onPress}
       testID={testID}
-      style={[styles.container, style, {borderColor: themeColors.borderColor}]}
+      style={[
+        styles.container,
+        style,
+        { borderColor: themeColors.borderColor },
+      ]}
       accessible={true}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
@@ -47,7 +49,11 @@ export default function NewsCard({
       hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
       {...otherProps}
     >
-      <TitleText style={styles.title} accessible={false} accessibilityRole="header">
+      <TitleText
+        style={styles.title}
+        accessible={false}
+        accessibilityRole="header"
+      >
         {title}
       </TitleText>
       <Image
@@ -68,16 +74,31 @@ export default function NewsCard({
       </BodyText>
 
       <View style={styles.footerContainer}>
-  <MaterialCommunityIcons name="clock-outline" size={14} color={themeColors.secondaryText} />
-  <Text style={[styles.footerText, { color: themeColors.secondaryText, marginLeft: 5 }]}>
-    {time[0].toUpperCase() + time.slice(1)}
-  </Text>
-  <Text style={[styles.footerText, { color: themeColors.secondaryText }]}> • </Text>
-  <MaterialCommunityIcons name="tag-outline" size={14} color={themeColors.secondaryText} />
-  <Text style={[styles.footerText, { color: themeColors.secondaryText, marginLeft: 5 }]}>
-    Em {department}
-  </Text>
-</View>
+        <Text
+          style={[
+            styles.footerText,
+            { color: themeColors.secondaryText, marginRight: 3 },
+          ]}
+        >
+          {`${time}`}
+        </Text>
+        <Text
+          style={[
+            styles.footerText,
+            { color: themeColors.secondaryText, fontSize: 9 },
+          ]}
+        >
+          {" • "}
+        </Text>
+        <Text
+          style={[
+            styles.footerText,
+            { color: themeColors.secondaryText, marginLeft: 3 },
+          ]}
+        >
+          Em {sourceName || "Fonte Desconhecida"}
+        </Text>
+      </View>
     </Pressable>
   );
 }
@@ -89,7 +110,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
   },
   title: {
-    marginLeft: 15,
+    paddingHorizontal: 15,
     marginBottom: 10,
     lineHeight: 24,
   },
@@ -104,13 +125,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   footerContainer: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginTop: 10,
-  marginLeft: 15,
-},
-footerText: {
-  fontSize: 12,
-  lineHeight: 16,
-},
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    marginLeft: 15,
+  },
+  footerText: {
+    fontSize: 12,
+    lineHeight: 16,
+  },
 });
