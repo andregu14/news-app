@@ -1,9 +1,8 @@
 import { View, Text } from "@/components/Themed";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import {
   ActivityIndicator,
   Dimensions,
-  FlatList,
   StyleSheet,
   useColorScheme,
 } from "react-native";
@@ -19,63 +18,63 @@ import ReanimatedDrawerLayout, {
 import { useCallback, useEffect, useRef, useState } from "react";
 import AccountSideMenu from "@/components/AccountSideMenu";
 import SideMenu from "@/components/SideMenu";
-import SearchBar from "@/components/SearchBar";
-import { DataParams } from "@/constants/NewsData";
-import NewsCard from "@/components/NewsCard";
+import { ArticleParams } from "@/constants/NewsData";
 import { Image } from "expo-image";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import AboutUsModal from "@/components/AboutUsModal";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import NewsListHeader from "@/components/NewsListHeader";
+import NewsList from "@/components/NewsList";
+import { formatTimeAgo } from "@/utils/dateFormat";
+import { fetchNewsAPI, NewsAPIError } from "@/services/newsAPI";
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
 
 export default function SearchResults() {
-  const { query } = useLocalSearchParams<{ query: string }>();
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const leftDrawerRef = useRef<DrawerLayoutMethods>(null);
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
-  const [news, setNews] = useState<DataParams[]>([]);
+  const [news, setNews] = useState<ArticleParams[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const aboutUsRef = useRef<BottomSheetModal>(null);
   const reduxQuery = useSelector((state: RootState) => state.search.query);
-  const [searchQuery, setSearchQuery] = useState(query || reduxQuery || "");
+  const [searchQuery, setSearchQuery] = useState(reduxQuery || "");
 
   const appVersion = require("../app.json").expo.version;
-
-  const handleSearchSubmit = useCallback(
-    (query: string) => {
-      console.log("Pesquisa submetida:", query);
-      setSearchQuery(query);
-      setLoading(true);
-      fetchNews(query);
-    },
-    [router]
-  );
+  const apiKey = "f2abf5755e8f5f3db39550a53a4daa18";
 
   // Função para buscar notícias
   const fetchNews = useCallback(async (searchTerm: string) => {
     setLoading(true);
+    setError(null);
 
     // Delay para loading
     const delay = Math.floor(Math.random() * (2500 - 1000 + 1) + 2000);
+    
     setTimeout(async () => {
       try {
-        const endpoint = `http://192.168.15.5:3000/news/search/${encodeURIComponent(
-          searchTerm
-        )}`;
+        const data = await fetchNewsAPI(searchTerm, apiKey);
+        
+        // Formatar as datas para "ha x tempo"
+        const formattedArticles = data.articles.map((article) => ({
+          ...article,
+          publishedAt: formatTimeAgo(article.publishedAt),
+        }));
 
-        const response = await fetch(endpoint);
-
-        if (!response.ok) throw new Error("Falha ao buscar notícias");
-
-        const data = await response.json();
-        setNews(data.results);
+        setNews(formattedArticles);
       } catch (error) {
-        console.error("Erro ao buscar notícias", error);
+        console.error("Erro ao buscar notícias:", error);
+        setError(
+          error instanceof NewsAPIError
+            ? error.message
+            : "Erro ao buscar notícias. Tente novamente mais tarde."
+        );
+        setNews([]);
       } finally {
         setLoading(false);
       }
@@ -94,6 +93,16 @@ export default function SearchResults() {
     fetchNews(searchQuery);
   }, [fetchNews, searchQuery]);
 
+  const handleSearchSubmit = useCallback(
+    (query: string) => {
+      console.log("Pesquisa submetida:", query);
+      setSearchQuery(query);
+      setLoading(true);
+      fetchNews(query);
+    },
+    [fetchNews]
+  );
+
   // Funções para controlar os menus
   const handleAccountPress = () => {
     leftDrawerRef.current?.openDrawer();
@@ -103,13 +112,22 @@ export default function SearchResults() {
     rightDrawerRef.current?.openDrawer();
   };
 
-  // Função para navegar para notícias
+  // Função para navegar para os detalhes da notícia
   const handleCardPress = useCallback(
-    (item: DataParams) => {
-      console.log("Navegando para detalhes do item:", item.id);
-      router.navigate({
+    (item: ArticleParams) => {
+      console.log("Navegando para detalhes do item:", item.title);
+      router.push({
         pathname: "/newsDetails",
-        params: { newsId: item.id },
+        params: {
+          newsTitle: encodeURIComponent(item.title),
+          newsDescription: encodeURIComponent(item.description),
+          newsContent: item.content,
+          newsUrl: encodeURIComponent(item.url),
+          newsImage: encodeURIComponent(item.image),
+          newsPublishedAt: encodeURIComponent(item.publishedAt),
+          newsSourceName: encodeURIComponent(item.source.name),
+          newsSourceUrl: encodeURIComponent(item.source.url),
+        },
       });
     },
     [router]
@@ -119,66 +137,62 @@ export default function SearchResults() {
     aboutUsRef.current?.present();
   }, []);
 
-  // Função para renderizar cada item da lista
-  const renderNewsItem = useCallback(
-    ({ item }: { item: DataParams }) => (
-      <NewsCard
-        key={item.id}
-        title={item.title}
-        bodyText={item.description}
-        image={item.image}
-        department={item.department}
-        time={item.created_at || item.time}
-        onPress={() => handleCardPress(item)}
-      />
-    ),
-    [handleCardPress]
-  );
-
-  const ItemSeparator = () => (
-    <View
-      style={{
-        height: 1,
-        backgroundColor: themeColors.borderColor,
-        marginHorizontal: 15,
-        marginVertical: 5,
-      }}
-    />
-  );
-
-  const ListHeader = () => (
-    <>
-      {/* Search Bar */}
-      <SearchBar
-        style={styles.searchBar}
-        onSubmitEditing={handleSearchSubmit}
-        defaultValue={searchQuery}
-      />
-    </>
-  );
-
   const ShowResults = () => (
     <View style={{ flex: 1 }}>
       {loading ? (
         <>
-          <ListHeader />
+          <NewsListHeader 
+            showCarrousel={false} 
+            showTitle={false}
+            defaultSearchValue={searchQuery}
+          />
           <View style={styles.loadingContainer}>
             <ActivityIndicator size={"large"} />
           </View>
         </>
+      ) : error ? (
+        <View style={{ flex: 1 }}>
+          <NewsListHeader
+            showCarrousel={false}
+            showTitle={false}
+            handleSearchSubmit={handleSearchSubmit}
+            defaultSearchValue={searchQuery}
+          />
+          <View style={styles.notFoundContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+            <Image
+              style={styles.notFoundImage}
+              source={require("@/assets/images/not_found.png")}
+              contentFit="cover"
+              alt="Erro ao buscar notícias"
+            />
+          </View>
+        </View>
       ) : news.length > 0 ? (
-        <FlatList
+        <NewsList
           data={news}
-          renderItem={renderNewsItem}
-          keyExtractor={(item: DataParams) => item.id.toString()}
-          ListHeaderComponent={ListHeader}
-          ItemSeparatorComponent={ItemSeparator}
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
+          loading={loading}
+          isRefreshing={loading}
+          onRefresh={() => fetchNews(searchQuery)}
+          onPressItem={handleCardPress}
+          ListHeaderComponent={() => (
+            <NewsListHeader
+              showCarrousel={false}
+              showTitle={false}
+              searchBarStyle={{ marginBottom: 35 }}
+              handleSearchSubmit={handleSearchSubmit}
+              defaultSearchValue={searchQuery}
+            />
+          )}
         />
       ) : (
         <View style={{ flex: 1 }}>
-          <ListHeader />
+          <NewsListHeader
+            showCarrousel={false}
+            showTitle={false}
+            handleSearchSubmit={handleSearchSubmit}
+            defaultSearchValue={searchQuery}
+          />
           <View style={styles.notFoundContainer}>
             <Text style={styles.notFoundText}>
               Nenhuma notícia encontrada para
@@ -253,11 +267,6 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  searchBar: {
-    marginVertical: 40,
-    alignSelf: "center",
-    width: "90%",
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -285,5 +294,12 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     alignSelf: "center",
+  },
+  errorText: {
+    fontSize: 18,
+    textAlign: "center",
+    marginBottom: 20,
+    color: "red",
+    fontWeight: "500",
   },
 });
