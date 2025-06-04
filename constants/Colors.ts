@@ -1,28 +1,31 @@
-const tintColorLight = '#3F3F3F';
-const tintColorDark = '#fff';
+const tintColorLight = "#2F2F2F";
+const tintColorDark = "#fff";
+const mainColor = "#00695C";
 
 export default {
   light: {
-    text: '#000',
-    background: '#fff',
+    mainColor: mainColor,
+    text: "#000",
+    background: "#fff",
     tint: tintColorLight,
     tabIconSelected: tintColorLight,
     headerIcon: "#2F2F2F",
-    borderColor: '#eee', 
-    secondaryText: '#888',
+    borderColor: "#eee",
+    secondaryText: "#888",
     bodyText: "#555",
-    headerBackground: '#f8f8f8',
+    headerBackground: "#F8F8F8",
   },
   dark: {
-    text: '#fff',
-    background: '#000',
+    mainColor: mainColor,
+    text: "#fff",
+    background: "#000",
     tint: tintColorDark,
     tabIconSelected: tintColorDark,
     headerIcon: "#fff",
-    borderColor: 'rgba(255, 255, 255, 0.2)', 
-    secondaryText: 'rgba(255, 255, 255, 0.7)',
+    borderColor: "rgba(255, 255, 255, 0.2)",
+    secondaryText: "rgba(255, 255, 255, 0.7)",
     bodyText: "#ddd",
-    headerBackground: '#181A20',
+    headerBackground: "#181A20",
   },
 };
 
@@ -44,7 +47,7 @@ type DepartmentColors = {
 };
 
 export const departmentColors: DepartmentColors = {
-   Tecnologia: {
+  Tecnologia: {
     backgroundColor: "#E3F2FD",
     textColor: "#1565C0",
   },
@@ -57,7 +60,7 @@ export const departmentColors: DepartmentColors = {
     textColor: "#2E7D32",
   },
   Esportes: {
-   backgroundColor: "#E8F5E9",
+    backgroundColor: "#E8F5E9",
     textColor: "#2E7D32",
   },
   Política: {
@@ -76,4 +79,4 @@ export const departmentColors: DepartmentColors = {
     backgroundColor: "#E0F2F1",
     textColor: "#00695C",
   },
-}
+};
