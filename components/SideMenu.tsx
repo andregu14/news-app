@@ -127,11 +127,10 @@ export default function SideMenu({ onCloseDrawer }: SideMenuProps) {
     if (pathname === "/searchResults") {
       dispatch(setQuery(department));
     } else {
+      dispatch(setQuery(department));
       router.push({
         pathname: "/searchResults",
-        params: { query: department },
       });
-      dispatch(setQuery(department));
     }
   };
 
