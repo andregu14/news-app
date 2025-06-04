@@ -31,7 +31,7 @@ export default function HighlightCard({
   const themeColors = Colors[colorScheme];
   const { width } = useWindowDimensions();
   const colorsConfig = departmentColors[department as Department] || {
-    color: "#000",
+    backgroundColor: "#00695C",
     textColor: "#fff",
   };
 
@@ -121,7 +121,7 @@ export default function HighlightCard({
         <View
           style={[
             styles.bottomColor,
-            { backgroundColor: colorsConfig.textColor },
+            { backgroundColor: colorsConfig.backgroundColor },
           ]}
         ></View>
       </View>
@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     padding: 10,
+    height: "50%"
   },
   badge: {
     paddingHorizontal: 12,
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
   },
   bottomColor: {
     position: "absolute",
-    bottom: -15,
+    bottom: -7,
     width: "90%",
     alignSelf: "center",
     height: 10,
