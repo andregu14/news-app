@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
   },
   photoContainer: {
     width: 40,
