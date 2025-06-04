@@ -40,7 +40,7 @@ export default function Index() {
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
   const aboutUsRef = useRef<BottomSheetModal>(null);
 
-  // const apiKey = "f2abf5755e8f5f3db39550a53a4daa18";
+
   const apiKey = "aaaa";
 
   // Função para buscar notícias

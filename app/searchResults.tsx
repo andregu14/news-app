@@ -46,7 +46,7 @@ export default function SearchResults() {
   const [searchQuery, setSearchQuery] = useState(reduxQuery || "");
 
   const appVersion = require("../app.json").expo.version;
-  const apiKey = "f2abf5755e8f5f3db39550a53a4daa18";
+  const apiKey = "aaaa"
 
   // Função para buscar notícias
   const fetchNews = useCallback(async (searchTerm: string) => {
