@@ -65,7 +65,7 @@ export default function NewsCard({
         accessibilityElementsHidden={true}
       />
       <BodyText
-        style={[styles.bodyText, { color: themeColors.bodyText }]}
+        style={styles.bodyText}
         ellipsizeMode={"tail"}
         numberOfLines={4}
         accessible={false}
@@ -105,7 +105,7 @@ export default function NewsCard({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 20,
+    marginVertical: 15,
     paddingVertical: 20,
     minHeight: 44,
   },
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginBottom: 10,
     lineHeight: 24,
+    fontSize: 20,
   },
   bodyText: {
     marginVertical: 10,
