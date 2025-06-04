@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
   },
   authorDetails: {
     marginHorizontal: 20,
-    marginVertical: 10,
   },
   content: {
     paddingHorizontal: 20,
