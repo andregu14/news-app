@@ -25,7 +25,6 @@ export default function NewsListHeader({
   handleSearchSubmit,
   searchBarStyle,
   defaultSearchValue,
-  onHighlightCardPress,
 }: NewsListHeaderProps) {
   return (
     <>
@@ -50,8 +49,7 @@ export default function NewsListHeader({
         <HighlightCarousel
           data={data}
           loading={loading}
-          onCardPress={onHighlightCardPress}
-          maxItems={8}
+          maxItems={6}
         />
       )}
 
