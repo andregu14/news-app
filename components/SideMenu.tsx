@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useRef } from "react";
 import { Animated, StyleSheet, Dimensions, Pressable } from "react-native";
 import { View, Text } from "./Themed";
 import Colors from "@/constants/Colors";
@@ -8,13 +8,12 @@ import { BlurView } from "expo-blur";
 import { useRouter, usePathname } from "expo-router";
 import { useDispatch } from "react-redux";
 import { setQuery } from "@/store/searchSlice";
+import { CATEGORIES, CategoryItem } from "@/constants/Categories";
 
 const { width: screenWidth } = Dimensions.get("window");
 const menuWidth = screenWidth * 0.8;
 
-type MenuItemProps = {
-  image: string;
-  label: string;
+type MenuItemProps = CategoryItem & {
   onPress?: () => void;
 };
 
@@ -24,7 +23,7 @@ type SideMenuProps = {
 
 const MenuItem: React.FC<
   MenuItemProps & { textColor: string; borderColor: string }
-> = ({ image, label, onPress, textColor, borderColor }) => {
+> = ({ image, label, onPress, borderColor }) => {
   const horizontalSpacing = 30;
   const itemWidth = menuWidth / 2 - horizontalSpacing;
   const animatedValue = useRef(new Animated.Value(1)).current;
@@ -87,47 +86,14 @@ export default function SideMenu({ onCloseDrawer }: SideMenuProps) {
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useDispatch();
-  const menuItems: MenuItemProps[] = [
-    {
-      image: require("@/assets/images/tecnologia.jpg"),
-      label: "Tecnologia",
-    },
-    {
-      image: require("@/assets/images/economia.jpg"),
-      label: "Economia",
-    },
-    {
-      image: require("@/assets/images/ciencia.jpg"),
-      label: "Ciência",
-    },
-    {
-      image: require("@/assets/images/esporte.jpg"),
-      label: "Esportes",
-    },
-    {
-      image: require("@/assets/images/politica.jpeg"),
-      label: "Política",
-    },
-    {
-      image: require("@/assets/images/entretenimento.jpg"),
-      label: "Entretenimento",
-    },
-    {
-      image: require("@/assets/images/saude.jpg"),
-      label: "Saúde",
-    },
-    {
-      image: require("@/assets/images/mundo.jpg"),
-      label: "Mundo",
-    },
-  ];
 
-  const handleOnPress = (department: string) => {
+  const handleOnPress = (item: CategoryItem) => {
     if (onCloseDrawer) onCloseDrawer();
+    
     if (pathname === "/searchResults") {
-      dispatch(setQuery(department));
+      dispatch(setQuery(item.label));
     } else {
-      dispatch(setQuery(department));
+      dispatch(setQuery(item.label));
       router.push({
         pathname: "/searchResults",
       });
@@ -157,12 +123,11 @@ export default function SideMenu({ onCloseDrawer }: SideMenuProps) {
       </View>
 
       <View style={styles.menuItemsContainer}>
-        {menuItems.map((item, index) => (
+        {CATEGORIES.map((item, index) => (
           <MenuItem
             key={index}
-            image={item.image}
-            label={item.label}
-            onPress={() => handleOnPress(item.label)}
+            {...item}
+            onPress={() => handleOnPress(item)}
             textColor={themeColors.text}
             borderColor={themeColors.borderColor}
           />
