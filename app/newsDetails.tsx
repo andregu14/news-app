@@ -11,14 +11,14 @@ export default function NewsDetailsScreen() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const params = useLocalSearchParams();
-  const newsTitle = decodeURIComponent(params.newsTitle as string);
-  const newsDescription = decodeURIComponent(params.newsDescription as string);
-  const newsContent = params.newsContent
-  const newsUrl = decodeURIComponent(params.newsUrl as string);
-  const newsImage = decodeURIComponent(params.newsImage as string);
-  const newsPublishedAt = decodeURIComponent(params.newsPublishedAt as string);
-  const newsSourceName = decodeURIComponent(params.newsSourceName as string);
-  const newsSourceUrl = decodeURIComponent(params.newsSourceUrl as string);
+  const newsTitle = params.newsTitle as string
+  const newsDescription = params.newsDescription as string;
+  const newsContent = params.newsContent as string
+  const newsUrl = params.newsUrl as string;
+  const newsImage = params.newsImage as string;
+  const newsPublishedAt = params.newsPublishedAt as string;
+  const newsSourceName = params.newsSourceName as string;
+  const newsSourceUrl = params.newsSourceUrl as string;
 
   const insets = useSafeAreaInsets();
   const colorsConfig = departmentColors["Tecnologia"];
