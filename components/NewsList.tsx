@@ -11,7 +11,7 @@ type NewsListProps = {
   data: ArticleParams[];
   loading: boolean;
   isRefreshing: boolean;
-  onRefresh: () => void;
+  onRefresh?: () => void;
   onPressItem: (item: ArticleParams) => void;
   ListHeaderComponent: React.ComponentType;
   skeletonCount?: number;
