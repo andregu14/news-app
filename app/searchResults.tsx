@@ -15,19 +15,19 @@ import ReanimatedDrawerLayout, {
   DrawerPosition,
   DrawerLayoutMethods,
 } from "react-native-gesture-handler/ReanimatedDrawerLayout";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import AccountSideMenu from "@/components/AccountSideMenu";
 import SideMenu from "@/components/SideMenu";
 import { ArticleParams } from "@/constants/NewsData";
 import { Image } from "expo-image";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import AboutUsModal from "@/components/AboutUsModal";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
 import NewsListHeader from "@/components/NewsListHeader";
 import NewsList from "@/components/NewsList";
-import { formatTimeAgo } from "@/utils/dateFormat";
-import { fetchNewsAPI, NewsAPIError } from "@/services/newsAPI";
+import { fetchSearchNewsAsync } from "@/store/newsSlice";
+import { setQuery } from "@/store/searchSlice";
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
@@ -36,71 +36,45 @@ export default function SearchResults() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
+  const dispatch = useDispatch<AppDispatch>();
   const leftDrawerRef = useRef<DrawerLayoutMethods>(null);
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
-  const [news, setNews] = useState<ArticleParams[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const aboutUsRef = useRef<BottomSheetModal>(null);
-  const reduxQuery = useSelector((state: RootState) => state.search.query);
-  const [searchQuery, setSearchQuery] = useState(reduxQuery || "");
+  
+  // USAR APENAS O ESTADO GLOBAL DE SEARCH
+  const searchQuery = useSelector((state: RootState) => state.search.query);
+  const { articles: news, loading, error } = useSelector(
+    (state: RootState) => state.news.searchResults
+  );
 
   const appVersion = require("../app.json").expo.version;
-  const apiKey = "aaaa"
 
   // Função para buscar notícias
   const fetchNews = useCallback(async (searchTerm: string) => {
-    setLoading(true);
-    setError(null);
-
-    // Delay para loading
-    const delay = Math.floor(Math.random() * (2500 - 1000 + 1) + 2000);
+    if (!searchTerm.trim()) return;
     
-    setTimeout(async () => {
-      try {
-        const data = await fetchNewsAPI(searchTerm, apiKey);
-        
-        // Formatar as datas para "ha x tempo"
-        const formattedArticles = data.articles.map((article) => ({
-          ...article,
-          publishedAt: formatTimeAgo(article.publishedAt),
-        }));
-
-        setNews(formattedArticles);
-      } catch (error) {
-        console.error("Erro ao buscar notícias:", error);
-        setError(
-          error instanceof NewsAPIError
-            ? error.message
-            : "Erro ao buscar notícias. Tente novamente mais tarde."
-        );
-        setNews([]);
-      } finally {
-        setLoading(false);
-      }
-    }, delay);
-  }, []);
-
-  useEffect(() => {
-    if (reduxQuery && reduxQuery !== searchQuery) {
-      setSearchQuery(reduxQuery);
-      rightDrawerRef.current?.closeDrawer();
-      fetchNews(reduxQuery);
+    console.log('Buscando notícias para:', searchTerm);
+    
+    try {
+      await dispatch(fetchSearchNewsAsync(searchTerm)).unwrap();
+    } catch (e) {
+      console.error(error);
     }
-  }, [reduxQuery]);
+  }, [dispatch]);
 
   useEffect(() => {
-    fetchNews(searchQuery);
-  }, [fetchNews, searchQuery]);
+    if (searchQuery?.trim()) {
+      rightDrawerRef.current?.closeDrawer();
+      fetchNews(searchQuery);
+    }
+  }, [searchQuery, fetchNews]);
 
+  // Função para submeter nova busca
   const handleSearchSubmit = useCallback(
     (query: string) => {
-      console.log("Pesquisa submetida:", query);
-      setSearchQuery(query);
-      setLoading(true);
-      fetchNews(query);
+      dispatch(setQuery(query));
     },
-    [fetchNews]
+    [dispatch]
   );
 
   // Funções para controlar os menus
@@ -130,7 +104,7 @@ export default function SearchResults() {
         },
       });
     },
-    [router]
+    []
   );
 
   const handlePresentAboutUsModal = useCallback(() => {
@@ -141,8 +115,8 @@ export default function SearchResults() {
     <View style={{ flex: 1 }}>
       {loading ? (
         <>
-          <NewsListHeader 
-            showCarrousel={false} 
+          <NewsListHeader
+            showCarrousel={false}
             showTitle={false}
             defaultSearchValue={searchQuery}
           />
@@ -173,7 +147,6 @@ export default function SearchResults() {
           data={news}
           loading={loading}
           isRefreshing={loading}
-          onRefresh={() => fetchNews(searchQuery)}
           onPressItem={handleCardPress}
           ListHeaderComponent={() => (
             <NewsListHeader

@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useCallback, useRef } from "react";
 import { StyleSheet, useColorScheme, Dimensions } from "react-native";
 import { View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
-import { newsData, ArticleParams } from "@/constants/NewsData";
+import { ArticleParams } from "@/constants/NewsData";
 import Colors from "@/constants/Colors";
 import SideMenu from "@/components/SideMenu";
 import AccountSideMenu from "@/components/AccountSideMenu";
 import NewsList from "@/components/NewsList";
-import { fetchNewsAPI } from "@/services/newsAPI";
-import { formatTimeAgo } from "@/utils/dateFormat";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ReanimatedDrawerLayout, {
   DrawerType,
@@ -19,8 +17,10 @@ import ReanimatedDrawerLayout, {
 } from "react-native-gesture-handler/ReanimatedDrawerLayout";
 import AboutUsModal from "@/components/AboutUsModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setQuery } from "@/store/searchSlice";
+import { fetchHomeNewsAsync } from "@/store/newsSlice";
+import { RootState, AppDispatch } from "@/store";
 import NewsListHeader from "@/components/NewsListHeader";
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -30,62 +30,33 @@ const appVersion = require("../../app.json").expo.version;
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
-  const dispatch = useDispatch();
-  const [news, setNews] = useState<ArticleParams[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const insets = useSafeAreaInsets();
   const leftDrawerRef = useRef<DrawerLayoutMethods>(null);
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
   const aboutUsRef = useRef<BottomSheetModal>(null);
 
-
-  const apiKey = "aaaa";
+  // Selecionar dados do Redux
+  const {
+    articles: news,
+    loading,
+    isRefreshing,
+    error,
+  } = useSelector((state: RootState) => state.news.homeNews);
 
   // Função para buscar notícias
-  const fetchNews = useCallback(async (refresh = false) => {
-    if (!refresh) {
-      setLoading(true);
-    } else {
-      setIsRefreshing(true);
-    }
-
-    // Delay para refresh e loading
-    const delay = refresh
-      ? 500
-      : Math.floor(Math.random() * (4000 - 2000 + 1) + 2000);
-
-    setTimeout(async () => {
+  const fetchNews = useCallback(
+    async (refresh = false) => {
       try {
-        const data = await fetchNewsAPI("", apiKey);
+        await dispatch(fetchHomeNewsAsync(refresh)).unwrap();
         console.log("Dados de todas as notícias extraídos com sucesso!");
-
-        // Formatar as datas para "ha x tempo"
-        const formattedArticles = data.articles.map((article) => ({
-          ...article,
-          publishedAt: formatTimeAgo(article.publishedAt),
-        }));
-
-        setNews(formattedArticles);
-      } catch (error) {
-        console.error("Erro ao buscar notícias, usando dados locais:", error);
-        
-        // Formatar as datas para "ha x tempo" usando dados locais
-        const formattedArticles = newsData.articles.map((article) => ({
-          ...article,
-          publishedAt: formatTimeAgo(article.publishedAt),
-        }));
-
-        setNews(formattedArticles); // Fallback para dados locais
-      } finally {
-        if (!refresh) {
-          setLoading(false);
-        }
-        setIsRefreshing(false);
+      } catch (e) {
+        console.error(error)
       }
-    }, delay);
-  }, []);
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     fetchNews();
@@ -102,7 +73,7 @@ export default function Index() {
       dispatch(setQuery(query));
       router.push({ pathname: "/searchResults" });
     },
-    [router]
+    [dispatch, router]
   );
 
   // Função para navegar para os detalhes da notícia
@@ -112,14 +83,14 @@ export default function Index() {
       router.push({
         pathname: "/newsDetails",
         params: {
-          newsTitle: encodeURIComponent(item.title),
-          newsDescription: encodeURIComponent(item.description),
+          newsTitle: item.title,
+          newsDescription: item.description,
           newsContent: item.content,
-          newsUrl: encodeURIComponent(item.url),
-          newsImage: encodeURIComponent(item.image),
-          newsPublishedAt: encodeURIComponent(item.publishedAt),
-          newsSourceName: encodeURIComponent(item.source.name),
-          newsSourceUrl: encodeURIComponent(item.source.url),
+          newsUrl: item.url,
+          newsImage: item.image,
+          newsPublishedAt: item.publishedAt,
+          newsSourceName: item.source.name,
+          newsSourceUrl: item.source.url,
         },
       });
     },
@@ -186,7 +157,7 @@ export default function Index() {
                 onAccountPress={handleAccountPress}
               />
               <NewsList
-                data={news}
+                data={news.slice(6)}
                 loading={loading}
                 isRefreshing={isRefreshing}
                 onRefresh={onRefresh}
@@ -212,5 +183,5 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  }
+  },
 });
