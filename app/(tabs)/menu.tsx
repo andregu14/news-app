@@ -4,15 +4,35 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { useRouter } from "expo-router";
-import { newsData } from "@/constants/NewsData";
 import { useCallback, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useDispatch } from "react-redux";
 import { setQuery } from "@/store/searchSlice";
 import Toast from "react-native-toast-message";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { CATEGORIES, CategoryItem } from "@/constants/Categories";
 
 const appVersion = require("../../app.json").expo.version;
+
+// Mapeamento de ícones para cada categoria
+const getCategoryIcon = (
+  category: string
+): keyof typeof MaterialCommunityIcons.glyphMap => {
+  const iconMap: Record<string, keyof typeof MaterialCommunityIcons.glyphMap> =
+    {
+      technology: "laptop",
+      business: "chart-line",
+      science: "flask",
+      sports: "soccer",
+      nation: "domain",
+      entertainment: "movie",
+      health: "heart-pulse",
+      world: "earth",
+      general: "newspaper",
+    };
+
+  return iconMap[category] || "newspaper";
+};
 
 export default function MenuScreen() {
   const colorScheme = useColorScheme() ?? "light";
@@ -24,25 +44,14 @@ export default function MenuScreen() {
   // Estado para notificações
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
-  const menuItems: string[] = [
-    "Tecnologia",
-    "Economia",
-    "Ciência",
-    "Esportes",
-    "Política",
-    "Entretenimento",
-    "Saúde",
-    "Mundo",
-  ];
-
-  // Função para navegar para notícias do departamento
-  const handleDepartmentPress = useCallback(
-    (department: string) => {
-      console.log("Navegando para departamento:", department);
-      router.push({ pathname: "/searchResults", params: { department } });
-      dispatch(setQuery(department));
+  // Função para navegar para notícias da categoria
+  const handleCategoryPress = useCallback(
+    (categoryItem: CategoryItem) => {
+      console.log("Navegando para categoria:", categoryItem.label);
+      router.push({ pathname: "/searchResults" });
+      dispatch(setQuery(categoryItem.label));
     },
-    [router, newsData]
+    [router, dispatch]
   );
 
   const handleNotificationsToggle = useCallback(() => {
@@ -62,51 +71,121 @@ export default function MenuScreen() {
   }, [notificationsEnabled]);
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: themeColors.background }]}
-    >
-      {/* Cabeçalho do Menu */}
-      <View style={styles.headerSection}>
-        <TitleText style={styles.headerTitle}>Menu</TitleText>
-      </View>
-
-      {/* Seção de Perfil */}
-      <Pressable style={styles.profileSection}>
-        <View style={styles.profileContent}>
-          <View style={styles.avatarPlaceholder}>
-            <MaterialCommunityIcons name="account" size={32} color={"#000"} />
-          </View>
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Visitante</Text>
-            <Text
-              style={[
-                styles.profileSubtext,
-                { color: themeColors.secondaryText },
-              ]}
-            >
-              Faça login para personalizar
-            </Text>
-          </View>
-          <MaterialCommunityIcons
-            name="chevron-right"
-            size={24}
-            color={themeColors.secondaryText}
-          />
-        </View>
-      </Pressable>
-
+    <>
+      {/* Status Bar "absolute" View */}
       <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
+        style={{
+          position: "absolute",
+          backgroundColor: themeColors.background,
+          height: insets.top,
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 999,
+        }}
       />
+      <ScrollView
+        style={[styles.container, { backgroundColor: themeColors.background }]}
+      >
+        {/* Cabeçalho do Menu */}
+        <View style={styles.headerSection}>
+          <TitleText style={styles.headerTitle}>Menu</TitleText>
+        </View>
 
-      {/* Seção de Departamentos */}
-      <View>
-        <TitleText style={styles.sectionTitle}>Departamentos</TitleText>
-        {menuItems.map((department, index) => (
+        {/* Seção de Perfil */}
+        <Pressable style={styles.profileSection}>
+          <View style={styles.profileContent}>
+            <View style={styles.avatarPlaceholder}>
+              <MaterialCommunityIcons name="account" size={32} color={"#000"} />
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={styles.profileName}>Visitante</Text>
+              <Text
+                style={[
+                  styles.profileSubtext,
+                  { color: themeColors.secondaryText },
+                ]}
+              >
+                Faça login para personalizar
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color={themeColors.secondaryText}
+            />
+          </View>
+        </Pressable>
+
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
+
+        {/* Seção de Categorias */}
+        <View>
+          <TitleText style={styles.sectionTitle}>Categorias</TitleText>
+          {CATEGORIES.map((categoryItem, index) => (
+            <Pressable
+              key={index}
+              style={({ pressed }) => [
+                styles.menuItem,
+                {
+                  opacity: pressed ? 0.7 : 1,
+                  backgroundColor: pressed
+                    ? colorScheme === "dark"
+                      ? "#333"
+                      : "#f5f5f5"
+                    : "transparent",
+                },
+              ]}
+              onPress={() => handleCategoryPress(categoryItem)}
+            >
+              <View style={styles.menuItemContent}>
+                <MaterialCommunityIcons
+                  name={getCategoryIcon(categoryItem.category)}
+                  size={24}
+                  color={themeColors.text}
+                />
+                <Text style={styles.menuItemText}>{categoryItem.label}</Text>
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={24}
+                  color={themeColors.secondaryText}
+                  style={styles.chevron}
+                />
+              </View>
+            </Pressable>
+          ))}
+        </View>
+
+        <View
+          style={styles.separator}
+          lightColor="#eee"
+          darkColor="rgba(255,255,255,0.1)"
+        />
+
+        {/* Seção de Configurações */}
+        <View>
+          <TitleText style={styles.sectionTitle}>Configurações</TitleText>
+          <View style={styles.menuItem}>
+            <View style={styles.menuItemContent}>
+              <MaterialCommunityIcons
+                name="bell-outline"
+                size={24}
+                color={themeColors.text}
+              />
+              <Text style={styles.menuItemText}>Notificações</Text>
+              <Switch
+                value={notificationsEnabled}
+                onValueChange={handleNotificationsToggle}
+                trackColor={{ false: "#767577", true: themeColors.tint }}
+              />
+            </View>
+          </View>
           <Pressable
-            key={index}
             style={({ pressed }) => [
               styles.menuItem,
               {
@@ -118,33 +197,14 @@ export default function MenuScreen() {
                   : "transparent",
               },
             ]}
-            onPress={() => handleDepartmentPress(department)}
           >
             <View style={styles.menuItemContent}>
               <MaterialCommunityIcons
-                name={
-                  department === "Tecnologia"
-                    ? "laptop"
-                    : department === "Economia"
-                    ? "chart-line"
-                    : department === "Ciência"
-                    ? "flask"
-                    : department === "Esportes"
-                    ? "soccer"
-                    : department === "Política"
-                    ? "domain"
-                    : department === "Entretenimento"
-                    ? "movie"
-                    : department === "Saúde"
-                    ? "heart-pulse"
-                    : department === "Mundo"
-                    ? "earth"
-                    : "newspaper"
-                }
+                name="cog-outline"
                 size={24}
                 color={themeColors.text}
               />
-              <Text style={styles.menuItemText}>{department}</Text>
+              <Text style={styles.menuItemText}>Configurações</Text>
               <MaterialCommunityIcons
                 name="chevron-right"
                 size={24}
@@ -153,70 +213,18 @@ export default function MenuScreen() {
               />
             </View>
           </Pressable>
-        ))}
-      </View>
-
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
-
-      {/* Seção de Configurações */}
-      <View>
-        <TitleText style={styles.sectionTitle}>Configurações</TitleText>
-        <View style={styles.menuItem}>
-          <View style={styles.menuItemContent}>
-            <MaterialCommunityIcons
-              name="bell-outline"
-              size={24}
-              color={themeColors.text}
-            />
-            <Text style={styles.menuItemText}>Notificações</Text>
-            <Switch
-              value={notificationsEnabled}
-              onValueChange={handleNotificationsToggle}
-              trackColor={{ false: "#767577", true: themeColors.tint }}
-            />
-          </View>
         </View>
-        <Pressable
-          style={({ pressed }) => [
-            styles.menuItem,
-            {
-              opacity: pressed ? 0.7 : 1,
-              backgroundColor: pressed
-                ? colorScheme === "dark"
-                  ? "#333"
-                  : "#f5f5f5"
-                : "transparent",
-            },
-          ]}
+
+        {/* Versão do App */}
+        <Text
+          style={[styles.versionText, { color: themeColors.secondaryText }]}
         >
-          <View style={styles.menuItemContent}>
-            <MaterialCommunityIcons
-              name="cog-outline"
-              size={24}
-              color={themeColors.text}
-            />
-            <Text style={styles.menuItemText}>Configurações</Text>
-            <MaterialCommunityIcons
-              name="chevron-right"
-              size={24}
-              color={themeColors.secondaryText}
-              style={styles.chevron}
-            />
-          </View>
-        </Pressable>
-      </View>
+          {`Versão ${appVersion}`}
+        </Text>
 
-      {/* Versão do App */}
-      <Text style={[styles.versionText, { color: themeColors.secondaryText }]}>
-        {`Versão ${appVersion}`}
-      </Text>
-
-      <StatusBar style="auto" />
-    </ScrollView>
+        <StatusBar style="auto" />
+      </ScrollView>
+    </>
   );
 }
 
