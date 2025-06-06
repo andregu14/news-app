@@ -1,24 +1,19 @@
-import React from "react";
-import {
-  FlatList,
-  StyleSheet,
-  ViewStyle,
-  ListRenderItem,
-} from "react-native";
+import React, { useCallback } from "react";
+import { FlatList, StyleSheet, ViewStyle, ListRenderItem } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { TitleText, View } from "./Themed";
 import HighlightCard from "./HighlightCard";
 import HighlightCardSkeleton from "./HighlightCardSkeleton";
 import { ArticleParams } from "@/constants/NewsData";
 import { useColorScheme } from "react-native";
 import Colors from "@/constants/Colors";
+import { useRouter } from "expo-router";
 
 type HighlightCarouselProps = {
   data?: ArticleParams[];
   loading?: boolean;
   maxItems?: number;
-  onCardPress?: (item: ArticleParams) => void;
   style?: ViewStyle;
 };
 
@@ -26,11 +21,32 @@ export default function HighlightCarousel({
   data = [],
   loading = false,
   maxItems = 5,
-  onCardPress,
   style,
 }: HighlightCarouselProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
+  const router = useRouter();
+
+  // Função para navegar para os detalhes da notícia
+  const handleCardPress = useCallback(
+    (item: ArticleParams) => {
+      console.log("Navegando para detalhes do item:", item.title);
+      router.push({
+        pathname: "/newsDetails",
+        params: {
+          newsTitle: encodeURIComponent(item.title),
+          newsDescription: encodeURIComponent(item.description),
+          newsContent: item.content,
+          newsUrl: encodeURIComponent(item.url),
+          newsImage: encodeURIComponent(item.image),
+          newsPublishedAt: encodeURIComponent(item.publishedAt),
+          newsSourceName: encodeURIComponent(item.source.name),
+          newsSourceUrl: encodeURIComponent(item.source.url),
+        },
+      });
+    },
+    [router]
+  );
 
   // Dados para renderizar (skeletons ou dados reais)
   const renderData = loading
@@ -50,7 +66,7 @@ export default function HighlightCarousel({
         description={item.title}
         image={item.image}
         department={item.source.name}
-        onPress={() => onCardPress?.(item)}
+        onPress={() => handleCardPress(item)}
       />
     );
   };
@@ -64,7 +80,14 @@ export default function HighlightCarousel({
       {/* Header com título */}
       <View style={styles.header}>
         <FontAwesome6 name="fire" size={22} color={themeColors.mainColor} />
-        <TitleText style={[styles.title, { fontSize: 18, position: "absolute", left: 50 }]}>Em alta</TitleText>
+        <TitleText
+          style={[
+            styles.title,
+            { fontSize: 18, position: "absolute", left: 50 },
+          ]}
+        >
+          Em alta
+        </TitleText>
 
         <MaterialCommunityIcons
           name="arrow-right"
