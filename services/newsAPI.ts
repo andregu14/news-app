@@ -1,28 +1,34 @@
 import { ArticleParams } from "@/constants/NewsData";
+import { NewsCategory } from "@/constants/Categories";
 
 type NewsAPIResponse = {
   articles: ArticleParams[];
   totalArticles: number;
-}
+};
 
 export class NewsAPIError extends Error {
   constructor(message: string, public statusCode?: number) {
     super(message);
-    this.name = 'NewsAPIError';
+    this.name = "NewsAPIError";
   }
 }
 
-export const fetchNewsAPI = async (searchTerm: string, apiKey: string): Promise<NewsAPIResponse> => {
+export const fetchNewsAPI = async (
+  searchTerm: string,
+  apiKey: string,
+  category?: NewsCategory
+): Promise<NewsAPIResponse> => {
   try {
-    const response = await fetch(
-      `https://gnews.io/api/v4/top-headlines?country=br&q=${searchTerm}&apikey=${apiKey}`
-    );
+    const endpoint = category
+      ? `https://gnews.io/api/v4/top-headlines?country=br&category=${category}&apikey=${apiKey}`
+      : `https://gnews.io/api/v4/top-headlines?country=br&q=${searchTerm}&apikey=${apiKey}`;
 
+    const response = await fetch(endpoint);
+
+    console.log("Procurando em: ", endpoint);
+    
     if (!response.ok) {
-      throw new NewsAPIError(
-        'Falha ao buscar notícias',
-        response.status
-      );
+      throw new NewsAPIError("Falha ao buscar notícias", response.status);
     }
 
     const data = await response.json();
@@ -31,8 +37,6 @@ export const fetchNewsAPI = async (searchTerm: string, apiKey: string): Promise<
     if (error instanceof NewsAPIError) {
       throw error;
     }
-    throw new NewsAPIError(
-      'Erro ao conectar com o servidor de notícias'
-    );
+    throw new NewsAPIError("Erro ao conectar com o servidor de notícias");
   }
 };
