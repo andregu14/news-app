@@ -6,6 +6,7 @@ export default {
   light: {
     mainColor: mainColor,
     text: "#000",
+    searchBarFocused: mainColor,
     background: "#fff",
     tint: tintColorLight,
     tabIconSelected: tintColorLight,
@@ -17,6 +18,7 @@ export default {
   },
   dark: {
     mainColor: mainColor,
+    searchBarFocused: "#00473F",
     text: "#fff",
     background: "#000",
     tint: tintColorDark,

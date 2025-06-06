@@ -8,6 +8,8 @@ import {
 import { View, ViewProps } from "./Themed";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { is } from "date-fns/locale";
 
 type SearchBarProps = ViewProps & {
   onSubmitEditing?: (query: string) => void;
@@ -25,6 +27,7 @@ export default function SearchBar({
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const [inputValue, setInputValue] = useState(defaultValue);
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleClear = () => {
     setInputValue("");
@@ -35,37 +38,37 @@ export default function SearchBar({
     setInputValue("");
   };
 
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
+
+  const focusedBorderColor = themeColors.searchBarFocused;
+  const unfocusedBorderColor = themeColors.borderColor;
+
   return (
     <View
       style={[
         styles.container,
         {
-          borderColor:
-            themeColors.tint === Colors.dark.tint
-              ? "rgba(255, 255, 255, 0.2)"
-              : "#eee",
+          borderColor: isFocused ? focusedBorderColor : unfocusedBorderColor,
         },
         style,
       ]}
-      darkColor="rgba(255, 255, 255, 0.10)"
+      darkColor="#181A20"
       lightColor="#fff"
       {...otherProps}
     >
       {/* ... ícone ... */}
       <View
-        style={[
-          styles.iconContainer,
-          {
-            backgroundColor:
-              themeColors.tint === Colors.dark.tint ? "#3F3F3F" : "#eee",
-          },
-        ]}
+        style={[styles.iconContainer]}
+        darkColor="#00473F"
+        lightColor="#00695C"
       >
-        <MaterialCommunityIcons
-          name="magnify"
-          size={28}
-          color={themeColors.tint}
-        />
+        <FontAwesome name="search" size={22} color="#fff" />
       </View>
       <TextInput
         value={inputValue}
@@ -80,17 +83,16 @@ export default function SearchBar({
         style={[
           styles.input,
           {
-            borderColor:
-              themeColors.tint === Colors.dark.tint
-                ? "rgba(255, 255, 255, 0.2)"
-                : "#eee",
             color: themeColors.text,
           },
         ]}
+        cursorColor={themeColors.mainColor}
         inputMode="search"
         returnKeyType="search"
         accessibilityLabel="Campo de pesquisa"
         accessibilityHint="Digite aqui para pesquisar notícias"
+        onFocus={handleFocus}
+        onBlur={handleBlur}
       />
       {/* Botão de limpar aparece se houver texto */}
       {inputValue.length > 0 && (
@@ -121,21 +123,19 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     flexDirection: "row",
     alignItems: "center",
+    overflow: "hidden",
   },
   iconContainer: {
     height: "100%",
     width: 50,
     justifyContent: "center",
     alignItems: "center",
-    borderTopLeftRadius: 13,
-    borderBottomLeftRadius: 13,
   },
   input: {
     height: "100%",
     flex: 1,
     paddingLeft: 15,
     paddingRight: 35,
-    borderLeftWidth: 1,
     fontSize: 16,
     fontFamily: "Inter_400Regular",
   },
