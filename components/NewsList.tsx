@@ -3,19 +3,22 @@ import { FlatList, RefreshControl, StyleSheet } from "react-native";
 import { ArticleParams } from "@/constants/NewsData";
 import NewsCard from "./NewsCard";
 import NewsCardSkeleton from "./NewsCardSkeleton";
-import { View, Text } from "./Themed";
+import { View } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 
 type NewsListProps = {
   data: ArticleParams[];
   loading: boolean;
-  isRefreshing: boolean;
+  isRefreshing?: boolean;
   onRefresh?: () => void;
   onPressItem: (item: ArticleParams) => void;
   ListHeaderComponent: React.ComponentType;
   skeletonCount?: number;
-}
+  onEndReached: ((info: { distanceFromEnd: number }) => void) | null;
+  ListFooterComponent: React.JSX.Element | null;
+  refreshControl?: boolean;
+};
 
 export default function NewsList({
   data,
@@ -25,6 +28,9 @@ export default function NewsList({
   onPressItem,
   ListHeaderComponent,
   skeletonCount = 3,
+  onEndReached,
+  ListFooterComponent,
+  refreshControl,
 }: NewsListProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
@@ -70,30 +76,28 @@ export default function NewsList({
     );
   }
 
-  if (!data?.length) {
-    return (
-      <View style={styles.centerContainer}>
-        <Text>Nenhuma notícia encontrada</Text>
-      </View>
-    );
-  }
-
   return (
     <FlatList
       data={data}
       renderItem={renderNewsItem}
+      keyExtractor={(item) => item.url}
       ListHeaderComponent={ListHeaderComponent}
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="on-drag"
       ItemSeparatorComponent={ItemSeparator}
       refreshControl={
-        <RefreshControl
-          refreshing={isRefreshing}
-          onRefresh={onRefresh}
-          colors={["rgb(29, 108, 122)"]}
-          progressBackgroundColor={themeColors.background}
-        />
+        refreshControl ? (
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={["rgb(29, 108, 122)"]}
+            progressBackgroundColor={themeColors.background}
+          />
+        ) : undefined
       }
+      onEndReached={onEndReached}
+      onEndReachedThreshold={0.5}
+      ListFooterComponent={ListFooterComponent}
       contentContainerStyle={styles.listContainer}
     />
   );
