@@ -16,19 +16,28 @@ export class NewsAPIError extends Error {
 export const fetchNewsAPI = async (
   searchTerm: string,
   apiKey: string,
-  category?: NewsCategory
+  category?: NewsCategory,
+  toDate?: string
 ): Promise<NewsAPIResponse> => {
   try {
-    const endpoint = category
+    let endpoint = category
       ? `https://gnews.io/api/v4/top-headlines?country=br&category=${category}&apikey=${apiKey}`
       : `https://gnews.io/api/v4/top-headlines?country=br&q=${searchTerm}&apikey=${apiKey}`;
+
+    if (toDate) {
+      endpoint += `&to=${toDate}`;
+    }
 
     const response = await fetch(endpoint);
 
     console.log("Procurando em: ", endpoint);
-    
+
     if (!response.ok) {
-      throw new NewsAPIError("Falha ao buscar notícias", response.status);
+      const errorData = await response.json();
+      throw new NewsAPIError(
+        errorData.errors.join(", ") || "Falha ao buscar notícias",
+        response.status
+      );
     }
 
     const data = await response.json();
