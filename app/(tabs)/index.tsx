@@ -1,5 +1,10 @@
 import React, { useEffect, useCallback, useRef } from "react";
-import { StyleSheet, useColorScheme, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  useColorScheme,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import { View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
@@ -19,7 +24,7 @@ import AboutUsModal from "@/components/AboutUsModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useDispatch, useSelector } from "react-redux";
 import { setQuery } from "@/store/searchSlice";
-import { fetchHomeNewsAsync } from "@/store/newsSlice";
+import { fetchHomeNewsAsync, fetchMoreHomeNewsAsync } from "@/store/newsSlice";
 import { RootState, AppDispatch } from "@/store";
 import NewsListHeader from "@/components/NewsListHeader";
 
@@ -42,6 +47,8 @@ export default function Index() {
     articles: news,
     loading,
     isRefreshing,
+    loadingMore,
+    hasMore,
     error,
   } = useSelector((state: RootState) => state.news.homeNews);
 
@@ -49,10 +56,10 @@ export default function Index() {
   const fetchNews = useCallback(
     async (refresh = false) => {
       try {
-        await dispatch(fetchHomeNewsAsync(refresh)).unwrap();
+        await dispatch(fetchHomeNewsAsync(refresh));
         console.log("Dados de todas as notícias extraídos com sucesso!");
       } catch (e) {
-        console.error(error)
+        console.error(error);
       }
     },
     [dispatch]
@@ -66,6 +73,13 @@ export default function Index() {
   const onRefresh = useCallback(() => {
     fetchNews(true);
   }, [fetchNews]);
+
+  const handleLoadMore = useCallback(() => {
+    console.log("Fim da lista atingida buscando mais noticias");
+    if (hasMore && !loadingMore) {
+      dispatch(fetchMoreHomeNewsAsync());
+    }
+  }, [dispatch, hasMore, loadingMore]);
 
   const handleSearchSubmit = useCallback(
     (query: string) => {
@@ -158,14 +172,24 @@ export default function Index() {
               />
               <NewsList
                 data={news.slice(6)}
-                loading={loading}
+                loading={loading && news.length === 0}
                 isRefreshing={isRefreshing}
                 onRefresh={onRefresh}
                 onPressItem={handleCardPress}
+                onEndReached={handleLoadMore}
+                ListFooterComponent={
+                  loadingMore ? (
+                    <ActivityIndicator
+                      style={{ marginVertical: 20 }}
+                      size={"small"}
+                      color={themeColors.mainColor}
+                    />
+                  ) : null
+                }
                 ListHeaderComponent={() => (
                   <NewsListHeader
                     data={news}
-                    loading={loading}
+                    loading={loading && news.length === 0}
                     handleSearchSubmit={handleSearchSubmit}
                   />
                 )}
