@@ -13,7 +13,7 @@ type NewsListProps = {
   isRefreshing?: boolean;
   onRefresh?: () => void;
   onPressItem: (item: ArticleParams) => void;
-  ListHeaderComponent: React.ComponentType;
+  ListHeaderComponent?: React.JSX.Element;
   skeletonCount?: number;
   onEndReached: ((info: { distanceFromEnd: number }) => void) | null;
   ListFooterComponent: React.JSX.Element | null;
@@ -30,7 +30,7 @@ export default function NewsList({
   skeletonCount = 3,
   onEndReached,
   ListFooterComponent,
-  refreshControl,
+  refreshControl = true,
 }: NewsListProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
@@ -72,6 +72,8 @@ export default function NewsList({
         ListHeaderComponent={ListHeaderComponent}
         contentContainerStyle={styles.skeletonContainer}
         keyboardShouldPersistTaps="handled"
+        removeClippedSubviews={true}
+        updateCellsBatchingPeriod={30}
       />
     );
   }
@@ -99,6 +101,8 @@ export default function NewsList({
       onEndReachedThreshold={0.5}
       ListFooterComponent={ListFooterComponent}
       contentContainerStyle={styles.listContainer}
+      maxToRenderPerBatch={5}
+      windowSize={10}
     />
   );
 }
