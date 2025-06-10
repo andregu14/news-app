@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextInput,
   StyleSheet,
@@ -9,32 +9,39 @@ import { View, ViewProps } from "./Themed";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../constants/Colors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { is } from "date-fns/locale";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 type SearchBarProps = ViewProps & {
   onSubmitEditing?: (query: string) => void;
   placeholder?: string;
-  defaultValue?: string;
+  loading: boolean | undefined;
 };
 
 export default function SearchBar({
   onSubmitEditing,
-  placeholder = "Pesquisar",
-  defaultValue = "",
+  placeholder = "Pesquisar...",
   style,
+  loading,
   ...otherProps
 }: SearchBarProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
-  const [inputValue, setInputValue] = useState(defaultValue);
+  const searchQuery = useSelector((state: RootState) => state.search.query);
+  const [inputValue, setInputValue] = useState(searchQuery);
   const [isFocused, setIsFocused] = useState(false);
 
+  // Atualizar o input quando a query global mudar
+  useEffect(() => {
+    setInputValue(searchQuery);
+  }, [searchQuery]);
+
   const handleClear = () => {
-    setInputValue("");
+    loading ? undefined : setInputValue("");
   };
 
   const handleSubmit = () => {
-    onSubmitEditing?.(inputValue); // Chamar onSubmitEditing com o valor interno
+    onSubmitEditing?.(inputValue);
     setInputValue("");
   };
 
@@ -74,6 +81,7 @@ export default function SearchBar({
         value={inputValue}
         onChangeText={setInputValue}
         onSubmitEditing={handleSubmit}
+        readOnly={loading}
         placeholder={placeholder}
         placeholderTextColor={
           themeColors.tint === Colors.dark.tint
