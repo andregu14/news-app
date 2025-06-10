@@ -2,6 +2,7 @@ import { View, Text, ViewProps, BodyText, TitleText } from "./Themed";
 import { StyleSheet, useColorScheme, Pressable } from "react-native";
 import Colors from "@/constants/Colors";
 import { Image } from "expo-image";
+import { memo } from "react";
 
 type NewsCardProps = ViewProps & {
   title: string;
@@ -14,7 +15,7 @@ type NewsCardProps = ViewProps & {
   imageTestID?: string;
 };
 
-export default function NewsCard({
+function NewsCard({
   title,
   bodyText,
   image,
@@ -102,6 +103,8 @@ export default function NewsCard({
     </Pressable>
   );
 }
+
+export default memo(NewsCard);
 
 const styles = StyleSheet.create({
   container: {
