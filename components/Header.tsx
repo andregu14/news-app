@@ -21,7 +21,7 @@ export default function Header(props: HeaderProps) {
 
   const handleHomeScreen = () => {
     if (pathname !== "/") {
-      router.push("/");
+      router.replace("/");
     }
   };
 
