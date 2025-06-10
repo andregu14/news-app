@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { FlatList, StyleSheet, ViewStyle, ListRenderItem } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -8,13 +8,13 @@ import HighlightCardSkeleton from "./HighlightCardSkeleton";
 import { ArticleParams } from "@/constants/NewsData";
 import { useColorScheme } from "react-native";
 import Colors from "@/constants/Colors";
-import { useRouter } from "expo-router";
 
 type HighlightCarouselProps = {
   data?: ArticleParams[];
   loading?: boolean;
   maxItems?: number;
   style?: ViewStyle;
+  onCardPress: (item: ArticleParams) => void;
 };
 
 export default function HighlightCarousel({
@@ -22,31 +22,10 @@ export default function HighlightCarousel({
   loading = false,
   maxItems = 5,
   style,
+  onCardPress,
 }: HighlightCarouselProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
-  const router = useRouter();
-
-  // Função para navegar para os detalhes da notícia
-  const handleCardPress = useCallback(
-    (item: ArticleParams) => {
-      console.log("Navegando para detalhes do item:", item.title);
-      router.push({
-        pathname: "/newsDetails",
-        params: {
-          newsTitle: encodeURIComponent(item.title),
-          newsDescription: encodeURIComponent(item.description),
-          newsContent: item.content,
-          newsUrl: encodeURIComponent(item.url),
-          newsImage: encodeURIComponent(item.image),
-          newsPublishedAt: encodeURIComponent(item.publishedAt),
-          newsSourceName: encodeURIComponent(item.source.name),
-          newsSourceUrl: encodeURIComponent(item.source.url),
-        },
-      });
-    },
-    [router]
-  );
 
   // Dados para renderizar (skeletons ou dados reais)
   const renderData = loading
@@ -66,13 +45,13 @@ export default function HighlightCarousel({
         description={item.title}
         image={item.image}
         department={item.source.name}
-        onPress={() => handleCardPress(item)}
+        onPress={() => onCardPress(item)}
       />
     );
   };
 
   if (!loading && (!data || data.length === 0)) {
-    return null; // Não renderiza nada se não há dados
+    return null;
   }
 
   return (
@@ -108,9 +87,6 @@ export default function HighlightCarousel({
         horizontal
         showsHorizontalScrollIndicator={false}
         decelerationRate="fast"
-        removeClippedSubviews={true}
-        maxToRenderPerBatch={3}
-        windowSize={5}
         initialNumToRender={3}
         contentContainerStyle={styles.listContainer}
       />
@@ -135,6 +111,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   listContainer: {
-    paddingHorizontal: 10, // Padding nas laterais para dar espaço
+    paddingHorizontal: 10,
   },
 });
