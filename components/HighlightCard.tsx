@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import Colors, { Department, departmentColors } from "@/constants/Colors";
 import { Image } from "expo-image";
+import { memo } from "react";
 
 type HighlightCardProps = ViewProps & {
   description: string;
@@ -17,7 +18,7 @@ type HighlightCardProps = ViewProps & {
   imageTestID?: string;
 };
 
-export default function HighlightCard({
+function HighlightCard({
   description,
   image,
   department,
@@ -73,14 +74,7 @@ export default function HighlightCard({
         {
           width: cardWidth,
           borderColor: themeColors.borderColor,
-          opacity: pressed ? 0.8 : 1,
-          backgroundColor: pressed
-            ? colorScheme === "dark"
-              ? "#333"
-              : "#f5f5f5"
-            : colorScheme === "dark"
-            ? "#181A20"
-            : "#fff",
+          backgroundColor: colorScheme === "dark" ? "#181A20" : "#fff",
         },
       ]}
       testID={testID}
@@ -90,6 +84,10 @@ export default function HighlightCard({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint="Toque para abrir o artigo completo"
       hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+      android_ripple={{
+        color:
+          colorScheme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
+      }}
     >
       <View
         style={[
@@ -129,6 +127,8 @@ export default function HighlightCard({
   );
 }
 
+export default memo(HighlightCard);
+
 const styles = StyleSheet.create({
   container: {
     height: 200,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     padding: 10,
-    height: "50%"
+    height: "50%",
   },
   badge: {
     paddingHorizontal: 12,
