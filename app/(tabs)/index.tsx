@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useCallback, useRef, useMemo } from "react";
 import {
   StyleSheet,
   useColorScheme,
@@ -8,7 +8,7 @@ import {
 import { View } from "@/components/Themed";
 import Header from "@/components/Header";
 import { StatusBar } from "expo-status-bar";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { ArticleParams } from "@/constants/NewsData";
 import Colors from "@/constants/Colors";
 import SideMenu from "@/components/SideMenu";
@@ -23,14 +23,15 @@ import ReanimatedDrawerLayout, {
 import AboutUsModal from "@/components/AboutUsModal";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useDispatch, useSelector } from "react-redux";
-import { setQuery } from "@/store/searchSlice";
 import { fetchHomeNewsAsync, fetchMoreHomeNewsAsync } from "@/store/newsSlice";
 import { RootState, AppDispatch } from "@/store";
 import NewsListHeader from "@/components/NewsListHeader";
+import { setQuery } from "@/store/searchSlice";
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
 const appVersion = require("../../app.json").expo.version;
+const PRESS_COOLDOWN = 1000;
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
@@ -41,6 +42,7 @@ export default function Index() {
   const leftDrawerRef = useRef<DrawerLayoutMethods>(null);
   const rightDrawerRef = useRef<DrawerLayoutMethods>(null);
   const aboutUsRef = useRef<BottomSheetModal>(null);
+  const lastPressTimeRef = useRef(0);
 
   // Selecionar dados do Redux
   const {
@@ -90,9 +92,21 @@ export default function Index() {
     [dispatch, router]
   );
 
+  // Reseta o valor de query
+  useFocusEffect(() => {
+    dispatch(setQuery(""));
+  });
+
   // Função para navegar para os detalhes da notícia
   const handleCardPress = useCallback(
     (item: ArticleParams) => {
+      // prevenção de múltiplos toques
+      const now = Date.now();
+      if (now - lastPressTimeRef.current < PRESS_COOLDOWN) {
+        return;
+      }
+      lastPressTimeRef.current = now;
+
       console.log("Navegando para detalhes do item:", item.title);
       router.push({
         pathname: "/newsDetails",
@@ -127,6 +141,17 @@ export default function Index() {
   const handlePresentAboutUsModal = useCallback(() => {
     aboutUsRef.current?.present();
   }, []);
+
+  const listHeader = useMemo(() => {
+    return (
+      <NewsListHeader
+        data={news}
+        loading={loading && news.length === 0}
+        handleSearchSubmit={handleSearchSubmit}
+        onHighlightCardPress={handleCardPress}
+      />
+    );
+  }, [news, loading, handleSearchSubmit, handleCardPress]);
 
   return (
     <>
@@ -177,6 +202,7 @@ export default function Index() {
                 onRefresh={onRefresh}
                 onPressItem={handleCardPress}
                 onEndReached={handleLoadMore}
+                ListHeaderComponent={listHeader}
                 ListFooterComponent={
                   loadingMore ? (
                     <ActivityIndicator
@@ -186,13 +212,6 @@ export default function Index() {
                     />
                   ) : null
                 }
-                ListHeaderComponent={() => (
-                  <NewsListHeader
-                    data={news}
-                    loading={loading && news.length === 0}
-                    handleSearchSubmit={handleSearchSubmit}
-                  />
-                )}
               />
             </View>
             <AboutUsModal ref={aboutUsRef} appVersion={appVersion} />
