@@ -77,13 +77,14 @@ function RootLayoutNav() {
             <ThemeProvider
               value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
             >
-              <Stack screenOptions={{ animation: "slide_from_right" }}>
+              <Stack screenOptions={{ animation: "fade" }}>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen
                   name="newsDetails"
                   options={{
                     headerTitleStyle: { fontSize: 18 },
                     headerShown: true,
+                    animation: "ios_from_right"
                   }}
                 />
                 <Stack.Screen
