@@ -1,11 +1,12 @@
 import React, { useCallback } from "react";
-import { FlatList, RefreshControl, StyleSheet } from "react-native";
+import { Button, FlatList, RefreshControl, StyleSheet } from "react-native";
 import { ArticleParams } from "@/constants/NewsData";
 import NewsCard from "./NewsCard";
 import NewsCardSkeleton from "./NewsCardSkeleton";
-import { View } from "./Themed";
+import { View, Text, TitleText } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
+import { MaterialIcons } from "@expo/vector-icons";
 
 type NewsListProps = {
   data: ArticleParams[];
@@ -18,7 +19,39 @@ type NewsListProps = {
   onEndReached: ((info: { distanceFromEnd: number }) => void) | null;
   ListFooterComponent: React.JSX.Element | null;
   refreshControl?: boolean;
+  error: string | null;
+  showError?: boolean;
+  ListEmptyComponent?: React.ComponentType<any> | React.ReactElement | null;
+  onRetry: () => void;
 };
+
+const ErrorComponent = ({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) => (
+  <View style={styles.centerContainer}>
+    <TitleText style={styles.errorTextTitle}>Ops, algo deu errado.</TitleText>
+    <MaterialIcons
+      name="error"
+      size={70}
+      color="red"
+      style={{ marginBottom: 10 }}
+    />
+    <Text style={styles.errorTextMessage}>{message}</Text>
+    <Button title="Tentar Novamente" onPress={onRetry} color={"#00695C"} />
+  </View>
+);
+
+const EmptyComponent = (onRetry: () => void) => (
+  <View style={styles.centerContainer}>
+    <Text style={styles.errorTextTitle}>Nenhuma notícia encontrada.</Text>
+    <Text style={styles.errorTextMessage}>Tente novamente mais tarde.</Text>
+    <Button title="Tentar Novamente" onPress={onRetry} color={"#00695C"} />
+  </View>
+);
 
 export default function NewsList({
   data,
@@ -27,10 +60,14 @@ export default function NewsList({
   onRefresh,
   onPressItem,
   ListHeaderComponent,
+  ListEmptyComponent,
   skeletonCount = 3,
   onEndReached,
   ListFooterComponent,
   refreshControl = true,
+  error,
+  onRetry,
+  showError = false,
 }: NewsListProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
@@ -64,7 +101,8 @@ export default function NewsList({
     [onPressItem]
   );
 
-  if (loading) {
+  // Estado de Loading Inicial
+  if (loading && data.length === 0) {
     return (
       <FlatList
         data={Array(skeletonCount).fill(null)}
@@ -72,9 +110,17 @@ export default function NewsList({
         ListHeaderComponent={ListHeaderComponent}
         contentContainerStyle={styles.skeletonContainer}
         keyboardShouldPersistTaps="handled"
-        removeClippedSubviews={true}
-        updateCellsBatchingPeriod={30}
       />
+    );
+  }
+
+  // Estado de Erro
+  if (error && showError) {
+    return (
+      <View style={{ flex: 1 }}>
+        {ListHeaderComponent}
+        <ErrorComponent message={error || ""} onRetry={onRetry} />
+      </View>
     );
   }
 
@@ -84,6 +130,7 @@ export default function NewsList({
       renderItem={renderNewsItem}
       keyExtractor={(item) => item.url}
       ListHeaderComponent={ListHeaderComponent}
+      ListEmptyComponent={ListEmptyComponent ?? (() => EmptyComponent(onRetry))}
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="on-drag"
       ItemSeparatorComponent={ItemSeparator}
@@ -118,6 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    marginBottom: 100,
   },
   errorText: {
     color: "red",
@@ -128,5 +176,17 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flexGrow: 1,
+  },
+  errorTextTitle: {
+    fontSize: 24,
+    fontWeight: "600",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  errorTextMessage: {
+    fontSize: 14,
+    color: "gray",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });
