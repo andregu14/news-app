@@ -27,6 +27,8 @@ import { fetchHomeNewsAsync, fetchMoreHomeNewsAsync } from "@/store/newsSlice";
 import { RootState, AppDispatch } from "@/store";
 import NewsListHeader from "@/components/NewsListHeader";
 import { setQuery } from "@/store/searchSlice";
+import Toast from "@/components/ToastMessage";
+import { resetErrorMessage } from "@/store/newsSlice";
 
 const { width: screenWidth } = Dimensions.get("window");
 const drawerWidth = screenWidth * 0.8;
@@ -52,17 +54,13 @@ export default function Index() {
     loadingMore,
     hasMore,
     error,
+    errorMessage,
   } = useSelector((state: RootState) => state.news.homeNews);
 
   // Função para buscar notícias
   const fetchNews = useCallback(
-    async (refresh = false) => {
-      try {
-        await dispatch(fetchHomeNewsAsync(refresh));
-        console.log("Dados de todas as notícias extraídos com sucesso!");
-      } catch (e) {
-        console.error(error);
-      }
+    (refresh = false) => {
+      dispatch(fetchHomeNewsAsync(refresh));
     },
     [dispatch]
   );
@@ -76,6 +74,7 @@ export default function Index() {
     fetchNews(true);
   }, [fetchNews]);
 
+  // Função para carregar mais items
   const handleLoadMore = useCallback(() => {
     console.log("Fim da lista atingida buscando mais noticias");
     if (hasMore && !loadingMore) {
@@ -83,6 +82,7 @@ export default function Index() {
     }
   }, [dispatch, hasMore, loadingMore]);
 
+  // Função para submeter nova busca
   const handleSearchSubmit = useCallback(
     (query: string) => {
       console.log("Pesquisa submetida:", query);
@@ -91,6 +91,23 @@ export default function Index() {
     },
     [dispatch, router]
   );
+
+  // Mostra um toast onError
+  useEffect(() => {
+    if (errorMessage) {
+      Toast.show({
+        type: "error",
+        text1: errorMessage as string,
+        autoHide: false,
+        position: "bottom",
+        bottomOffset: insets.bottom + 50,
+        onPress: () => {
+          Toast.hide();
+        },
+      });
+      dispatch(resetErrorMessage());
+    }
+  }, [errorMessage, dispatch]);
 
   // Reseta o valor de query
   useFocusEffect(() => {
@@ -142,6 +159,7 @@ export default function Index() {
     aboutUsRef.current?.present();
   }, []);
 
+  // Componente de header da lista memorizado
   const listHeader = useMemo(() => {
     return (
       <NewsListHeader
@@ -149,6 +167,8 @@ export default function Index() {
         loading={loading && news.length === 0}
         handleSearchSubmit={handleSearchSubmit}
         onHighlightCardPress={handleCardPress}
+        showTitle={news.length > 0 || loading}
+        showCarrousel={news.length > 0 || loading}
       />
     );
   }, [news, loading, handleSearchSubmit, handleCardPress]);
@@ -197,7 +217,10 @@ export default function Index() {
               />
               <NewsList
                 data={news.slice(6)}
-                loading={loading && news.length === 0}
+                loading={loading}
+                error={error}
+                showError={news.length === 0}
+                onRetry={fetchNews}
                 isRefreshing={isRefreshing}
                 onRefresh={onRefresh}
                 onPressItem={handleCardPress}
