@@ -1,10 +1,11 @@
 import { key } from "@/constants/ApiKey";
 import { getCategoryFromLabel } from "@/constants/Categories";
-import { ArticleParams, newsData } from "@/constants/NewsData";
+import { ArticleParams } from "@/constants/NewsData";
 import { fetchNewsAPI } from "@/services/newsAPI";
 import { formatTimeAgo } from "@/utils/dateFormat";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from ".";
+import { getCache, setCache, HOME_NEWS_CACHE_KEY } from "@/utils/cache";
 
 interface ArticleWithOriginalDate extends ArticleParams {
   originalPublishedAt: string;
@@ -17,6 +18,7 @@ interface NewsSectionState {
   loadingMore: boolean;
   hasMore: boolean;
   error: string | null;
+  errorMessage: string | null;
 }
 
 interface NewsState {
@@ -32,6 +34,7 @@ const initialState: NewsState = {
     loadingMore: false,
     hasMore: true,
     error: null,
+    errorMessage: null,
   },
   searchResults: {
     articles: [],
@@ -40,6 +43,7 @@ const initialState: NewsState = {
     loadingMore: false,
     hasMore: true,
     error: null,
+    errorMessage: null,
   },
 };
 
@@ -56,51 +60,99 @@ const formatArticles = (articles: ArticleParams[]) => {
 
 export const fetchHomeNewsAsync = createAsyncThunk(
   "news/fetchHomeNews",
-  async (isRefresh: boolean = false) => {
-    const delay = isRefresh
-      ? 500
-      : Math.floor(Math.random() * (4000 - 2000 + 1) + 2000);
+  async (isRefresh: boolean = false, { getState, rejectWithValue }) => {
+    try {
+      const delay = isRefresh
+        ? 500
+        : Math.floor(Math.random() * (4000 - 2000 + 1) + 2000);
 
-    // Simula delay
-    await new Promise((resolve) => setTimeout(resolve, delay));
+      // Simula delay
+      await new Promise((resolve) => setTimeout(resolve, delay));
 
-    const data = await fetchNewsAPI("", key);
+      const data = await fetchNewsAPI("", key);
 
-    // Formata as datas
-    const formattedArticles = formatArticles(data.articles);
+      // Formata as datas
+      const formattedArticles = formatArticles(data.articles);
 
-    return { articles: formattedArticles, isRefresh };
+      const currentState = getState() as RootState;
+      const oldArticles = currentState.news.homeNews.articles;
+      let finalArticlesList: ArticleWithOriginalDate[];
+
+      if (isRefresh) {
+        const newUrls = new Set(formattedArticles.map((a) => a.url));
+        const filteredOldArticles = oldArticles.filter(
+          (a) => !newUrls.has(a.url)
+        );
+        finalArticlesList = [...formattedArticles, ...filteredOldArticles];
+      } else {
+        finalArticlesList = formattedArticles;
+      }
+
+      await setCache(HOME_NEWS_CACHE_KEY, finalArticlesList);
+
+      return { articles: finalArticlesList };
+    } catch (error) {
+      const cachedArticles = await getCache<ArticleWithOriginalDate[]>(
+        HOME_NEWS_CACHE_KEY
+      );
+      if (cachedArticles && cachedArticles.length > 0) {
+        console.error("API falhou, usando cache.", error);
+        return {
+          articles: cachedArticles,
+          error:
+            error instanceof Error
+              ? error.message
+              : "Ocorreu um erro desconhecido ao buscar as notícias.",
+        };
+      }
+      return rejectWithValue(
+        error instanceof Error
+          ? error.message
+          : "Ocorreu um erro desconhecido ao buscar as notícias."
+      );
+    }
   }
 );
 
 export const fetchMoreHomeNewsAsync = createAsyncThunk(
   "news/fetchMoreHomeNews",
-  async (_, { getState }) => {
+  async (_, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const lastIndexOfNews = state.news.homeNews.articles.length - 1;
     const oldestArticle = state.news.homeNews.articles[lastIndexOfNews];
-
     if (!oldestArticle) {
-      throw new Error("Não há artigos para basear a busca");
+      return rejectWithValue("Não há artigos anteriores para carregar mais.");
     }
 
-    const toDate = oldestArticle.originalPublishedAt;
-    const data = await fetchNewsAPI("", key, undefined, toDate);
+    try {
+      const toDate = oldestArticle.originalPublishedAt;
+      const data = await fetchNewsAPI("", key, undefined, toDate);
 
-    // Remove o primeiro elemento do array
-    data.articles.splice(0, 1);
+      // Remove o primeiro elemento do array
+      data.articles.splice(0, 1);
 
-    // Retorna os artigos formatados após a remoção
-    return formatArticles(data.articles);
+      const finalArticlesList = [
+        ...state.news.homeNews.articles,
+        ...data.articles,
+      ];
+      await setCache(HOME_NEWS_CACHE_KEY, finalArticlesList);
+
+      // Retorna os artigos formatados após a remoção
+      return formatArticles(data.articles);
+    } catch (error) {
+      console.error("Não foi possível carregar mais notícias.", error);
+      return rejectWithValue(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível carregar mais notícias."
+      );
+    }
   },
   {
     condition: (_, { getState }) => {
       const state = getState() as RootState;
       const { loadingMore, hasMore } = state.news.homeNews;
-      if (loadingMore || !hasMore) {
-        return false;
-      }
-      return true;
+      return !loadingMore && hasMore;
     },
   }
 );
@@ -109,67 +161,76 @@ export const fetchMoreHomeNewsAsync = createAsyncThunk(
 
 export const fetchSearchNewsAsync = createAsyncThunk(
   "news/fetchSearchNews",
-  async (searchTerm: string) => {
-    const delay = Math.floor(Math.random() * (2500 - 1000 + 1) + 2000);
+  async (searchTerm: string, { rejectWithValue }) => {
+    try {
+      const delay = Math.floor(Math.random() * (2500 - 1000 + 1) + 2000);
 
-    // Simula delay
-    await new Promise((resolve) => setTimeout(resolve, delay));
+      // Simula delay
+      await new Promise((resolve) => setTimeout(resolve, delay));
 
-    // Verifica se e categoria para busca especifica
-    const category = getCategoryFromLabel(searchTerm);
+      // Verifica se e categoria para busca especifica
+      const category = getCategoryFromLabel(searchTerm);
 
-    let data;
-    if (category) {
-      data = await fetchNewsAPI(searchTerm, key, category);
-    } else {
-      data = await fetchNewsAPI(searchTerm, key);
+      let data;
+      if (category) {
+        data = await fetchNewsAPI(searchTerm, key, category);
+      } else {
+        data = await fetchNewsAPI(searchTerm, key);
+      }
+
+      // Formata as datas
+      const formattedArticles = formatArticles(data.articles);
+
+      return { articles: formattedArticles };
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error
+          ? error.message
+          : "Sua busca não pôde ser completada. Tente novamente."
+      );
     }
-
-    // Formata as datas
-    const formattedArticles = formatArticles(data.articles);
-
-    return { articles: formattedArticles };
   }
 );
 
 export const fetchMoreSearchNewsAsync = createAsyncThunk(
   "news/fetchMoreSearchNews",
-  async (_, { getState }) => {
+  async (_, { getState, rejectWithValue }) => {
     const state = getState() as RootState;
     const searchQuery = state.search.query;
     const lastIndexOfSearch = state.news.searchResults.articles.length - 1;
     const oldestArticle = state.news.searchResults.articles[lastIndexOfSearch];
 
-    // Verifica se e categoria para busca especifica
-    const category = getCategoryFromLabel(searchQuery);
-
     if (!oldestArticle) {
-      throw new Error("Não há artigos para basear a busca");
+      return rejectWithValue("Não há resultados de busca para carregar mais.");
     }
-    
-    // Define a data do ultimo artigo
-    const toDate = oldestArticle.originalPublishedAt;
 
-    let data;
-    if (category) {
-      data = await fetchNewsAPI(searchQuery, key, category, toDate);
-    } else {
-      data = await fetchNewsAPI(searchQuery, key, undefined, toDate);
+    try {
+      // Define a data do ultimo artigo
+      const toDate = oldestArticle.originalPublishedAt;
+
+      // Verifica se e categoria para busca especifica
+      const category = getCategoryFromLabel(searchQuery);
+
+      const data = await fetchNewsAPI(searchQuery, key, category, toDate);
+
+      // Remove o primeiro elemento do array
+      data.articles.splice(0, 1);
+
+      // Retorna os artigos formatados após a remoção
+      return formatArticles(data.articles);
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível carregar mais resultados."
+      );
     }
-    // Remove o primeiro elemento do array
-    data.articles.splice(0, 1);
-
-    // Retorna os artigos formatados após a remoção
-    return formatArticles(data.articles);
   },
   {
     condition: (_, { getState }) => {
       const state = getState() as RootState;
       const { loadingMore, hasMore } = state.news.searchResults;
-      if (loadingMore || !hasMore) {
-        return false;
-      }
-      return true;
+      return !loadingMore && hasMore;
     },
   }
 );
@@ -177,48 +238,35 @@ export const fetchMoreSearchNewsAsync = createAsyncThunk(
 export const newsSlice = createSlice({
   name: "news",
   initialState,
-  reducers: {},
+  reducers: {
+    resetErrorMessage: (state) => {
+      state.homeNews.errorMessage = initialState.homeNews.errorMessage;
+      state.searchResults.errorMessage =
+        initialState.searchResults.errorMessage;
+    },
+  },
   extraReducers: (builder) => {
     // --- Home news reducers ---
     builder
       .addCase(fetchHomeNewsAsync.pending, (state) => {
-        if (state.homeNews.articles.length > 0) {
-          state.homeNews.isRefreshing = true;
-        } else {
-          state.homeNews.loading = true;
-        }
+        state.homeNews.isRefreshing = state.homeNews.articles.length > 0;
+        state.homeNews.loading = state.homeNews.articles.length === 0;
         state.homeNews.error = null;
+        state.homeNews.errorMessage = null;
       })
       .addCase(fetchHomeNewsAsync.fulfilled, (state, action) => {
-        if (action.payload.isRefresh) {
-          // Se refresh verifica e remove noticias com urls duplicadas adicionando as noticias novas no comeco
-          const newUrls = new Set(
-            action.payload.articles.map((article) => article.url)
-          );
-
-          const filteredOldArticles = state.homeNews.articles.filter(
-            (article) => !newUrls.has(article.url)
-          );
-
-          state.homeNews.articles = [
-            ...action.payload.articles,
-            ...filteredOldArticles,
-          ];
-        } else {
-          // Carga inicial
-          state.homeNews.articles = action.payload.articles;
-        }
-
+        state.homeNews.articles = action.payload.articles;
         state.homeNews.loading = false;
         state.homeNews.isRefreshing = false;
         state.homeNews.hasMore = action.payload.articles.length > 0; // Se a primeira busca não retornar nada, não há mais o que buscar
+        state.homeNews.error = action.payload.error || null;
+        state.homeNews.errorMessage = action.payload.error || null;
       })
       .addCase(fetchHomeNewsAsync.rejected, (state, action) => {
         state.homeNews.loading = false;
         state.homeNews.isRefreshing = false;
-        state.homeNews.error =
-          action.error.message || "Erro ao buscar notícias.";
-        state.homeNews.articles = formatArticles(newsData.articles); // Fallback temporario
+        state.homeNews.error = action.payload as string;
+        state.homeNews.errorMessage = action.payload as string;
         state.homeNews.hasMore = false;
       })
       // --- fetchMoreHomeNews ---
@@ -234,14 +282,15 @@ export const newsSlice = createSlice({
       })
       .addCase(fetchMoreHomeNewsAsync.rejected, (state, action) => {
         state.homeNews.loadingMore = false;
-        state.homeNews.error =
-          action.error.message || "Erro ao carregar mais notícias.";
+        state.homeNews.error = action.payload as string;
+        state.homeNews.errorMessage = action.payload as string;
       })
 
       // Search news reducers
       .addCase(fetchSearchNewsAsync.pending, (state) => {
         state.searchResults.loading = true;
         state.searchResults.error = null;
+        state.searchResults.errorMessage = null;
         state.searchResults.articles = []; // Limpa resultados antigos ao iniciar nova busca
         state.searchResults.hasMore = true;
       })
@@ -252,8 +301,9 @@ export const newsSlice = createSlice({
       })
       .addCase(fetchSearchNewsAsync.rejected, (state, action) => {
         state.searchResults.loading = false;
-        state.searchResults.error = action.error.message || "Erro na busca.";
-        state.searchResults.articles = formatArticles(newsData.articles);
+        state.searchResults.error = action.payload as string;
+        state.searchResults.errorMessage = action.payload as string;
+        state.searchResults.articles = [];
         state.searchResults.hasMore = false;
       })
       // fetchMoreSearchNews
@@ -267,10 +317,11 @@ export const newsSlice = createSlice({
       })
       .addCase(fetchMoreSearchNewsAsync.rejected, (state, action) => {
         state.searchResults.loadingMore = false;
-        state.searchResults.error =
-          action.error.message || "Erro ao carregar mais resultados.";
+        state.searchResults.error = action.payload as string;
+        state.searchResults.errorMessage = action.payload as string;
       });
   },
 });
 
+export const { resetErrorMessage } = newsSlice.actions;
 export default newsSlice.reducer;
