@@ -1,5 +1,6 @@
 import { ArticleParams } from "@/constants/NewsData";
 import { NewsCategory } from "@/constants/Categories";
+import NetInfo from "@react-native-community/netinfo";
 
 type NewsAPIResponse = {
   articles: ArticleParams[];
@@ -13,31 +14,59 @@ export class NewsAPIError extends Error {
   }
 }
 
+const cleanSearchTerm = (term: string): string => {
+  return term
+    .replace(/&/g, "e") // substitui & por 'e'
+    .replace(/[+]/g, " ") // substitui + por espaço
+    .replace(/[#]/g, "") // remove #
+    .trim(); // remove espaços extras no início e fim
+};
+
 export const fetchNewsAPI = async (
   searchTerm: string,
   apiKey: string,
-  category?: NewsCategory,
+  category?: NewsCategory | null,
   toDate?: string
 ): Promise<NewsAPIResponse> => {
   try {
-    let endpoint = category
-      ? `https://gnews.io/api/v4/top-headlines?country=br&category=${category}&apikey=${apiKey}`
-      : `https://gnews.io/api/v4/top-headlines?country=br&q=${searchTerm}&apikey=${apiKey}`;
+    const networkState = await NetInfo.fetch();
 
-    if (toDate) {
-      endpoint += `&to=${toDate}`;
+    if (!networkState.isConnected) {
+      throw new NewsAPIError("Sem conexão com a internet");
     }
 
-    const response = await fetch(endpoint);
+    const baseUrl = "https://gnews.io/api/v4/";
+    let endpoint = "";
+    const params = new URLSearchParams({
+      country: "br",
+      apikey: apiKey,
+    });
 
-    console.log("Procurando em: ", endpoint);
+    if (category) {
+      endpoint = "top-headlines";
+      params.append("category", category);
+    } else {
+      endpoint = "top-headlines";
+      params.append("q", cleanSearchTerm(searchTerm));
+    }
+
+    if (toDate) {
+      params.append("to", toDate);
+    }
+
+    const finalUrl = `${baseUrl}${endpoint}?${params.toString()}`;
+
+    const response = await fetch(finalUrl);
+
+    console.log("Procurando em: ", finalUrl);
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new NewsAPIError(
-        errorData.errors.join(", ") || "Falha ao buscar notícias",
-        response.status
-      );
+      const errorMessage =
+        errorData.errors?.join(", ") ||
+        "Ocorreu um erro no servidor de notícias.";
+
+      throw new NewsAPIError(errorMessage, response.status);
     }
 
     const data = await response.json();
@@ -46,6 +75,8 @@ export const fetchNewsAPI = async (
     if (error instanceof NewsAPIError) {
       throw error;
     }
-    throw new NewsAPIError("Erro ao conectar com o servidor de notícias");
+    throw new NewsAPIError(
+      "Não foi possível conectar ao serviço de notícias. Verifique sua conexão e tente novamente."
+    );
   }
 };
