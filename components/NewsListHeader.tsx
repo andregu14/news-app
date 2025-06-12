@@ -13,7 +13,7 @@ type NewsListHeaderProps = {
   loading?: boolean;
   handleSearchSubmit?: (query: string) => void;
   searchBarStyle?: ViewStyle;
-  onHighlightCardPress: (item: ArticleParams) => void;
+  onHighlightCardPress?: (item: ArticleParams) => void;
 };
 
 export default function NewsListHeader({
@@ -53,7 +53,7 @@ export default function NewsListHeader({
           data={data}
           loading={loading}
           maxItems={6}
-          onCardPress={onHighlightCardPress}
+          onCardPress={onHighlightCardPress ? onHighlightCardPress : () => {}}
         />
       )}
 
