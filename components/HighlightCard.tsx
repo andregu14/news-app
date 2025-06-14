@@ -1,13 +1,15 @@
 import { View, Text, ViewProps } from "./Themed";
-import {
-  StyleSheet,
-  useColorScheme,
-  useWindowDimensions,
-  Pressable,
-} from "react-native";
+import { StyleSheet, useColorScheme, useWindowDimensions } from "react-native";
 import Colors, { Department, departmentColors } from "@/constants/Colors";
 import { Image } from "expo-image";
 import { memo } from "react";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  runOnJS,
+} from "react-native-reanimated";
 
 type HighlightCardProps = ViewProps & {
   description: string;
@@ -39,64 +41,72 @@ function HighlightCard({
   const cardWidth = Math.min(width * 0.4, 340);
   const accessibilityLabel = `${department || "Notícia"}: ${description}`;
 
-  const Badge = () => {
-    return (
-      <View
-        style={[
-          styles.badge,
-          {
-            backgroundColor: colorsConfig?.backgroundColor || "#000",
-          },
-        ]}
+  const isPressed = useSharedValue(false);
+
+  // Gesto de toque
+  const tapGesture = Gesture.Tap()
+    .onBegin(() => {
+      isPressed.value = true;
+    })
+    .onEnd((_event, success) => {
+      // `success` garante que a ação só ocorra se for um toque válido
+      // e não um início de scroll.
+      if (success) {
+        // `runOnJS` é necessário para executar a função `onPress` na thread de JavaScript.
+        runOnJS(onPress)();
+      }
+    })
+    .onFinalize(() => {
+      // Desativa o estado de pressionado no final do gesto (seja sucesso ou falha)
+      isPressed.value = false;
+    });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { scale: withTiming(isPressed.value ? 0.97 : 1, { duration: 150 }) }, // Efeito de escala
+      ],
+      opacity: withTiming(isPressed.value ? 0.8 : 1, { duration: 150 }), // Efeito de opacidade
+    };
+  });
+
+  const Badge = () => (
+    <View
+      style={[
+        styles.badge,
+        { backgroundColor: colorsConfig?.backgroundColor || "#000" },
+      ]}
+      accessible={false}
+      importantForAccessibility="no-hide-descendants"
+    >
+      <Text
+        style={[styles.badgeText, { color: colorsConfig?.textColor }]}
         accessible={false}
-        importantForAccessibility="no-hide-descendants"
       >
-        <Text
-          style={[
-            styles.badgeText,
-            {
-              color: colorsConfig?.textColor,
-            },
-          ]}
-          accessible={false}
-        >
-          {department}
-        </Text>
-      </View>
-    );
-  };
+        {department}
+      </Text>
+    </View>
+  );
 
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.container,
-        {
-          width: cardWidth,
-          borderColor: themeColors.borderColor,
-          backgroundColor: colorScheme === "dark" ? "#181A20" : "#fff",
-        },
-      ]}
-      testID={testID}
-      // Acessibilidade
-      accessible={true}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-      accessibilityHint="Toque para abrir o artigo completo"
-      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-      android_ripple={{
-        color:
-          colorScheme === "dark" ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)",
-      }}
-    >
-      <View
+    <GestureDetector gesture={tapGesture}>
+      <Animated.View
         style={[
+          styles.container,
           {
             width: cardWidth,
-            backgroundColor: "transparent",
+            borderColor: themeColors.borderColor,
+            backgroundColor: colorScheme === "dark" ? "#181A20" : "#fff",
           },
+          animatedStyle,
           style,
         ]}
+        testID={testID}
+        // Acessibilidade
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+        accessibilityHint="Toque para abrir o artigo completo"
         {...otherProps}
       >
         <Image
@@ -122,8 +132,8 @@ function HighlightCard({
             { backgroundColor: colorsConfig.backgroundColor },
           ]}
         ></View>
-      </View>
-    </Pressable>
+      </Animated.View>
+    </GestureDetector>
   );
 }
 

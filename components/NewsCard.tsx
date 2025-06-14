@@ -1,8 +1,15 @@
 import { View, Text, ViewProps, BodyText, TitleText } from "./Themed";
-import { StyleSheet, useColorScheme, Pressable } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
 import Colors from "@/constants/Colors";
 import { Image } from "expo-image";
 import { memo } from "react";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  runOnJS,
+} from "react-native-reanimated";
 
 type NewsCardProps = ViewProps & {
   title: string;
@@ -34,73 +41,97 @@ function NewsCard({
     sourceName || "Fonte Desconhecida"
   }`;
 
-  return (
-    <Pressable
-      onPress={onPress}
-      testID={testID}
-      style={[
-        styles.container,
-        style,
-        { borderColor: themeColors.borderColor },
-      ]}
-      accessible={true}
-      accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-      accessibilityHint="Toque para ver mais detalhes"
-      hitSlop={{ top: 12, bottom: 12, left: 8, right: 8 }}
-      {...otherProps}
-    >
-      <TitleText
-        style={styles.title}
-        accessible={false}
-        accessibilityRole="header"
-      >
-        {title}
-      </TitleText>
-      <Image
-        style={styles.image}
-        source={image}
-        contentFit="cover"
-        testID={imageTestID || "news-card-image"}
-        accessible={false}
-        accessibilityElementsHidden={true}
-      />
-      <BodyText
-        style={styles.bodyText}
-        ellipsizeMode={"tail"}
-        numberOfLines={4}
-        accessible={false}
-      >
-        {bodyText}
-      </BodyText>
+  const isPressed = useSharedValue(false);
 
-      <View style={styles.footerContainer}>
-        <Text
-          style={[
-            styles.footerText,
-            { color: themeColors.secondaryText, marginRight: 3 },
-          ]}
+  // Gesto de toque
+  const tapGesture = Gesture.Tap()
+    .onBegin(() => {
+      isPressed.value = true;
+    })
+    .onEnd((_event, success) => {
+      if (success) {
+        runOnJS(onPress)();
+      }
+    })
+    .onFinalize(() => {
+      isPressed.value = false;
+    });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: withTiming(isPressed.value ? 0.8 : 1),
+    };
+  });
+
+  return (
+    <GestureDetector gesture={tapGesture}>
+      <Animated.View
+        testID={testID}
+        style={[
+          styles.container,
+          { borderColor: themeColors.borderColor },
+          style,
+          animatedStyle,
+        ]}
+        // Acessibilidade
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+        accessibilityHint="Toque para ver mais detalhes"
+        {...otherProps}
+      >
+        <TitleText
+          style={styles.title}
+          accessible={false}
+          accessibilityRole="header"
         >
-          {`${time}`}
-        </Text>
-        <Text
-          style={[
-            styles.footerText,
-            { color: themeColors.secondaryText, fontSize: 9 },
-          ]}
+          {title}
+        </TitleText>
+        <Image
+          style={styles.image}
+          source={image}
+          contentFit="cover"
+          testID={imageTestID || "news-card-image"}
+          accessible={false}
+          accessibilityElementsHidden={true}
+        />
+        <BodyText
+          style={styles.bodyText}
+          ellipsizeMode={"tail"}
+          numberOfLines={4}
+          accessible={false}
         >
-          {" • "}
-        </Text>
-        <Text
-          style={[
-            styles.footerText,
-            { color: themeColors.secondaryText, marginLeft: 3 },
-          ]}
-        >
-          Em {sourceName || "Fonte Desconhecida"}
-        </Text>
-      </View>
-    </Pressable>
+          {bodyText}
+        </BodyText>
+
+        <View style={styles.footerContainer}>
+          <Text
+            style={[
+              styles.footerText,
+              { color: themeColors.secondaryText, marginRight: 3 },
+            ]}
+          >
+            {`${time}`}
+          </Text>
+          <Text
+            style={[
+              styles.footerText,
+              { color: themeColors.secondaryText, fontSize: 9 },
+            ]}
+          >
+            {" • "}
+          </Text>
+          <Text
+            style={[
+              styles.footerText,
+              { color: themeColors.secondaryText, marginLeft: 3 },
+            ]}
+          >
+            Em {sourceName || "Fonte Desconhecida"}
+          </Text>
+        </View>
+      </Animated.View>
+    </GestureDetector>
   );
 }
 
