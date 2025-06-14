@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     padding: 10,
     height: "50%",
+    fontFamily: "Inter_500Medium"
   },
   badge: {
     paddingHorizontal: 12,
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    fontFamily: "Inter_500Medium",
+    fontFamily: "Inter_600SemiBold",
   },
   bottomColor: {
     position: "absolute",
