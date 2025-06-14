@@ -64,7 +64,7 @@ export const fetchHomeNewsAsync = createAsyncThunk(
     try {
       const delay = isRefresh
         ? 500
-        : Math.floor(Math.random() * (4000 - 2000 + 1) + 2000);
+        : Math.floor(Math.random() * (3000 - 2000 + 1) + 2000);
 
       // Simula delay
       await new Promise((resolve) => setTimeout(resolve, delay));
@@ -163,7 +163,7 @@ export const fetchSearchNewsAsync = createAsyncThunk(
   "news/fetchSearchNews",
   async (searchTerm: string, { rejectWithValue }) => {
     try {
-      const delay = Math.floor(Math.random() * (2500 - 1000 + 1) + 2000);
+      const delay = Math.floor(Math.random() * (3000 - 2000 + 1) + 2000);
 
       // Simula delay
       await new Promise((resolve) => setTimeout(resolve, delay));
