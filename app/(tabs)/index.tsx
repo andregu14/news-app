@@ -125,11 +125,6 @@ export default function Index() {
     }, [closeAllDrawers])
   );
 
-  // Reseta o valor de query
-  useFocusEffect(() => {
-    if (searchQuery) dispatch(setQuery(""));
-  });
-
   // Função para navegar para os detalhes da notícia
   const handleCardPress = useCallback(
     (item: ArticleParams) => {
