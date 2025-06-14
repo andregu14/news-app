@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { View, ViewProps } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity, Pressable } from "react-native";
 import { usePathname, useRouter } from "expo-router";
 
 type HeaderProps = ViewProps & {
@@ -36,9 +36,17 @@ export default function Header(props: HeaderProps) {
         ]}
         testID="header"
       >
-        <TouchableOpacity
+        <Pressable
           onPress={props.onAccountPress}
           testID="account-button"
+          android_ripple={{
+            borderless: true,
+            radius: 22,
+            color:
+              colorScheme === "dark"
+                ? "rgba(255,255,255,0.1)"
+                : "rgba(0,0,0,0.1)",
+          }}
         >
           <MaterialCommunityIcons
             name="account"
@@ -46,23 +54,45 @@ export default function Header(props: HeaderProps) {
             color={color}
             testID="icon-account"
           />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleHomeScreen} testID="index-button">
+        </Pressable>
+        <Pressable
+          onPress={handleHomeScreen}
+          testID="index-button"
+          android_ripple={{
+            borderless: true,
+            radius: 22,
+            color:
+              colorScheme === "dark"
+                ? "rgba(255,255,255,0.1)"
+                : "rgba(0,0,0,0.1)",
+          }}
+        >
           <MaterialCommunityIcons
             name="diamond-stone"
             size={iconSize}
             color={color}
             testID="icon-diamond-stone"
           />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={props.onMenuPress} testID="menu-button">
+        </Pressable>
+        <Pressable
+          onPress={props.onMenuPress}
+          testID="menu-button"
+          android_ripple={{
+            borderless: true,
+            radius: 22,
+            color:
+              colorScheme === "dark"
+                ? "rgba(255,255,255,0.1)"
+                : "rgba(0,0,0,0.1)",
+          }}
+        >
           <MaterialCommunityIcons
             name="widgets"
             size={iconSize}
             color={color}
             testID="icon-menu"
           />
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <View
         style={styles.separator}
