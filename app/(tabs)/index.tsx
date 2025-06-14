@@ -56,6 +56,7 @@ export default function Index() {
     error,
     errorMessage,
   } = useSelector((state: RootState) => state.news.homeNews);
+  const searchQuery = useSelector((state: RootState) => state.search.query);
 
   // Função para buscar notícias
   const fetchNews = useCallback(
@@ -109,9 +110,24 @@ export default function Index() {
     }
   }, [errorMessage, dispatch]);
 
+  // Fechar ambos os menus
+  const closeAllDrawers = useCallback(() => {
+    leftDrawerRef.current?.closeDrawer();
+    rightDrawerRef.current?.closeDrawer();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Quando a tela perde o foco fecha ambos os sideMenus
+      return () => {
+        closeAllDrawers();
+      };
+    }, [closeAllDrawers])
+  );
+
   // Reseta o valor de query
   useFocusEffect(() => {
-    dispatch(setQuery(""));
+    if (searchQuery) dispatch(setQuery(""));
   });
 
   // Função para navegar para os detalhes da notícia
@@ -194,6 +210,7 @@ export default function Index() {
           ref={leftDrawerRef}
           drawerPosition={DrawerPosition.LEFT}
           drawerType={DrawerType.FRONT}
+          onDrawerSlide={() => rightDrawerRef.current?.closeDrawer()}
           renderNavigationView={() => (
             <AccountSideMenu onPressAbout={handlePresentAboutUsModal} />
           )}
