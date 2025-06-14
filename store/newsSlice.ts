@@ -5,7 +5,7 @@ import { fetchNewsAPI } from "@/services/newsAPI";
 import { formatTimeAgo } from "@/utils/dateFormat";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from ".";
-import { getCache, setCache, HOME_NEWS_CACHE_KEY } from "@/utils/cache";
+import { getCache, setCache, HOME_NEWS_CACHE_KEY } from "@/utils/newsCache";
 
 interface ArticleWithOriginalDate extends ArticleParams {
   originalPublishedAt: string;
@@ -133,7 +133,7 @@ export const fetchMoreHomeNewsAsync = createAsyncThunk(
 
       const finalArticlesList = [
         ...state.news.homeNews.articles,
-        ...data.articles,
+        ...formatArticles(data.articles),
       ];
       await setCache(HOME_NEWS_CACHE_KEY, finalArticlesList);
 
@@ -284,6 +284,7 @@ export const newsSlice = createSlice({
         state.homeNews.loadingMore = false;
         state.homeNews.error = action.payload as string;
         state.homeNews.errorMessage = action.payload as string;
+        state.homeNews.hasMore = false;
       })
 
       // Search news reducers
