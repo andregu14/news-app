@@ -1,90 +1,35 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { View, ViewProps } from "./Themed";
-import {
-  StyleSheet,
-  useColorScheme,
-  Animated,
-  useWindowDimensions,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-
-const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
-
+import { StyleSheet } from "react-native";
+import { Skeleton } from "./Skeleton";
 export default function NewsCardSkeleton({ style, ...otherProps }: ViewProps) {
-  const colorScheme = useColorScheme() ?? "light";
-  const { width } = useWindowDimensions();
-  const shimmerAnim = useRef(new Animated.Value(-1)).current;
-
-  const skeletonBaseColor = colorScheme === "dark" ? "#333" : "#E0E0E0";
-
-  const shimmerGradientColors =
-    colorScheme === "dark"
-      ? (["transparent", "rgba(255,255,255,0.1)", "transparent"] as const)
-      : (["transparent", "rgba(0,0,0,0.05)", "transparent"] as const);
-
-  useEffect(() => {
-    Animated.loop(
-      Animated.timing(shimmerAnim, {
-        toValue: 1,
-        duration: 1200,
-        useNativeDriver: true,
-      })
-    ).start();
-  }, [shimmerAnim]);
-
-  const translateX = shimmerAnim.interpolate({
-    inputRange: [-1, 1],
-    outputRange: [-width * 0.9, width * 0.9],
-  });
-
   return (
-    <View style={[styles.container, style, { backgroundColor: "transparent" }]}>
-      {/* Placeholder para o Título */}
-      <View
-        style={[styles.skeletonTitle, { backgroundColor: skeletonBaseColor }]}
-      />
-      {/* Placeholder para o Corpo do Texto */}
-      <View
-        style={[
-          styles.skeletonBodyLine,
-          { width: "90%", backgroundColor: skeletonBaseColor },
-        ]}
-      />
-      <View
-        style={[
-          styles.skeletonBodyLine,
-          { width: "80%", backgroundColor: skeletonBaseColor },
-        ]}
-      />
-      <View
-        style={[
-          styles.skeletonBodyLine,
-          { width: "95%", backgroundColor: skeletonBaseColor },
-        ]}
-      />
-      <View
-        style={[
-          styles.skeletonBodyLine,
-          { width: "70%", backgroundColor: skeletonBaseColor },
-        ]}
-      />
-      {/* Placeholder para a Imagem */}
-      <View
-        style={[styles.skeletonImage, { backgroundColor: skeletonBaseColor }]}
-      />
+    <View
+      style={[styles.container, style, { backgroundColor: "transparent" }]}
+      {...otherProps}
+    >
+      <View style={{ paddingHorizontal: 15 }}>
+        {/* Titulo */}
+        <View style={{marginVertical: 20}}>
+          <Skeleton height={18} width="70%" />
+        </View>
 
-      {/* Placeholder para o Footer */}
-      <View
-        style={[styles.skeletonFooter, { backgroundColor: skeletonBaseColor }]}
-      />
+         {/* Imagem */}
+      <Skeleton height={180} width="100%" />
 
-      {/* Overlay com o Gradiente Animado */}
-      <AnimatedLinearGradient
-      colors={shimmerGradientColors}
-      style={[StyleSheet.absoluteFill, { transform: [{ translateX }] }]}
-      start={{ x: 0, y: 0.5 }}
-      end={{ x: 1, y: 0.5 }}
-    />
+        {/* Corpo do Texto */}
+        <View style={{ marginVertical: 15, rowGap: 8 }}>
+          <Skeleton height={14} width="90%" />
+          <Skeleton height={14} width="80%" />
+          <Skeleton height={14} width="95%" />
+          <Skeleton height={14} width="70%" />
+        </View>
+      </View>
+
+      {/* Footer */}
+      <View style={{ paddingHorizontal: 15, marginTop: 15 }}>
+        <Skeleton height={12} width="50%" />
+      </View>
     </View>
   );
 }
@@ -93,34 +38,6 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 20,
     paddingBottom: 20,
-    marginHorizontal: 20,
     overflow: "hidden",
-    position: "relative",
-  },
-  skeletonTitle: {
-    height: 18,
-    width: "70%",
-    borderRadius: 4,
-    marginLeft: 15,
-    marginBottom: 15,
-  },
-  skeletonBodyLine: {
-    height: 14,
-    borderRadius: 4,
-    marginBottom: 8,
-    marginHorizontal: 15,
-  },
-  skeletonImage: {
-    width: "100%",
-    height: 180,
-    marginTop: 15,
-    borderRadius: 4,
-  },
-  skeletonFooter: {
-    height: 12,
-    width: "50%",
-    borderRadius: 4,
-    marginTop: 15,
-    marginLeft: 15,
   },
 });
