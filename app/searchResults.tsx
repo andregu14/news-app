@@ -125,11 +125,12 @@ export default function SearchResults() {
 
   useFocusEffect(
     useCallback(() => {
-      // Quando a tela perde o foco fecha ambos os sideMenus
+      // Quando a tela perde o foco fecha ambos os sideMenus e muda o searchQuery
       return () => {
         closeAllDrawers();
+        if (searchQuery) dispatch(setQuery(""));
       };
-    }, [closeAllDrawers])
+    }, [closeAllDrawers, dispatch])
   );
 
   // Componente para lista vazia
