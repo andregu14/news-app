@@ -106,7 +106,7 @@ export default function NewsList({
     return (
       <FlatList
         data={Array(skeletonCount).fill(null)}
-        renderItem={() => <NewsCardSkeleton style={{ marginVertical: 20 }} />}
+        renderItem={() => <NewsCardSkeleton />}
         ListHeaderComponent={ListHeaderComponent}
         contentContainerStyle={styles.skeletonContainer}
         keyboardShouldPersistTaps="handled"
