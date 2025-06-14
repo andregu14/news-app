@@ -37,7 +37,7 @@ export default function NewsListHeader({
           style={[
             searchBarStyle,
             {
-              marginTop: 40,
+              marginTop: 25,
               alignSelf: "center",
               width: "90%",
             },
@@ -69,7 +69,7 @@ export default function NewsListHeader({
             style={{
               position: "absolute",
               top: 4,
-              width: 7,
+              width: 9,
               height: 41,
               backgroundColor: themeColors.mainColor,
               borderRadius: 14,
