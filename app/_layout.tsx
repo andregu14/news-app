@@ -84,12 +84,21 @@ function RootLayoutNav() {
                   options={{
                     headerTitleStyle: { fontSize: 18 },
                     headerShown: true,
-                    animation: "ios_from_right"
+                    animation: "ios_from_right",
                   }}
                 />
                 <Stack.Screen
                   name="searchResults"
                   options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                  name="favorites"
+                  options={{
+                    headerTitleStyle: { fontSize: 18 },
+                    headerShown: true,
+                    headerTitle: "Favoritos",
+                    animation: "ios_from_right",
+                  }}
                 />
               </Stack>
               <Toast config={toastConfig} />
