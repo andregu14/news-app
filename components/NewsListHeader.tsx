@@ -62,25 +62,43 @@ export default function NewsListHeader({
         <View
           style={{
             marginHorizontal: 20,
-            marginBottom: 15,
+            marginBottom: 18,
+            marginTop: 6,
           }}
         >
           <View
             style={{
               position: "absolute",
-              top: 4,
-              width: 9,
-              height: 41,
+              left: 0,
+              top: -1,
+              width: 5,
+              height: 32,
               backgroundColor: themeColors.mainColor,
-              borderRadius: 14,
+              borderRadius: 2,
             }}
           />
-          <TitleText style={{ marginHorizontal: 19 }}>Notícias</TitleText>
-          <Text
-            style={{ marginHorizontal: 19, color: themeColors.secondaryText }}
-          >
-            Fique por dentro
-          </Text>
+
+          <View style={{ marginLeft: 16 }}>
+            <TitleText
+              style={{
+                fontSize: 18,
+                marginBottom: 2,
+                fontFamily: "Inter_600SemiBold",
+              }}
+            >
+              Notícias
+            </TitleText>
+
+            <Text
+              style={{
+                color: themeColors.secondaryText,
+                fontSize: 13,
+                opacity: 0.7,
+              }}
+            >
+              Fique por dentro
+            </Text>
+          </View>
         </View>
       )}
     </>
