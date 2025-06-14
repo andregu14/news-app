@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export const HOME_NEWS_CACHE_KEY = "homeNewsCache";
 
 const CACHE_EXPIRATION_HOURS = 6; // Cache valido por 6 horas
-const MAX_CACHE_ITEMS = 50 // Limite de itens no cache
+const MAX_CACHE_ITEMS = 25 // Limite de itens no cache
 
 /**
  * Salva dados no cache com um timestamp.
