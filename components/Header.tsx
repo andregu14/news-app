@@ -2,8 +2,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { View, ViewProps } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
-import { StyleSheet, TouchableOpacity, Pressable } from "react-native";
+import { StyleSheet, Pressable } from "react-native";
 import { usePathname, useRouter } from "expo-router";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 type HeaderProps = ViewProps & {
   onMenuPress?: () => void;
@@ -15,7 +16,7 @@ export default function Header(props: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const color = Colors[colorScheme ?? "light"].headerIcon;
-  const iconSize = 28;
+  const iconSize = 26;
 
   const themeColors = Colors[colorScheme ?? "light"];
 
@@ -67,11 +68,11 @@ export default function Header(props: HeaderProps) {
                 : "rgba(0,0,0,0.1)",
           }}
         >
-          <MaterialCommunityIcons
-            name="diamond-stone"
+          <FontAwesome6
+            name="newspaper"
             size={iconSize}
             color={color}
-            testID="icon-diamond-stone"
+            testID="icon-newspaper"
           />
         </Pressable>
         <Pressable
