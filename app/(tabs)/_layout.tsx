@@ -52,7 +52,8 @@ export default function TabLayout() {
         tabBarBackground: () => (
           <View
             style={{
-              backgroundColor: themeColors.headerBackground,
+              backgroundColor:
+                colorScheme === "dark" ? themeColors.headerBackground : "#fff",
               height: "100%",
             }}
           />
