@@ -130,17 +130,13 @@ export default function MenuScreen() {
           {CATEGORIES.map((categoryItem, index) => (
             <Pressable
               key={index}
-              style={({ pressed }) => [
-                styles.menuItem,
-                {
-                  opacity: pressed ? 0.7 : 1,
-                  backgroundColor: pressed
-                    ? colorScheme === "dark"
-                      ? "#333"
-                      : "#f5f5f5"
-                    : "transparent",
-                },
-              ]}
+              style={({ pressed }) => [styles.menuItem]}
+              android_ripple={{
+                color:
+                  colorScheme === "dark"
+                    ? "rgba(255,255,255,0.1)"
+                    : "rgba(0,0,0,0.1)",
+              }}
               onPress={() => handleCategoryPress(categoryItem)}
             >
               <View style={styles.menuItemContent}>
@@ -186,17 +182,13 @@ export default function MenuScreen() {
             </View>
           </View>
           <Pressable
-            style={({ pressed }) => [
-              styles.menuItem,
-              {
-                opacity: pressed ? 0.7 : 1,
-                backgroundColor: pressed
-                  ? colorScheme === "dark"
-                    ? "#333"
-                    : "#f5f5f5"
-                  : "transparent",
-              },
-            ]}
+            style={({ pressed }) => [styles.menuItem]}
+            android_ripple={{
+              color:
+                colorScheme === "dark"
+                  ? "rgba(255,255,255,0.1)"
+                  : "rgba(0,0,0,0.1)",
+            }}
           >
             <View style={styles.menuItemContent}>
               <MaterialCommunityIcons
