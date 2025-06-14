@@ -17,6 +17,7 @@ import {
 import { ArticleParams } from "@/constants/NewsData";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "@/components/ToastMessage";
+import { ExternalLink } from "@/components/ExternalLink";
 
 const SHARE_PRESS_COOLDOWN = 2000;
 const FAVORITE_PRESS_COOLDOWN = 1000;
@@ -204,9 +205,27 @@ export default function NewsDetailsScreen() {
           lightColor="#eee"
           darkColor="rgba(255,255,255,0.1)"
         />
-        <Text
-          style={styles.content}
-        >{`${newsContent}\n\n${newsContent} `}</Text>
+
+        <Text style={styles.content}>{`${newsContent}`}</Text>
+        <View style={styles.externalLinkContainer}>
+          <ExternalLink href={newsUrl}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+              <Ionicons
+                name="open-outline"
+                size={20}
+                color={themeColors.mainColor}
+              />
+              <Text
+                style={[
+                  styles.externalLinkText,
+                  { color: themeColors.mainColor },
+                ]}
+              >
+                Ler matéria completa
+              </Text>
+            </View>
+          </ExternalLink>
+        </View>
 
         <View
           style={[styles.separator, { marginBottom: insets.bottom + 20 }]}
@@ -216,7 +235,7 @@ export default function NewsDetailsScreen() {
       </ScrollView>
 
       <StatusBar style="light" />
-            <View
+      <View
         style={[
           styles.bottomView,
           {
@@ -240,14 +259,13 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 200,
+    height: 250,
   },
   title: {
-    marginTop: 30,
+    marginVertical: 20,
     paddingHorizontal: 20,
-    fontSize: 26,
+    fontSize: 32,
     fontFamily: "Inter_700Bold",
-    marginBottom: 20,
   },
   description: {
     paddingHorizontal: 20,
@@ -274,5 +292,14 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 999,
+  },
+  externalLinkContainer: {
+    marginVertical: 25,
+    alignItems: "center",
+  },
+  externalLinkText: {
+    fontSize: 16,
+    fontFamily: "Inter_600SemiBold",
+    textDecorationLine: "underline",
   },
 });
