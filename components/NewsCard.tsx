@@ -145,9 +145,9 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingHorizontal: 15,
-    marginBottom: 10,
-    lineHeight: 24,
-    fontSize: 20,
+    paddingBottom: 20,
+    fontSize: 24,
+    fontFamily: "Inter_700Bold",
   },
   bodyText: {
     marginVertical: 10,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 180,
+    height: 220,
     marginTop: 10,
   },
   footerContainer: {
