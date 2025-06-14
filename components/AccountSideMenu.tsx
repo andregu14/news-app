@@ -3,6 +3,7 @@ import { View, Text } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 const { width: screenWidth } = Dimensions.get("window");
 const menuWidth = screenWidth * 0.8;
@@ -55,6 +56,7 @@ export default function AccountSideMenu({
 }: AccountSideMenuProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
+  const router = useRouter();
 
   const menuItems: MenuItemProps[] = [
     {
@@ -80,7 +82,7 @@ export default function AccountSideMenu({
     {
       icon: "heart-outline",
       label: "Favoritos",
-      onPress: () => console.log("Favoritos"),
+      onPress: () => router.push("/favorites"),
     },
     {
       icon: "bell-outline",
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
   },
   menuItemText: {
     fontSize: 16,
-    fontFamily: "Inter_500Medium"
+    fontFamily: "Inter_500Medium",
   },
   versionText: {
     textAlign: "center",
