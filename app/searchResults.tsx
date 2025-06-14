@@ -1,5 +1,5 @@
 import { View, Text } from "@/components/Themed";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import {
   ActivityIndicator,
   Dimensions,
@@ -116,6 +116,21 @@ export default function SearchResults() {
       dispatch(resetErrorMessage());
     }
   }, [errorMessage, dispatch]);
+
+  // Fechar ambos os menus
+  const closeAllDrawers = useCallback(() => {
+    leftDrawerRef.current?.closeDrawer();
+    rightDrawerRef.current?.closeDrawer();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Quando a tela perde o foco fecha ambos os sideMenus
+      return () => {
+        closeAllDrawers();
+      };
+    }, [closeAllDrawers])
+  );
 
   // Componente para lista vazia
   const EmptyComponent = useMemo(
