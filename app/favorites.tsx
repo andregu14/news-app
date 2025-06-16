@@ -1,8 +1,6 @@
-// favorites.tsx
 import {
   FlatList,
   StyleSheet,
-  ActivityIndicator,
   useColorScheme,
 } from "react-native";
 import { useState, useCallback, useRef } from "react";
@@ -19,7 +17,6 @@ const PRESS_COOLDOWN = 1000;
 
 export default function FavoritesScreen() {
   const [favorites, setFavorites] = useState<ArticleParams[]>([]);
-  const [loading, setLoading] = useState(true);
   const lastPressTimeRef = useRef(0);
   const router = useRouter();
   const colorScheme = useColorScheme() ?? "light";
@@ -29,10 +26,10 @@ export default function FavoritesScreen() {
   useFocusEffect(
     useCallback(() => {
       const loadFavorites = async () => {
-        setLoading(true);
         const favs = await getFavorites();
-        setFavorites(favs);
-        setLoading(false);
+        if (favs !== favorites) {
+          setFavorites(favs);
+        }
       };
       loadFavorites();
     }, [])
@@ -100,17 +97,11 @@ export default function FavoritesScreen() {
       <Text style={styles.errorTextTitle}>
         Você ainda não tem notícias favoritas.
       </Text>
-      <Text style={styles.errorTextMessage}>Adiciona alguma notícia aos favoritos e tente novamente.</Text>
+      <Text style={styles.errorTextMessage}>
+        Adicione alguma notícia aos favoritos e tente novamente.
+      </Text>
     </View>
   );
-
-  if (loading) {
-    return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -122,7 +113,7 @@ export default function FavoritesScreen() {
             color: "#fff",
           },
           headerStyle: {
-            backgroundColor: "#E91E63"
+            backgroundColor: "#E91E63",
           },
           headerTintColor: "#fff",
         }}
@@ -133,7 +124,10 @@ export default function FavoritesScreen() {
         ListEmptyComponent={EmptyComponent}
         keyExtractor={(item) => item.url}
         ItemSeparatorComponent={ItemSeparator}
-        contentContainerStyle={[styles.listContainer, {paddingBottom: insets.bottom + 20}]}
+        contentContainerStyle={[
+          styles.listContainer,
+          { paddingBottom: insets.bottom + 20 },
+        ]}
         maxToRenderPerBatch={5}
         windowSize={10}
       />
