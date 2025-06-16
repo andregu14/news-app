@@ -21,7 +21,7 @@ export default function HighlightCardSkeleton() {
         },
       ]}
     >
-      <Skeleton height={100} width="100%" />
+      <Skeleton height={100} width="100%" radius={"square"}/>
       <View style={styles.skeletonTextGroup}>
         <Skeleton height={14} width="90%" />
         <Skeleton height={14} width="70%" />
