@@ -1,4 +1,3 @@
-// components/Skeleton.tsx
 import React from "react";
 import { Skeleton as MotiSkeleton } from "moti/skeleton";
 import { useColorScheme } from "react-native";
@@ -9,7 +8,7 @@ export function Skeleton(props: SkeletonProps) {
   const colorScheme = useColorScheme() ?? "light";
 
   const skeletonBaseColor = colorScheme === "dark" ? "#23232b" : "#e3e3e7";
-  const skeletonHighlightColor = colorScheme === "dark" ? "#393946" : "#f4f4f7";
+  const skeletonHighlightColor = colorScheme === "dark" ? "#393946" : "#c4c4cc";
 
   return (
     <MotiSkeleton
