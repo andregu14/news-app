@@ -174,7 +174,7 @@ export default function Index() {
   const listHeader = useMemo(() => {
     return (
       <NewsListHeader
-        data={news}
+        data={news.slice(0, 5)}
         loading={loading && news.length === 0}
         handleSearchSubmit={handleSearchSubmit}
         onHighlightCardPress={handleCardPress}
@@ -228,7 +228,7 @@ export default function Index() {
                 onAccountPress={handleAccountPress}
               />
               <NewsList
-                data={news.slice(6)}
+                data={news.slice(5)}
                 loading={loading}
                 error={error}
                 showError={news.length === 0}

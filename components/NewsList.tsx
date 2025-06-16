@@ -149,7 +149,9 @@ export default function NewsList({
       ListFooterComponent={ListFooterComponent}
       contentContainerStyle={styles.listContainer}
       maxToRenderPerBatch={5}
-      windowSize={10}
+      windowSize={7}
+      initialNumToRender={3}
+      removeClippedSubviews
     />
   );
 }

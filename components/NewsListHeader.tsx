@@ -52,7 +52,7 @@ export default function NewsListHeader({
         <HighlightCarousel
           data={data}
           loading={loading}
-          maxItems={6}
+          maxItems={5}
           onCardPress={onHighlightCardPress ? onHighlightCardPress : () => {}}
         />
       )}

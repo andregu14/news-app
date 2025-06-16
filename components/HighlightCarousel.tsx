@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { FlatList, StyleSheet, ViewStyle, ListRenderItem } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -31,24 +31,26 @@ export default function HighlightCarousel({
   const renderData = loading
     ? Array.from({ length: maxItems }, (_, index) => ({
         id: `skeleton-${index}`,
-        isSkeletonCard: true,
       }))
     : data.slice(0, maxItems);
 
-  const renderItem: ListRenderItem<any> = ({ item }) => {
-    if (loading || item.isSkeletonCard) {
-      return <HighlightCardSkeleton />;
-    }
+  const renderItem: ListRenderItem<any> = useCallback(
+    ({ item }) => {
+      if (loading) {
+        return <HighlightCardSkeleton />;
+      }
 
-    return (
-      <HighlightCard
-        description={item.title}
-        image={item.image}
-        department={item.source.name}
-        onPress={() => onCardPress(item)}
-      />
-    );
-  };
+      return (
+        <HighlightCard
+          description={item.title}
+          image={item.image}
+          department={item.source.name}
+          onPress={() => onCardPress(item)}
+        />
+      );
+    },
+    [loading, onCardPress]
+  );
 
   if (!loading && (!data || data.length === 0)) {
     return null;
@@ -79,15 +81,12 @@ export default function HighlightCarousel({
       <FlatList
         data={renderData}
         renderItem={renderItem}
-        keyExtractor={(item, index) =>
-          loading || item.isSkeletonCard
-            ? `skeleton-${index}`
-            : item.url || `item-${index}`
-        }
+        keyExtractor={(item) => item.id || item.url}
         horizontal
         showsHorizontalScrollIndicator={false}
         decelerationRate="fast"
         initialNumToRender={3}
+        windowSize={5}
         contentContainerStyle={styles.listContainer}
       />
     </View>

@@ -57,24 +57,20 @@ function HighlightCard({
       isPressed.value = true;
     })
     .onEnd((_event, success) => {
-      // `success` garante que a ação só ocorra se for um toque válido
-      // e não um início de scroll.
       if (success) {
-        // `runOnJS` é necessário para executar a função `onPress` na thread de JavaScript.
         runOnJS(onPress)();
       }
     })
     .onFinalize(() => {
-      // Desativa o estado de pressionado no final do gesto (seja sucesso ou falha)
       isPressed.value = false;
     });
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
-        { scale: withTiming(isPressed.value ? 0.97 : 1, { duration: 150 }) }, // Efeito de escala
+        { scale: withTiming(isPressed.value ? 0.97 : 1, { duration: 150 }) },
       ],
-      opacity: withTiming(isPressed.value ? 0.8 : 1, { duration: 150 }), // Efeito de opacidade
+      opacity: withTiming(isPressed.value ? 0.8 : 1, { duration: 150 }),
     };
   });
 
