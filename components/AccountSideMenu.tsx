@@ -4,6 +4,7 @@ import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { memo } from "react";
 
 const { width: screenWidth } = Dimensions.get("window");
 const menuWidth = screenWidth * 0.8;
@@ -23,9 +24,13 @@ type MenuItemProps = {
   colorScheme?: "light" | "dark";
 };
 
-const MenuItem: React.FC<
-  MenuItemProps & { textColor: string; borderColor: string }
-> = ({ icon, label, onPress, textColor, borderColor, isLast, colorScheme }) => (
+const MenuItem = memo<
+  MenuItemProps & {
+    textColor: string;
+    borderColor: string;
+    colorScheme: "light" | "dark";
+  }
+>(({ icon, label, onPress, textColor, borderColor, isLast, colorScheme }) => (
   <Pressable
     onPress={onPress}
     style={({ pressed }) => [
@@ -45,11 +50,9 @@ const MenuItem: React.FC<
     />
     <Text style={[styles.menuItemText, { color: textColor }]}>{label}</Text>
   </Pressable>
-);
+));
 
-export default function AccountSideMenu({
-  onPressAbout,
-}: AccountSideMenuProps) {
+function AccountSideMenu({ onPressAbout }: AccountSideMenuProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const router = useRouter();
@@ -131,9 +134,9 @@ export default function AccountSideMenu({
 
       {/* Items do Menu */}
       <View style={styles.menuItemsContainer}>
-        {menuItems.map((item, index) => (
+        {menuItems.map((item) => (
           <MenuItem
-            key={index}
+            key={item.label}
             icon={item.icon}
             label={item.label}
             onPress={item.onPress}
@@ -152,6 +155,8 @@ export default function AccountSideMenu({
     </View>
   );
 }
+
+export default memo(AccountSideMenu);
 
 const styles = StyleSheet.create({
   menuContainer: {
