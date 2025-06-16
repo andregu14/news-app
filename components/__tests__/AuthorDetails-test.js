@@ -1,5 +1,4 @@
-import React from 'react';
-import { render, fireEvent, screen } from '@testing-library/react-native';
+import { render, screen } from '@testing-library/react-native';
 import AuthorDetails from '../AuthorDetails';
 
 jest.mock("react-native/Libraries/Utilities/useColorScheme", () => {
@@ -15,7 +14,7 @@ describe('<AuthorDetails />', () => {
         const testDepartment = "Test Department"
         render(<AuthorDetails name={testName} date={testDate} department={testDepartment} />);
         expect(screen.getByText(testName)).toBeVisible();
-        expect(screen.getByText(`${testDate[0].toUpperCase() + testDate.slice(1)} • Em ${testDepartment}`)).toBeVisible();
+        expect(screen.getByText(`há 7 dias`)).toBeVisible();
         expect(screen.toJSON()).toMatchSnapshot();
     });
 

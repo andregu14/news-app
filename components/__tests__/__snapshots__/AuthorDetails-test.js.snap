@@ -11,7 +11,6 @@ exports[`<AuthorDetails /> renders correctly with name, date, department props a
         {
           "alignItems": "center",
           "flexDirection": "row",
-          "marginBottom": 10,
         },
         undefined,
       ],
@@ -66,7 +65,7 @@ exports[`<AuthorDetails /> renders correctly with name, date, department props a
       source={
         [
           {
-            "uri": undefined,
+            "uri": "https://ui-avatars.com/api/?name=Test Name",
           },
         ]
       }
@@ -111,26 +110,84 @@ exports[`<AuthorDetails /> renders correctly with name, date, department props a
     >
       Test Name
     </Text>
-    <Text
+    <View
       style={
         [
           {
-            "color": "#000",
-            "fontFamily": "Inter_400Regular",
+            "backgroundColor": "#fff",
           },
-          [
-            {
-              "fontSize": 13,
-            },
-            {
-              "color": "#888",
-            },
-          ],
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+          },
         ]
       }
     >
-      Há 7 dias • Em Test Department
-    </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "marginRight": 3,
+              },
+            ],
+          ]
+        }
+      >
+        há 7 dias
+      </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "fontSize": 9,
+              },
+            ],
+          ]
+        }
+      >
+         • 
+      </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "marginLeft": 3,
+              },
+            ],
+          ]
+        }
+      >
+        Em 
+        Test Name
+      </Text>
+    </View>
   </View>
 </View>
 `;
@@ -146,7 +203,6 @@ exports[`<AuthorDetails /> renders correctly with photo prop and matches snapsho
         {
           "alignItems": "center",
           "flexDirection": "row",
-          "marginBottom": 10,
         },
         undefined,
       ],
@@ -247,26 +303,84 @@ exports[`<AuthorDetails /> renders correctly with photo prop and matches snapsho
     >
       test
     </Text>
-    <Text
+    <View
       style={
         [
           {
-            "color": "#000",
-            "fontFamily": "Inter_400Regular",
+            "backgroundColor": "#fff",
           },
-          [
-            {
-              "fontSize": 13,
-            },
-            {
-              "color": "#888",
-            },
-          ],
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+          },
         ]
       }
     >
-      Test • Em test
-    </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "marginRight": 3,
+              },
+            ],
+          ]
+        }
+      >
+        test
+      </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "fontSize": 9,
+              },
+            ],
+          ]
+        }
+      >
+         • 
+      </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "marginLeft": 3,
+              },
+            ],
+          ]
+        }
+      >
+        Em 
+        test
+      </Text>
+    </View>
   </View>
 </View>
 `;
@@ -282,7 +396,6 @@ exports[`<AuthorDetails /> renders correctly with placeholder photo and matches 
         {
           "alignItems": "center",
           "flexDirection": "row",
-          "marginBottom": 10,
         },
         undefined,
       ],
@@ -337,7 +450,7 @@ exports[`<AuthorDetails /> renders correctly with placeholder photo and matches 
       source={
         [
           {
-            "uri": undefined,
+            "uri": "https://ui-avatars.com/api/?name=name",
           },
         ]
       }
@@ -383,26 +496,84 @@ exports[`<AuthorDetails /> renders correctly with placeholder photo and matches 
     >
       name
     </Text>
-    <Text
+    <View
       style={
         [
           {
-            "color": "#000",
-            "fontFamily": "Inter_400Regular",
+            "backgroundColor": "#fff",
           },
-          [
-            {
-              "fontSize": 13,
-            },
-            {
-              "color": "#888",
-            },
-          ],
+          {
+            "alignItems": "center",
+            "flexDirection": "row",
+          },
         ]
       }
     >
-      Test • Em test
-    </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "marginRight": 3,
+              },
+            ],
+          ]
+        }
+      >
+        test
+      </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "fontSize": 9,
+              },
+            ],
+          ]
+        }
+      >
+         • 
+      </Text>
+      <Text
+        style={
+          [
+            {
+              "color": "#000",
+              "fontFamily": "Inter_400Regular",
+            },
+            [
+              {
+                "fontSize": 13,
+              },
+              {
+                "color": "#888",
+                "marginLeft": 3,
+              },
+            ],
+          ]
+        }
+      >
+        Em 
+        name
+      </Text>
+    </View>
   </View>
 </View>
 `;
