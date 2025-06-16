@@ -123,9 +123,9 @@ export default function SideMenu({ onCloseDrawer }: SideMenuProps) {
       </View>
 
       <View style={styles.menuItemsContainer}>
-        {CATEGORIES.map((item, index) => (
+        {CATEGORIES.map((item) => (
           <MenuItem
-            key={index}
+            key={item.label}
             {...item}
             onPress={() => handleOnPress(item)}
             textColor={themeColors.text}
