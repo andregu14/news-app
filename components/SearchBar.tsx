@@ -132,7 +132,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     overflow: "hidden",
-    elevation: 1.5
   },
   iconContainer: {
     height: "100%",
