@@ -2,7 +2,7 @@ import { View, Text, ViewProps } from "./Themed";
 import { StyleSheet, useColorScheme, useWindowDimensions } from "react-native";
 import Colors, { Department, departmentColors } from "@/constants/Colors";
 import { Image } from "expo-image";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
@@ -10,6 +10,8 @@ import Animated, {
   withTiming,
   runOnJS,
 } from "react-native-reanimated";
+import { getOptimizedImageUrl } from "@/utils/imageOptimizer";
+import { Skeleton } from "./Skeleton";
 
 type HighlightCardProps = ViewProps & {
   description: string;
@@ -39,6 +41,12 @@ function HighlightCard({
   };
 
   const cardWidth = Math.min(width * 0.4, 340);
+  const imageWidthInPixels = Math.round(cardWidth * 2);
+  const optimizedImageUri = getOptimizedImageUrl(image, {
+    width: imageWidthInPixels,
+  });
+  const [isImageLoading, setIsImageLoading] = useState(true);
+
   const accessibilityLabel = `${department || "Notícia"}: ${description}`;
 
   const isPressed = useSharedValue(false);
@@ -109,14 +117,20 @@ function HighlightCard({
         accessibilityHint="Toque para abrir o artigo completo"
         {...otherProps}
       >
-        <Image
-          style={styles.imageContainer}
-          source={{ uri: image }}
-          contentFit="cover"
-          testID={imageTestID || "highlight-card-image"}
-          accessible={false}
-          accessibilityElementsHidden={true}
-        />
+        <View style={styles.imageContainer}>
+          <Skeleton show={isImageLoading} radius={"square"}>
+            <Image
+              style={styles.image}
+              source={optimizedImageUri}
+              transition={300}
+              contentFit="cover"
+              onLoadEnd={() => setIsImageLoading(false)}
+              testID={imageTestID || "highlight-card-image"}
+              accessible={false}
+              accessibilityElementsHidden={true}
+            />
+          </Skeleton>
+        </View>
         {/* Mostra a badge se department for fornecido */}
         {department && <Badge />}
         <Text
@@ -152,10 +166,14 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "50%",
   },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
   descriptionText: {
     padding: 10,
     height: "50%",
-    fontFamily: "Inter_500Medium"
+    fontFamily: "Inter_500Medium",
   },
   badge: {
     paddingHorizontal: 12,

@@ -1,6 +1,11 @@
 import { Text, TitleText, View } from "@/components/Themed";
 import { useLocalSearchParams, Stack, useFocusEffect } from "expo-router";
-import { StyleSheet, ScrollView, Share } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  Share,
+  useWindowDimensions,
+} from "react-native";
 import { Pressable, PressableProps } from "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import { Image } from "expo-image";
@@ -18,6 +23,8 @@ import { ArticleParams } from "@/constants/NewsData";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "@/components/ToastMessage";
 import { ExternalLink } from "@/components/ExternalLink";
+import { Skeleton } from "@/components/Skeleton";
+import { getOptimizedImageUrl } from "@/utils/imageOptimizer";
 
 const SHARE_PRESS_COOLDOWN = 2000;
 const FAVORITE_PRESS_COOLDOWN = 1000;
@@ -38,7 +45,12 @@ export default function NewsDetailsScreen() {
   const insets = useSafeAreaInsets();
   const colorsConfig = departmentColors["Tecnologia"];
 
+  const { width: screenWidth } = useWindowDimensions();
+  const optimizedImageUri = getOptimizedImageUrl(newsImage, {
+    width: screenWidth,
+  });
   const [isFavorited, setIsFavorited] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const lastPressTimeFavoriteRef = useRef(0);
   const lastPressTimeShareRef = useRef(0);
 
@@ -182,7 +194,22 @@ export default function NewsDetailsScreen() {
         }}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Image source={newsImage} style={styles.image} contentFit="cover" />
+        <View
+          style={[
+            styles.imageContainer,
+            { backgroundColor: themeColors.borderColor },
+          ]}
+        >
+          <Skeleton radius={"square"} show={isImageLoading}>
+            <Image
+              source={optimizedImageUri}
+              style={styles.image}
+              contentFit="cover"
+              onLoadEnd={() => setIsImageLoading(false)}
+              transition={500}
+            />
+          </Skeleton>
+        </View>
         <TitleText style={styles.title}>{newsTitle}</TitleText>
         <Text
           style={[styles.description, { color: themeColors.secondaryText }]}
@@ -209,7 +236,9 @@ export default function NewsDetailsScreen() {
         <Text style={styles.content}>{`${newsContent}`}</Text>
         <View style={styles.externalLinkContainer}>
           <ExternalLink href={newsUrl}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 5 }}
+            >
               <Ionicons
                 name="open-outline"
                 size={20}
@@ -257,9 +286,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
   },
-  image: {
+  imageContainer: {
     width: "100%",
     height: 250,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
   },
   title: {
     marginVertical: 20,

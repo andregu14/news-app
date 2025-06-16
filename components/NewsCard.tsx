@@ -1,8 +1,8 @@
 import { View, Text, ViewProps, BodyText, TitleText } from "./Themed";
-import { StyleSheet, useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme, useWindowDimensions } from "react-native";
 import Colors from "@/constants/Colors";
 import { Image } from "expo-image";
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
@@ -10,6 +10,8 @@ import Animated, {
   withTiming,
   runOnJS,
 } from "react-native-reanimated";
+import { getOptimizedImageUrl } from "@/utils/imageOptimizer";
+import { Skeleton } from "./Skeleton";
 
 type NewsCardProps = ViewProps & {
   title: string;
@@ -36,6 +38,9 @@ function NewsCard({
 }: NewsCardProps) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
+  const { width: screenWidth } = useWindowDimensions();
+  const optimizedImageUri = getOptimizedImageUrl(image, { width: screenWidth });
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const accessibilityLabel = `Notícia: ${title}. ${bodyText}. Publicado ${time} • Em ${
     sourceName || "Fonte Desconhecida"
@@ -87,14 +92,20 @@ function NewsCard({
         >
           {title}
         </TitleText>
-        <Image
-          style={styles.image}
-          source={image}
-          contentFit="cover"
-          testID={imageTestID || "news-card-image"}
-          accessible={false}
-          accessibilityElementsHidden={true}
-        />
+        <View>
+          <Skeleton show={isImageLoading} radius={"square"}>
+            <Image
+              style={styles.image}
+              source={optimizedImageUri}
+              transition={300}
+              contentFit="cover"
+              onLoadEnd={() => setIsImageLoading(false)}
+              testID={imageTestID || "news-card-image"}
+              accessible={false}
+              accessibilityElementsHidden={true}
+            />
+          </Skeleton>
+        </View>
         <BodyText
           style={styles.bodyText}
           ellipsizeMode={"tail"}
