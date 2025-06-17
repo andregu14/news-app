@@ -67,11 +67,9 @@ const MenuItem: React.FC<
           alt={label}
         />
         <BlurView
-          intensity={10}
-          blurReductionFactor={1}
-          tint="systemChromeMaterialDark"
+          intensity={70}
+          tint="dark"
           style={styles.menuItemLabelOverlay}
-          experimentalBlurMethod="dimezisBlurView"
         >
           <Text style={styles.menuItemLabelText}>{label}</Text>
         </BlurView>
@@ -89,7 +87,7 @@ export default function SideMenu({ onCloseDrawer }: SideMenuProps) {
 
   const handleOnPress = (item: CategoryItem) => {
     if (onCloseDrawer) onCloseDrawer();
-    
+
     if (pathname === "/searchResults") {
       dispatch(setQuery(item.label));
     } else {
@@ -173,7 +171,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   menuItemImage: {
-    borderRadius: 12,
+    borderRadius: 6,
   },
   menuItemLabelOverlay: {
     position: "absolute",
@@ -183,11 +181,16 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     alignItems: "center",
     overflow: "hidden",
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
+    borderBottomLeftRadius: 6,
+    borderBottomRightRadius: 6,
   },
   menuItemLabelText: {
     color: "#fff",
     fontFamily: "Inter_600SemiBold",
+    fontSize: 16,
+    textAlign: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
 });
