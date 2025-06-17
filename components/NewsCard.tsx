@@ -24,29 +24,6 @@ type NewsCardProps = ViewProps & {
   imageTestID?: string;
 };
 
-const CardImage = memo(
-  ({ imageUri, imageTestID }: { imageUri: string; imageTestID?: string }) => {
-    const [isLoading, setIsLoading] = useState(true);
-
-    return (
-      <View style={styles.imageContainer}>
-        <Skeleton show={isLoading}>
-          <Image
-            style={styles.image}
-            source={imageUri}
-            transition={300}
-            contentFit="cover"
-            onLoadEnd={() => setIsLoading(false)}
-            testID={imageTestID || "news-card-image"}
-            accessible={false}
-            accessibilityElementsHidden={true}
-          />
-        </Skeleton>
-      </View>
-    );
-  }
-);
-
 function NewsCard({
   title,
   bodyText,
@@ -63,6 +40,7 @@ function NewsCard({
   const themeColors = Colors[colorScheme];
   const { width: screenWidth } = useWindowDimensions();
   const optimizedImageUri = getOptimizedImageUrl(image, { width: screenWidth });
+  const [isImageLoading, setIsImageLoading] = useState(true);
 
   const accessibilityLabel = `Notícia: ${title}. ${bodyText}. Publicado ${time} • Em ${
     sourceName || "Fonte Desconhecida"
@@ -114,7 +92,20 @@ function NewsCard({
         >
           {title}
         </TitleText>
-        <CardImage imageUri={optimizedImageUri} imageTestID={imageTestID} />
+        <View style={styles.imageContainer}>
+          <Skeleton show={isImageLoading}>
+            <Image
+              style={styles.image}
+              source={optimizedImageUri}
+              transition={300}
+              contentFit="cover"
+              onLoadEnd={() => setIsImageLoading(false)}
+              testID={imageTestID || "news-card-image"}
+              accessible={false}
+              accessibilityElementsHidden={true}
+            />
+          </Skeleton>
+        </View>
         <BodyText
           style={styles.bodyText}
           ellipsizeMode={"tail"}
