@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, Pressable } from "react-native";
+import { StyleSheet, Dimensions, Pressable, ToastAndroid } from "react-native";
 import { View, Text } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
@@ -57,26 +57,35 @@ function AccountSideMenu({ onPressAbout }: AccountSideMenuProps) {
   const themeColors = Colors[colorScheme];
   const router = useRouter();
 
+  const showComingSoonToast = () => {
+    ToastAndroid.showWithGravity(
+      'Em desenvolvimento',
+      ToastAndroid.SHORT,
+      ToastAndroid.BOTTOM
+    );
+  }
+
+
   const menuItems: MenuItemProps[] = [
     {
       icon: "account-circle-outline",
       label: "Meu Perfil",
-      onPress: () => console.log("Perfil"),
+      onPress: showComingSoonToast,
     },
     {
       icon: "cog-outline",
       label: "Configurações",
-      onPress: () => console.log("Configurações"),
+      onPress: showComingSoonToast,
     },
     {
       icon: "shield-account-outline",
       label: "Privacidade",
-      onPress: () => console.log("Privacidade"),
+      onPress: showComingSoonToast,
     },
     {
       icon: "help-circle-outline",
       label: "Ajuda & Suporte",
-      onPress: () => console.log("Ajuda"),
+      onPress: showComingSoonToast,
     },
     {
       icon: "heart-outline",
@@ -86,7 +95,7 @@ function AccountSideMenu({ onPressAbout }: AccountSideMenuProps) {
     {
       icon: "bell-outline",
       label: "Notificações",
-      onPress: () => console.log("Notificações"),
+      onPress: showComingSoonToast,
     },
     {
       icon: "information-outline",
@@ -96,7 +105,7 @@ function AccountSideMenu({ onPressAbout }: AccountSideMenuProps) {
     {
       icon: "logout",
       label: "Sair",
-      onPress: () => console.log("Sair"),
+      onPress: showComingSoonToast,
       isLast: true,
     },
   ];
