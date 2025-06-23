@@ -6,7 +6,7 @@ import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { View, Text } from "@/components/Themed";
-import { Pressable } from "react-native";
+import { Pressable, Vibration } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -79,7 +79,10 @@ export default function TabLayout() {
               ]}
             >
               <Pressable
-                onPress={onPress}
+                onPress={(e) => {
+                  Vibration.vibrate(5)
+                  if (onPress) onPress(e)
+                }}
                 style={({ pressed }) => [
                   props.style,
                   {

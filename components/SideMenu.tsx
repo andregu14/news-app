@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Animated, StyleSheet, Dimensions, Pressable } from "react-native";
+import { Animated, StyleSheet, Dimensions, Pressable, Vibration } from "react-native";
 import { View, Text } from "./Themed";
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "./useColorScheme";
@@ -88,6 +88,7 @@ export default function SideMenu({ onCloseDrawer }: SideMenuProps) {
   const handleOnPress = (item: CategoryItem) => {
     if (onCloseDrawer) onCloseDrawer();
 
+    Vibration.vibrate(5)
     if (pathname === "/searchResults") {
       dispatch(setQuery(item.label));
     } else {
