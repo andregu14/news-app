@@ -62,13 +62,6 @@ export const fetchHomeNewsAsync = createAsyncThunk(
   "news/fetchHomeNews",
   async (isRefresh: boolean = false, { getState, rejectWithValue }) => {
     try {
-      const delay = isRefresh
-        ? 500
-        : Math.floor(Math.random() * (3000 - 2000 + 1) + 2000);
-
-      // Simula delay
-      await new Promise((resolve) => setTimeout(resolve, delay));
-
       const data = await fetchNewsAPI("", key);
 
       // Formata as datas
@@ -163,11 +156,6 @@ export const fetchSearchNewsAsync = createAsyncThunk(
   "news/fetchSearchNews",
   async (searchTerm: string, { rejectWithValue }) => {
     try {
-      const delay = Math.floor(Math.random() * (3000 - 2000 + 1) + 2000);
-
-      // Simula delay
-      await new Promise((resolve) => setTimeout(resolve, delay));
-
       // Verifica se e categoria para busca especifica
       const category = getCategoryFromLabel(searchTerm);
 
