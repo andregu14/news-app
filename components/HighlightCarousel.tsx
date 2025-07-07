@@ -8,6 +8,9 @@ import HighlightCardSkeleton from "./HighlightCardSkeleton";
 import { ArticleParams } from "@/constants/NewsData";
 import { useColorScheme } from "react-native";
 import Colors from "@/constants/Colors";
+import HighlightCardMain, {
+  HighlightCardMainSkeleton,
+} from "./HighlightCardMain";
 
 type HighlightCarouselProps = {
   data?: ArticleParams[];
@@ -20,7 +23,7 @@ type HighlightCarouselProps = {
 export default function HighlightCarousel({
   data = [],
   loading = false,
-  maxItems = 5,
+  maxItems = 6,
   style,
   onCardPress,
 }: HighlightCarouselProps) {
@@ -32,7 +35,7 @@ export default function HighlightCarousel({
     ? Array.from({ length: maxItems }, (_, index) => ({
         id: `skeleton-${index}`,
       }))
-    : data.slice(0, maxItems);
+    : data.slice(1, maxItems);
 
   const renderItem: ListRenderItem<any> = useCallback(
     ({ item }) => {
@@ -76,6 +79,16 @@ export default function HighlightCarousel({
           color={themeColors.mainColor}
         />
       </View>
+      {/* Main Card */}
+      {loading ? (
+        <HighlightCardMainSkeleton />
+      ) : (
+        <HighlightCardMain
+          description={data[0].title}
+          image={data[0].image}
+          onPress={() => onCardPress(data[0])}
+        />
+      )}
 
       {/* Carrossel */}
       <FlatList
