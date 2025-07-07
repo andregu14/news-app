@@ -42,9 +42,9 @@ function HighlightCard({
 
   const cardWidth = Math.min(width * 0.4, 340);
   const imageWidthInPixels = Math.round(cardWidth * 2);
-  const optimizedImageUri = getOptimizedImageUrl(image, {
+  const [optimizedImage, setOptimizedImage] = useState(getOptimizedImageUrl(image, {
     width: imageWidthInPixels,
-  });
+  }))
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   const accessibilityLabel = `${department || "Notícia"}: ${description}`;
@@ -86,6 +86,8 @@ function HighlightCard({
       <Text
         style={[styles.badgeText, { color: colorsConfig?.textColor }]}
         accessible={false}
+        ellipsizeMode={"tail"}
+        numberOfLines={1}
       >
         {department}
       </Text>
@@ -117,7 +119,8 @@ function HighlightCard({
           <Skeleton show={isImageLoading} radius={"square"}>
             <Image
               style={styles.image}
-              source={optimizedImageUri}
+              source={optimizedImage}
+              onError={() => setOptimizedImage(require("@/assets/images/image-not-found.png"))}
               transition={300}
               contentFit="cover"
               onLoadEnd={() => setIsImageLoading(false)}
@@ -174,6 +177,7 @@ const styles = StyleSheet.create({
   badge: {
     paddingHorizontal: 12,
     paddingVertical: 6,
+    marginLeft: 10,
     borderRadius: 20,
     position: "absolute",
     top: 5,
