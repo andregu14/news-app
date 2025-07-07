@@ -39,7 +39,11 @@ function NewsCard({
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
   const { width: screenWidth } = useWindowDimensions();
-  const optimizedImageUri = getOptimizedImageUrl(image, { width: screenWidth });
+  const [optimizedImage, setOptimizedImage] = useState(
+    getOptimizedImageUrl(image, {
+      width: screenWidth,
+    })
+  );
   const [isImageLoading, setIsImageLoading] = useState(true);
 
   const accessibilityLabel = `Notícia: ${title}. ${bodyText}. Publicado ${time} • Em ${
@@ -96,7 +100,12 @@ function NewsCard({
           <Skeleton show={isImageLoading}>
             <Image
               style={styles.image}
-              source={optimizedImageUri}
+              source={optimizedImage}
+              onError={() =>
+                setOptimizedImage(
+                  require("@/assets/images/image-not-found.png")
+                )
+              }
               transition={300}
               contentFit="cover"
               onLoadEnd={() => setIsImageLoading(false)}
