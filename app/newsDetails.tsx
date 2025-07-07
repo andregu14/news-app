@@ -46,9 +46,11 @@ export default function NewsDetailsScreen() {
   const colorsConfig = departmentColors["Tecnologia"];
 
   const { width: screenWidth } = useWindowDimensions();
-  const optimizedImageUri = getOptimizedImageUrl(newsImage, {
-    width: screenWidth,
-  });
+    const [optimizedImage, setOptimizedImage] = useState(
+    getOptimizedImageUrl(newsImage, {
+      width: screenWidth,
+    })
+  );
   const [isFavorited, setIsFavorited] = useState(false);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const lastPressTimeFavoriteRef = useRef(0);
@@ -202,7 +204,8 @@ export default function NewsDetailsScreen() {
         >
           <Skeleton radius={"square"} show={isImageLoading}>
             <Image
-              source={optimizedImageUri}
+              source={optimizedImage}
+              onError={() => setOptimizedImage(require("@/assets/images/image-not-found.png"))}
               style={styles.image}
               contentFit="cover"
               onLoadEnd={() => setIsImageLoading(false)}
