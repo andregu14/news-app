@@ -116,6 +116,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="searchResults"
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="magnify" color={color} />,
+          tabBarLabel: ({ focused, color }) => (
+            <TabBarLabel color={color} name={"pesquisar"} focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="menu"
         options={{
           title: "Menu",

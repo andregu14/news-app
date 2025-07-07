@@ -88,10 +88,6 @@ function RootLayoutNav() {
                   }}
                 />
                 <Stack.Screen
-                  name="searchResults"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen
                   name="favorites"
                   options={{
                     headerTitleStyle: { fontSize: 18 },

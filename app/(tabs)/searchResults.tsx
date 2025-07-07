@@ -57,7 +57,7 @@ export default function SearchResults() {
   } = useSelector((state: RootState) => state.news.searchResults);
   const lastPressTimeRef = useRef(0);
 
-  const appVersion = require("../app.json").expo.version;
+  const appVersion = require("../../app.json").expo.version;
 
   // Função para buscar notícias
   const fetchNews = useCallback(
