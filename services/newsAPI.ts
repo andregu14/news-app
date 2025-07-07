@@ -22,7 +22,7 @@ const cleanSearchTerm = (term: string): string => {
     .trim(); // remove espaços extras no início e fim
 };
 
-const TIMEOUT_MS = 15000 // 15 seg
+const TIMEOUT_MS = 60000 // 60 seg
 
 export const fetchNewsAPI = async (
   searchTerm: string,
