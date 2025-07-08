@@ -56,6 +56,7 @@ export default function SearchResults() {
     errorMessage,
   } = useSelector((state: RootState) => state.news.searchResults);
   const lastPressTimeRef = useRef(0);
+  const shouldShowSkeletons = !!searchQuery?.trim() && loading;
 
   const appVersion = require("../../app.json").expo.version;
 
@@ -79,11 +80,13 @@ export default function SearchResults() {
 
   // Função para carregar mais items
   const handleLoadMore = useCallback(() => {
+    if (!searchQuery?.trim()) return;
+
     console.log("Fim da lista atingida buscando mais noticias");
     if (hasMore && !loadingMore) {
       dispatch(fetchMoreSearchNewsAsync());
     }
-  }, [dispatch, hasMore, loadingMore]);
+  }, [dispatch, hasMore, loadingMore, searchQuery]);
 
   // Função de retry
   const handleRetry = useCallback(() => {
@@ -133,9 +136,27 @@ export default function SearchResults() {
     }, [closeAllDrawers, dispatch])
   );
 
+  const InitialComponent = useMemo(() => {
+    if (searchQuery?.trim()) return null;
+
+    return (
+      <View
+        style={[styles.centerContainer, { marginBottom: insets.bottom * 2 }]}
+      >
+        <Text style={styles.centerText}>
+          Digite algo na barra de pesquisa para buscar notícias
+        </Text>
+      </View>
+    );
+  }, [searchQuery, insets.bottom, themeColors.secondaryText]);
+
   // Componente para lista vazia
-  const EmptyComponent = useMemo(
-    () => (
+  const EmptyComponent = useMemo(() => {
+    if (!searchQuery?.trim() || loading) {
+      return null;
+    }
+
+    return (
       <View
         style={[styles.centerContainer, { marginBottom: insets.bottom * 2 }]}
       >
@@ -153,14 +174,14 @@ export default function SearchResults() {
           Tente buscar por outros termos.
         </Text>
       </View>
-    ),
-    [searchQuery]
-  );
+    );
+  }, [searchQuery, loading]);
 
   // Componente de header da lista e memorizado
   const listHeader = useMemo(
     () => (
       <NewsListHeader
+        data={news}
         showCarrousel={false}
         showTitle={false}
         handleSearchSubmit={handleSearchSubmit}
@@ -248,15 +269,17 @@ export default function SearchResults() {
               />
               <NewsList
                 data={news}
-                loading={loading}
+                loading={shouldShowSkeletons}
                 error={error}
                 showError={error ? true : false}
                 onRetry={handleRetry}
                 onPressItem={handleCardPress}
-                onEndReached={handleLoadMore}
+                onEndReached={news.length > 0 ? handleLoadMore : null}
                 refreshControl={false}
                 ListHeaderComponent={listHeader}
-                ListEmptyComponent={EmptyComponent}
+                ListEmptyComponent={
+                  !searchQuery?.trim() ? InitialComponent : EmptyComponent
+                }
                 ListFooterComponent={
                   loadingMore ? (
                     <ActivityIndicator
