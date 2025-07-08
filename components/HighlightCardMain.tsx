@@ -22,10 +22,9 @@ type HighlightCardMain = {
 function HighlightCardMain({ description, image, onPress }: HighlightCardMain) {
   const colorScheme = useColorScheme() ?? "light";
   const themeColors = Colors[colorScheme];
-  const [img, setImg] = useState(image);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [displayDescription, setDisplayDescription] = useState(false);
-
+  const [hasError, setHasError] = useState(false);
   const isPressed = useSharedValue(false);
 
   // Gesto de toque
@@ -62,29 +61,31 @@ function HighlightCardMain({ description, image, onPress }: HighlightCardMain) {
       >
         <Skeleton show={isImageLoading}>
           <Image
-            source={img}
-            onError={() =>
-              setImg(require("@/assets/images/image-not-found.png"))
+            source={
+              hasError ? require("@/assets/images/image-not-found.png") : image
             }
+            onError={() => setHasError(true)}
             onDisplay={() => setDisplayDescription(true)}
             style={styles.image}
             onLoadEnd={() => setIsImageLoading(false)}
             contentFit="cover"
           />
         </Skeleton>
+
         {displayDescription && (
           <>
-            <TitleText style={styles.text}>{description}</TitleText>
             <LinearGradient
-              colors={["transparent", "black"]}
+              colors={["transparent", "rgba(0,0,0,0.6)", "rgba(0,0,0,0.7)"]}
               style={styles.gradient}
             />
+            <TitleText style={styles.text}>{description}</TitleText>
           </>
         )}
       </Animated.View>
     </GestureDetector>
   );
 }
+
 export default memo(HighlightCardMain);
 
 export function HighlightCardMainSkeleton() {
@@ -114,26 +115,20 @@ const styles = StyleSheet.create({
   },
   text: {
     position: "absolute",
+    fontSize: 19,
     left: 16,
     right: 16,
     bottom: 20,
     color: "#fff",
-    zIndex: 2,
-    textShadowColor: "rgba(0,0,0,0.7)",
+    textShadowColor: "rgba(0,0,0,0.8)",
     textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 6,
+    textShadowRadius: 8,
   },
   gradient: {
     position: "absolute",
     left: 0,
     right: 0,
     bottom: 0,
-    height: 110,
-  },
-  skeletonTextGroup: {
-    padding: 10,
-    width: "100%",
-    height: "50%",
-    justifyContent: "space-evenly",
+    height: 120,
   },
 });
