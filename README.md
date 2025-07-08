@@ -35,7 +35,7 @@ Um aplicativo de notícias desenvolvido com React Native + Expo que permite visu
 
 | *Tela Inicial* | *Menu* |
 |:---:|:---:|
-<img src="https://i.ibb.co/Lh62V5Jz/Screenshot-1750205641.png" width="300px"> | <img src="https://i.ibb.co/MxdhTfNF/menu-dark-theme.png" width="300px"> |
+<img src="https://i.ibb.co/wF3SG0JH/home.png" width="300px"> | <img src="https://i.ibb.co/NdwdFG3M/menu.png" width="300px"> |
 
 | *Detalhes da Notícia* | *Favoritos* |
 |:---:|:---:|
@@ -45,7 +45,7 @@ Um aplicativo de notícias desenvolvido com React Native + Expo que permite visu
 
 ## 🚀 Instalação
 
-- Faça o dowload do apk em: [workupload.com/file/4y7yBGdEUvq](https://workupload.com/file/4y7yBGdEUvq)
+- Faça o dowload do apk em: [https://workupload.com/file/xVgXzuF37V4](https://workupload.com/file/xVgXzuF37V4)
 
 - Instale o apk no emulador ou dispositivo físico
 
