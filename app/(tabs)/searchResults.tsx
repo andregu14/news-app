@@ -291,15 +291,6 @@ export default function SearchResults() {
                 }
               />
             </View>
-            <View
-              style={[
-                styles.bottomView,
-                {
-                  height: insets.bottom,
-                  backgroundColor: themeColors.background,
-                },
-              ]}
-            />
             <AboutUsModal ref={aboutUsRef} appVersion={appVersion} />
           </ReanimatedDrawerLayout>
         </ReanimatedDrawerLayout>
@@ -337,12 +328,5 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 20,
-  },
-  bottomView: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1,
   },
 });
